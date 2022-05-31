@@ -55,8 +55,8 @@ php artisan vendor:publish --tag="laravel-wave-views"
 ## Usage
 
 ```php
-$laravelWave = new Furio\LaravelWave();
-echo $laravelWave->echoPhrase('Hello, Furio!');
+$laravelWave = new Qruto\LaravelWave();
+echo $laravelWave->echoPhrase('Hello, Qruto!');
 ```
 
 ## Testing

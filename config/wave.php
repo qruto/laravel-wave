@@ -1,5 +1,5 @@
 <?php
-// config for Furio/LaravelWave
+// config for Qruto/LaravelWave
 return [
 
 ];

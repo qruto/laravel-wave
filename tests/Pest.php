@@ -1,5 +1,5 @@
 <?php
 
-use Furio\LaravelWave\Tests\TestCase;
+use Qruto\LaravelWave\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

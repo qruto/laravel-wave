@@ -1,8 +1,9 @@
 <?php
 
-namespace Furio\LaravelWave;
+namespace Qruto\LaravelWave;
 
-use Furio\LaravelWave\Commands\LaravelWaveCommand;
+use Qruto\LaravelWave\Commands\Ping;
+use Illuminate\Support\Facades\Event;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -19,7 +20,21 @@ class LaravelWaveServiceProvider extends PackageServiceProvider
             ->name('laravel-wave')
             ->hasConfigFile()
             ->hasViews()
+            ->hasRoute('web')
             ->hasMigration('create_laravel-wave_table')
-            ->hasCommand(LaravelWaveCommand::class);
+            ->hasCommand(Ping::class);
+    }
+
+    public function registeringPackage()
+    {
+        $this->app->bind(ServerSentEventSubscriber::class, RedisSubscriber::class);
+    }
+
+    public function bootingPackage()
+    {
+        Event::listen(
+            SseConnectionClosedEvent::class,
+            [RemoveStoredConnectionListener::class, 'handle']
+        );
     }
 }

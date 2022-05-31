@@ -1,5 +1,5 @@
 {
-    "name": "slavarazum/laravel-wave",
+    "name": "qruto/laravel-wave",
     "description": "SSE implementation",
     "keywords": [
         "slavarazum",
@@ -18,7 +18,8 @@
     "require": {
         "php": "^8.1",
         "spatie/laravel-package-tools": "^1.9.2",
-        "illuminate/contracts": "^9.0"
+        "illuminate/contracts": "^9.0",
+        "illuminate/broadcasting": "^9.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.8",
@@ -35,13 +36,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Furio\\LaravelWave\\": "src",
-            "Furio\\LaravelWave\\Database\\Factories\\": "database/factories"
+            "Qruto\\LaravelWave\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Furio\\LaravelWave\\Tests\\": "tests"
+            "Qruto\\LaravelWave\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -60,11 +60,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Furio\\LaravelWave\\LaravelWaveServiceProvider"
-            ],
-            "aliases": {
-                "LaravelWave": "Furio\\LaravelWave\\Facades\\LaravelWave"
-            }
+                "Qruto\\LaravelWave\\LaravelWaveServiceProvider"
+            ]
         }
     },
     "minimum-stability": "dev",

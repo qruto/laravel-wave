@@ -1,10 +1,10 @@
 <?php
 
-namespace Furio\LaravelWave\Tests;
+namespace Qruto\LaravelWave\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Furio\LaravelWave\LaravelWaveServiceProvider;
+use Qruto\LaravelWave\LaravelWaveServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -13,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Furio\\LaravelWave\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'Qruto\\LaravelWave\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
