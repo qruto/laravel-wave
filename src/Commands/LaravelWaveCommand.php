@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Furio\LaravelWave\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LaravelWaveCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-wave';
 
     public $description = 'My command';
 
