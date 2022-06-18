@@ -3,13 +3,14 @@
 namespace Qruto\LaravelWave;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Redis\Connections\PhpRedisConnection;
+use Illuminate\Contracts\Redis\Connection;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 
 class PresenceChannelUsersRepository
 {
-    private PhpRedisConnection $db;
+    /** @var \Illuminate\Redis\Connections\PhpRedisConnection|\Illuminate\Redis\Connections\PredisConnection */
+    private Connection $db;
 
     public function __construct()
     {
@@ -62,7 +63,7 @@ class PresenceChannelUsersRepository
 
         $key = $this->connectionsKey($user, $channel);
 
-        if (!$this->db->exists($key)) {
+        if (! $this->db->exists($key)) {
             return $disconnected;
         }
 

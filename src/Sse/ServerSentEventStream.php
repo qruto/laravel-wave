@@ -2,13 +2,13 @@
 
 namespace Qruto\LaravelWave\Sse;
 
-use Qruto\LaravelWave\PresenceChannelUsersRepository;
-use Qruto\LaravelWave\ServerSentEventSubscriber;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Broadcast;
+use Qruto\LaravelWave\PresenceChannelUsersRepository;
+use Qruto\LaravelWave\ServerSentEventSubscriber;
 use Symfony\Component\HttpFoundation\Response;
 
 class ServerSentEventStream implements Responsable
