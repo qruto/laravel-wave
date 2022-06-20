@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Broadcast;
 use Qruto\LaravelWave\PresenceChannelUsersRepository;
 use Qruto\LaravelWave\ServerSentEventSubscriber;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class ServerSentEventStream implements Responsable
 {
@@ -29,24 +30,35 @@ class ServerSentEventStream implements Responsable
 
     public function toResponse($request)
     {
-        return $this->responseFactory->stream(function () use ($request) {
-            (new ServerSentEvent('connected', Broadcast::socket()))();
+        /** @var string */
+        $socket = Broadcast::socket($request);
 
-            $this->eventSubscriber->start($this->eventHandler($request));
-        }, Response::HTTP_OK, self::HEADERS);
+        return $this->responseFactory->stream(function () use ($request, $socket) {
+            (new ServerSentEvent('connected', $socket))();
+
+            $this->eventSubscriber->start($this->eventHandler($request, $socket));
+        }, Response::HTTP_OK, self::HEADERS + ['X-Socket-Id' => $socket]);
     }
 
-    protected function eventHandler(Request $request)
+    protected function eventHandler(Request $request, string $socket)
     {
-        return function ($message, $channel) use ($request) {
+        return function ($message, $channel) use ($request, $socket) {
             if ($this->needsAuth($channel)) {
-                $this->authChannel($channel, $request);
+                ray('need auth', $request->user()->name, $channel, $message);
+
+                try {
+                    $this->authChannel($channel, $request);
+                } catch (AccessDeniedHttpException $e) {
+                    ray('denied');
+
+                    return;
+                }
             }
 
             ['event' => $event, 'data' => $data] = json_decode($message, true);
-            $socket = Arr::pull($data, 'socket');
+            $eventSocket = Arr::pull($data, 'socket');
 
-            if ($socket === Broadcast::socket()) {
+            if ($eventSocket === $socket) {
                 return;
             }
 

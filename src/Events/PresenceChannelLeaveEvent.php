@@ -2,7 +2,6 @@
 
 namespace Qruto\LaravelWave\Events;
 
-use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -12,14 +11,16 @@ use Illuminate\Queue\SerializesModels;
 
 class PresenceChannelLeaveEvent implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(public Authenticatable $user)
+    public function __construct(public Authenticatable $user, public string $channel)
     {
     }
 
@@ -30,7 +31,7 @@ class PresenceChannelLeaveEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('channel-presence');
+        return new PresenceChannel($this->channel);
     }
 
     public function broadcastAs()

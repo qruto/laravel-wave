@@ -1,11 +1,10 @@
 <?php
-declare(ticks = 1);
 
 namespace Qruto\LaravelWave;
 
-use App\Events\SseConnectionClosedEvent;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
+use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
 
 class RedisSubscriber implements ServerSentEventSubscriber
 {
@@ -14,7 +13,7 @@ class RedisSubscriber implements ServerSentEventSubscriber
         // ignore_user_abort(true);
         ini_set('default_socket_timeout', -1);
         set_time_limit(0);
-        Redis::connection('subscription')->setOption(\Redis::OPT_READ_TIMEOUT, -1);
+        // Redis::connection('subscription')->setOption(\Redis::OPT_READ_TIMEOUT, -1);
 
 
         // pcntl_async_signals(true);
@@ -30,14 +29,14 @@ class RedisSubscriber implements ServerSentEventSubscriber
             }
         });
 
-        $connection->psubscribe('*', function ($message, $pattern) use ($onMessage) {
-            $event = $this->eventName($pattern);
+        $connection->psubscribe('*', function ($event, $pattern) use ($onMessage) {
+            $channel = $this->channelName($pattern);
 
-            $onMessage($message, $event);
+            $onMessage($event, $channel);
         });
     }
 
-    private function eventName(string $pattern): string
+    private function channelName(string $pattern): string
     {
         return Str::after($pattern, config('database.redis.options.prefix'));
     }

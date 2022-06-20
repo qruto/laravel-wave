@@ -1,9 +1,12 @@
 <?php
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\ReflectsClosures;
 
+use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertTrue;
 use Qruto\LaravelWave\Tests\RedisConnectionMock;
@@ -14,34 +17,48 @@ use Qruto\LaravelWave\Tests\TestCase;
 uses(TestCase::class)->in(__DIR__);
 
 uses()->beforeEach(function () {
-    $this->instance('redis', new RedisConnectionMock());
-    User::factory()->create();
-    $this->actingAs(User::first());
+    $redisMock = new RedisConnectionMock();
+    $this->instance('redis', $redisMock);
+    $redisMock->flushdb();
+    $redisMock->flushEventsQueue();
+
+    Broadcast::channel('private-channel', fn () => true);
+    Broadcast::channel('presence-channel', fn () => true);
+
+    $this->user = User::factory()->create();
+
+    $this->actingAs($this->user);
 })->in(__DIR__);
 
-function waveConnection()
+function waveConnection(Authenticatable $user = null)
 {
-    return new class () {
+    return new class ($user) {
         use ReflectsClosures;
 
-        private $response;
+        public $response;
 
         /** @var \Illuminate\Support\Collection */
         private $sentEvents;
 
-        public function __construct()
+        public function __construct(public Authenticatable|null $user = null)
         {
-            $this->response = test()->get('/wave');
+            $test = test();
+
+            if ($user) {
+                $test = $test->actingAs($user);
+            }
+
+            $this->response = $test->get('/wave');
         }
 
         public function id()
         {
-            return $this->getSentEvents()['connected']['data'];
+            return $this->response->headers->get('X-Socket-Id');
         }
 
-        public function dispatched($event, $callback = null)
+        public function received($event, $callback = null)
         {
-            if (! $this->hasDispatched($event)) {
+            if (! $this->hasReceived($event)) {
                 return collect();
             }
 
@@ -55,7 +72,7 @@ function waveConnection()
         public function assertConnected()
         {
             assertTrue(
-                $this->dispatched('connected')->count() > 0,
+                $this->received('connected')->count() > 0,
                 "Connection hasn't been established"
             );
         }
@@ -66,43 +83,58 @@ function waveConnection()
                 [$event, $callback] = [$this->firstClosureParameterType($event), $event];
             }
 
-            $event = (new $event())->broadcastOn()->name.'.'.$event;
+            if (class_exists($event)) {
+                $event = (new $event())->broadcastOn()->name.'.'.$event;
+            }
 
             if (is_int($callback)) {
-                return $this->assertDispatchedTimes($event, $callback);
+                return $this->assertReceivedTimes($event, $callback);
             }
 
             assertTrue(
-                $this->dispatched($event, $callback)->count() > 0,
-                "The expected [{$event}] event was not dispatched."
+                $this->received($event, $callback)->count() > 0,
+                "The expected [{$event}] event was not received."
+            );
+        }
+
+        public function assertEventNotReceived($event, $callback = null)
+        {
+            if ($event instanceof Closure) {
+                [$event, $callback] = [$this->firstClosureParameterType($event), $event];
+            }
+
+            assertCount(
+                0,
+                $this->received($event, $callback),
+                "The unexpected [{$event}] event was received."
             );
         }
 
         /**
-         * Assert if an event was dispatched a number of times.
+         * Assert if an event was received a number of times.
          *
          * @param  string  $event
          * @param  int  $times
          * @return void
          */
-        public function assertDispatchedTimes($event, $times = 1)
+        public function assertReceivedTimes($event, $times = 1)
         {
-            $count = $this->dispatched($event)->count();
+            $count = $this->received($event)->count();
 
             assertSame(
                 $times,
                 $count,
-                "The expected [{$event}] event was dispatched {$count} times instead of {$times} times."
+                "The expected [{$event}] event was received {$count} times instead of {$times} times."
             );
         }
 
         /**
-         * Determine if the given event has been dispatched.
+         * Determine if the given event has been received.
          *
          * @param  string  $event
          * @return bool
          */
-        public function hasDispatched($event)
+        public function hasReceived($event)
         {
             return isset($this->getSentEvents()[$event]) && ! empty($this->getSentEvents()[$event]);
         }

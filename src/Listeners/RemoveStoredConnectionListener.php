@@ -2,7 +2,6 @@
 
 namespace Qruto\LaravelWave\Listeners;
 
-use App\Events\SseConnectionClosedEvent;
 use Qruto\LaravelWave\Events\PresenceChannelLeaveEvent;
 use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
 use Qruto\LaravelWave\PresenceChannelUsersRepository;
@@ -29,7 +28,7 @@ class RemoveStoredConnectionListener
     {
         $this->store->getChannels($event->user)->each(function ($channel) use ($event) {
             if ($this->store->leave($channel, $event->user, $event->connectionId)) {
-                event(new PresenceChannelLeaveEvent($event->user));
+                event(new PresenceChannelLeaveEvent($event->user, $channel));
             }
         });
     }

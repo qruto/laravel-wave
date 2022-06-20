@@ -7,18 +7,19 @@ use Illuminate\Contracts\Redis\Connection;
 use Illuminate\Contracts\Redis\Factory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use M6Web\Component\RedisMock\RedisMock;
 
 /**
  * @mixin \Redis
  */
-class RedisConnectionMock implements Connection, Factory
+class RedisConnectionMock extends RedisMock implements Connection, Factory
 {
-    private $events = [];
+    public static $events = [];
 
     public function eval($script, $numberOfKeys, ...$arguments)
     {
         if (Str::contains($script, 'publish')) {
-            $this->events[] = [
+            self::$events[] = [
                 'message' => $arguments[0],
                 'pattern' => $arguments[1],
             ];
@@ -29,9 +30,15 @@ class RedisConnectionMock implements Connection, Factory
 
     public function psubscribe($channels, Closure $callback)
     {
+        ray('subscribe', self::$events, auth()->user()->name);
         if ($channels === '*') {
-            Collection::make($this->events)->each(fn ($event) => $callback($event['message'], $event['pattern']));
+            Collection::make(self::$events)->each(fn ($event) => $callback($event['message'], $event['pattern']));
         }
+    }
+
+    public function flushEventsQueue()
+    {
+        self::$events = [];
     }
 
     public function connection($name = null)

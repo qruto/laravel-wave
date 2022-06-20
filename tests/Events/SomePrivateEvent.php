@@ -5,12 +5,14 @@ namespace Qruto\LaravelWave\Tests\Events;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class SomePrivateEvent implements ShouldBroadcast
 {
     use InteractsWithSockets;
     use SerializesModels;
+    use Dispatchable;
 
     public $name = 'private';
 
@@ -33,6 +35,6 @@ class SomePrivateEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-private');
+        return new PrivateChannel('private-channel');
     }
 }

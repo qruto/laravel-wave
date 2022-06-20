@@ -50,7 +50,6 @@ class PresenceChannelUsersRepository
             $firstJoin = true;
         }
 
-
         $this->db->set($key, serialize($userConnections));
 
         return $firstJoin;
