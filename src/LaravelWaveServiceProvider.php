@@ -2,8 +2,10 @@
 
 namespace Qruto\LaravelWave;
 
-use Qruto\LaravelWave\Commands\Ping;
 use Illuminate\Support\Facades\Event;
+use Qruto\LaravelWave\Commands\Ping;
+use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
+use Qruto\LaravelWave\Listeners\RemoveStoredConnectionListener;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 

@@ -30,7 +30,6 @@ class RedisConnectionMock extends RedisMock implements Connection, Factory
 
     public function psubscribe($channels, Closure $callback)
     {
-        ray('subscribe', self::$events, auth()->user()->name);
         if ($channels === '*') {
             Collection::make(self::$events)->each(fn ($event) => $callback($event['message'], $event['pattern']));
         }

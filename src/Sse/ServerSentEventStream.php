@@ -44,13 +44,9 @@ class ServerSentEventStream implements Responsable
     {
         return function ($message, $channel) use ($request, $socket) {
             if ($this->needsAuth($channel)) {
-                ray('need auth', $request->user()->name, $channel, $message);
-
                 try {
                     $this->authChannel($channel, $request);
                 } catch (AccessDeniedHttpException $e) {
-                    ray('denied');
-
                     return;
                 }
             }
