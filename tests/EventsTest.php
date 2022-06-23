@@ -25,7 +25,6 @@ it('successfully received private event', function () {
     $connection->assertEventReceived(SomePrivateEvent::class);
 });
 
-
 it('successfully received presence event', function () {
     $connection = waveConnection();
     SomePresenceEvent::dispatch();
@@ -43,7 +42,6 @@ test('event not received when broadcasting to others', function () {
 
     $connection->assertEventNotReceived(SomeEvent::class);
 });
-
 
 test('others received an event when broadcasting to others', function () {
     $connection = waveConnection();

@@ -10,10 +10,8 @@ use Qruto\LaravelWave\Sse\ServerSentEventStream;
 Route::middleware(['web', 'auth'])->group(function () {
     Route::middleware(GenerateSseSocketId::class)->get(
         'wave',
-        fn (Request $request, ServerSentEventStream $responseFactory)
-            => $responseFactory->toResponse($request)
+        fn (Request $request, ServerSentEventStream $responseFactory) => $responseFactory->toResponse($request)
     );
-
 
     // TODO: name
     Route::post('presence-channel-users', [PresenceChannelUsersController::class, 'store']);

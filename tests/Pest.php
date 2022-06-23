@@ -5,13 +5,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\ReflectsClosures;
-
 use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertTrue;
 use Qruto\LaravelWave\Tests\RedisConnectionMock;
 use Qruto\LaravelWave\Tests\Support\User;
-
 use Qruto\LaravelWave\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);
@@ -32,7 +30,7 @@ uses()->beforeEach(function () {
 
 function waveConnection(Authenticatable $user = null)
 {
-    return new class ($user) {
+    return new class($user) {
         use ReflectsClosures;
 
         public $response;

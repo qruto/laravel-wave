@@ -15,7 +15,6 @@ class RedisSubscriber implements ServerSentEventSubscriber
         set_time_limit(0);
         // Redis::connection('subscription')->setOption(\Redis::OPT_READ_TIMEOUT, -1);
 
-
         // pcntl_async_signals(true);
         // pcntl_signal(SIGTERM, fn () => ray('SIGTERM'));
         // pcntl_signal(SIGHUP, fn () => ray('SIGHUP'));
