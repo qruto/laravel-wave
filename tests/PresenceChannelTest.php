@@ -4,15 +4,14 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Redis;
-
 use function Pest\Laravel\actingAs;
-
 use Qruto\LaravelWave\Events\PresenceChannelJoinEvent;
+use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
 use Qruto\LaravelWave\Tests\Events\SomePresenceEvent;
 use Qruto\LaravelWave\Tests\Events\SomePrivateEvent;
 use Qruto\LaravelWave\Tests\Support\User;
 
-it('send join event', function () {
+it('send join event on join request', function () {
     Event::fake([PresenceChannelJoinEvent::class]);
 
     $connection = waveConnection();
@@ -21,7 +20,6 @@ it('send join event', function () {
 
     Event::assertDispatched(PresenceChannelJoinEvent::class);
 });
-
 
 it('stores user in redis presence channel pool', function () {
     $connection = waveConnection();
@@ -34,8 +32,7 @@ it('stores user in redis presence channel pool', function () {
     expect(unserialize(Redis::get($key))->first())->toBe($connection->id());
 });
 
-
-test('join respond with actual count of channel users', function () {
+test('join request respond with actual count of channel users', function () {
     $connection = waveConnection();
     joinRequest('presence-channel', $this->user, $connection->id());
 
@@ -50,7 +47,7 @@ test('join respond with actual count of channel users', function () {
     ]);
 });
 
-test('join channel event sent', function () {
+test('join channel event received', function () {
     /** @var \Illuminate\Contracts\Auth\Authenticatable */
     $rick = User::factory()->create(['name' => 'Rick']);
 
@@ -63,11 +60,43 @@ test('join channel event sent', function () {
     joinRequest('presence-channel', $morty, $connectionMorty->id());
 
     actingAs($rick);
-    ray($connectionRick->getSentEvents());
     $connectionRick->assertEventReceived('presence-presence-channel.join');
 });
 
-it('not receiving access events without access', function () {
+it('receives join channel event', function () {
+    /** @var \Illuminate\Contracts\Auth\Authenticatable */
+    $rick = User::factory()->create(['name' => 'Rick']);
+
+    /** @var \Illuminate\Contracts\Auth\Authenticatable */
+    $morty = User::factory()->create(['name' => 'Morty']);
+
+    $connectionRick = waveConnection($rick);
+
+    $connectionMorty = waveConnection($morty);
+    joinRequest('presence-channel', $morty, $connectionMorty->id());
+
+    actingAs($rick);
+    $connectionRick->assertEventReceived('presence-presence-channel.join');
+});
+
+test('leave channel event received', function () {
+    /** @var \Illuminate\Contracts\Auth\Authenticatable */
+    $rick = User::factory()->create(['name' => 'Rick']);
+
+    /** @var \Illuminate\Contracts\Auth\Authenticatable */
+    $morty = User::factory()->create(['name' => 'Morty']);
+
+    $connectionRick = waveConnection($rick);
+
+    $connectionMorty = waveConnection($morty);
+    joinRequest('presence-channel', $morty, $connectionMorty->id());
+    leaveRequest('presence-channel', $morty, $connectionMorty->id());
+
+    actingAs($rick);
+    $connectionRick->assertEventReceived('presence-presence-channel.leave');
+});
+
+it('doesn\'t receive events without access', function () {
     Broadcast::channel('presence-channel', fn () => false);
     $connection = waveConnection();
     event(new SomePresenceEvent());
@@ -75,10 +104,72 @@ it('not receiving access events without access', function () {
     $connection->assertEventNotReceived(SomePrivateEvent::class);
 });
 
-// TODO: test 'leave' event
-// TODO: test different presence channel names join event
+test('user leave all channels on connection close', function () {
+    Broadcast::channel('presence-channel-2', fn () => true);
+
+    /** @var \Illuminate\Contracts\Auth\Authenticatable */
+    $rick = User::factory()->create(['name' => 'Rick']);
+
+    /** @var \Illuminate\Contracts\Auth\Authenticatable */
+    $morty = User::factory()->create(['name' => 'Morty']);
+
+    $connectionRick = waveConnection($rick);
+
+    $connectionMorty = waveConnection($morty);
+    joinRequest('presence-channel', $morty, $connectionMorty->id());
+    joinRequest('presence-channel-2', $morty, $connectionMorty->id());
+
+    event(new SseConnectionClosedEvent($morty, $connectionMorty->id()));
+
+    $connectionRick->assertEventReceived('presence-presence-channel.leave');
+    $connectionRick->assertEventReceived('presence-presence-channel-2.leave');
+});
+
+it('successfully stores several connections', function () {
+    $connectionOne = waveConnection();
+    $connectionTwo = waveConnection();
+
+    joinRequest('presence-channel', $this->user, $connectionOne->id());
+    joinRequest('presence-channel', $this->user, $connectionTwo->id());
+
+    $key = 'presence_channel:presence-presence-channel:user:'.auth()->user()->getAuthIdentifier();
+
+    $storedUserConnections = unserialize(Redis::get($key));
+
+    expect($storedUserConnections->values())->toEqual(
+        collect([
+            $connectionOne->id(),
+            $connectionTwo->id(),
+        ])
+    );
+});
+
+it('successfully removes one of several connections', function () {
+    $connectionOne = waveConnection();
+    $connectionTwo = waveConnection();
+
+    joinRequest('presence-channel', $this->user, $connectionOne->id());
+    joinRequest('presence-channel', $this->user, $connectionTwo->id());
+
+    leaveRequest('presence-channel', $this->user, $connectionOne->id());
+
+    $key = 'presence_channel:presence-presence-channel:user:'.auth()->user()->getAuthIdentifier();
+
+    $storedUserConnections = unserialize(Redis::get($key));
+
+    expect($storedUserConnections->values())->toEqual(
+        collect([
+            $connectionTwo->id(),
+        ])
+    );
+});
 
 function joinRequest($channelName, Authenticatable $user, string $connectionId)
 {
     return actingAs($user)->post('presence-channel-users', ['channel_name' => 'presence-'.$channelName], ['X-Socket-Id' => $connectionId]);
+}
+
+function leaveRequest($channelName, Authenticatable $user, string $connectionId)
+{
+    return actingAs($user)->delete('presence-channel-users', ['channel_name' => 'presence-'.$channelName], ['X-Socket-Id' => $connectionId]);
 }
