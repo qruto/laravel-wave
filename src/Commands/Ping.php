@@ -30,11 +30,10 @@ class Ping extends Command
     {
         while (true) {
             event(new SsePingEvent());
-            $this->info(now().': Pinged');
+
+            $this->info('Pinged: '.now());
 
             sleep(30);
         }
-
-        return 0;
     }
 }

@@ -4,12 +4,14 @@ namespace Qruto\LaravelWave;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Redis\Connection;
+use Illuminate\Redis\Connections\PhpRedisConnection;
+use Illuminate\Redis\Connections\PredisConnection;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 
 class PresenceChannelUsersRepository
 {
-    /** @var \Illuminate\Redis\Connections\PhpRedisConnection|\Illuminate\Redis\Connections\PredisConnection */
+    /** @var PhpRedisConnection|PredisConnection */
     private Connection $db;
 
     public function __construct()
@@ -85,6 +87,7 @@ class PresenceChannelUsersRepository
     {
         return collect($this->db->keys("presence_channel:$channel:user:*"))->map(function ($key) {
             // TODO: change provider name
+            // TODO: make it as a single query
             return config('auth.providers.users.model')::find(Str::afterLast($key, ':'));
         });
     }
