@@ -5,6 +5,7 @@ namespace Qruto\LaravelWave\Commands;
 use Illuminate\Console\Command;
 use Qruto\LaravelWave\Events\SsePingEvent;
 
+// TODO: create scheduled job to send ping event to all clients
 class Ping extends Command
 {
     /**

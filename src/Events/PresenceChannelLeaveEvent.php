@@ -20,7 +20,7 @@ class PresenceChannelLeaveEvent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(public Authenticatable $user, public string $channel)
+    public function __construct(public Authenticatable $user, protected string $channel)
     {
     }
 

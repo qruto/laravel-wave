@@ -1,6 +1,6 @@
 <?php
 
-// config for Qruto/LaravelWave
+// TODO: configure path to routes
 return [
 
 ];

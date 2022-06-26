@@ -4,12 +4,12 @@ namespace Qruto\LaravelWave\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PresenceChannelJoinEvent implements ShouldBroadcast
+class ClientEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -18,8 +18,9 @@ class PresenceChannelJoinEvent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(public Authenticatable $user, protected string $channel)
+    public function __construct(protected string $name, protected string $channel, public $data)
     {
+        //
     }
 
     /**
@@ -29,11 +30,15 @@ class PresenceChannelJoinEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel($this->channel);
+        $channelName = str($this->channel);
+
+        return $channelName->startsWith('presence-')
+                ? new PresenceChannel($channelName->after('presence-'))
+                : new PrivateChannel($channelName->after('private-'));
     }
 
     public function broadcastAs()
     {
-        return 'join';
+        return 'client-'.$this->name;
     }
 }

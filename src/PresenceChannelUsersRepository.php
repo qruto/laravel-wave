@@ -9,6 +9,7 @@ use Illuminate\Redis\Connections\PredisConnection;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 
+// TODO: create abstraction for repository
 class PresenceChannelUsersRepository
 {
     /** @var PhpRedisConnection|PredisConnection */
