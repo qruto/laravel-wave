@@ -47,22 +47,6 @@ test('join request respond with actual count of channel users', function () {
     ]);
 });
 
-test('join channel event received', function () {
-    /** @var \Illuminate\Contracts\Auth\Authenticatable */
-    $rick = User::factory()->create(['name' => 'Rick']);
-
-    /** @var \Illuminate\Contracts\Auth\Authenticatable */
-    $morty = User::factory()->create(['name' => 'Morty']);
-
-    $connectionRick = waveConnection($rick);
-
-    $connectionMorty = waveConnection($morty);
-    joinRequest('presence-channel', $morty, $connectionMorty->id());
-
-    actingAs($rick);
-    $connectionRick->assertEventReceived('presence-presence-channel.join');
-});
-
 it('receives join channel event', function () {
     /** @var \Illuminate\Contracts\Auth\Authenticatable */
     $rick = User::factory()->create(['name' => 'Rick']);
@@ -76,7 +60,7 @@ it('receives join channel event', function () {
     joinRequest('presence-channel', $morty, $connectionMorty->id());
 
     actingAs($rick);
-    $connectionRick->assertEventReceived('presence-presence-channel.join');
+    $connectionRick->assertEventReceived('presence-presence-channel.join', fn ($event) => $event['data']['user']['id'] === $morty->id);
 });
 
 test('leave channel event received', function () {
@@ -93,7 +77,7 @@ test('leave channel event received', function () {
     leaveRequest('presence-channel', $morty, $connectionMorty->id());
 
     actingAs($rick);
-    $connectionRick->assertEventReceived('presence-presence-channel.leave');
+    $connectionRick->assertEventReceived('presence-presence-channel.leave', fn ($event) => $event['data']['user']['id'] === $morty->id);
 });
 
 it('doesn\'t receive events without access', function () {
