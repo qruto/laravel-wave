@@ -65,6 +65,19 @@ echo $laravelWave->echoPhrase('Hello, Qruto!');
 composer test
 ```
 
+## Knowing Issues
+
+- redis subscription lifetime limited to 60 seconds
+- no ability stop script immediately on disconnect
+
+Potential solutions:
+
+```php
+ini_set('default_socket_timeout', -1);
+set_time_limit(0);
+Redis::connection('subscription')->setOption(\Redis::OPT_READ_TIMEOUT, -1);
+```
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
