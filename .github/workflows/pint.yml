@@ -12,6 +12,9 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@v1
+
       - name: Run Pint Format
         run: composer format
 
