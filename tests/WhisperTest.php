@@ -7,7 +7,7 @@ use Qruto\LaravelWave\Events\ClientEvent;
 it('successfully send whisper event', function () {
     Event::fake([ClientEvent::class]);
 
-    $response = post('whisper', [
+    $response = post(route('wave.whisper'), [
         'event_name' => 'typing',
         'channel_name' => 'private-test-channel',
         'data' => 'some-data',
@@ -19,7 +19,7 @@ it('successfully send whisper event', function () {
 it('successfully received whisper event', function () {
     $connection = waveConnection();
 
-    post('whisper', [
+    post(route('wave.whisper'), [
         'event_name' => 'typing',
         'channel_name' => 'private-private-channel',
         'data' => 'some-data',

@@ -5,12 +5,19 @@ use Qruto\LaravelWave\Http\Controllers\PresenceChannelUsersController;
 use Qruto\LaravelWave\Http\Controllers\SendWhisper;
 use Qruto\LaravelWave\Http\Controllers\WaveConnection;
 
-Route::middleware(['web', 'auth'])->group(function () {
-    Route::get('wave', WaveConnection::class);
+Route::group([
+    'prefix' => config('wave.path', 'wave'),
+    'as' => 'wave.',
+    'middleware' => config('wave.middleware', ['web']),
+], function () {
+    Route::get('/', WaveConnection::class)->name('connection');
 
-    // TODO: name
-    Route::post('presence-channel-users', [PresenceChannelUsersController::class, 'store']);
-    Route::delete('presence-channel-users', [PresenceChannelUsersController::class, 'destroy']);
+    Route::group([
+        'middleware' => [config('wave.auth_middleware', 'auth').':'.config('wave.guard')],
+    ], function () {
+        Route::post('presence-channel-users', [PresenceChannelUsersController::class, 'store'])->name('presence-channel-users');
+        Route::delete('presence-channel-users', [PresenceChannelUsersController::class, 'destroy'])->name('presence-channel-users');
 
-    Route::post('whisper', SendWhisper::class);
+        Route::post('whisper', SendWhisper::class)->name('whisper');
+    });
 });

@@ -36,7 +36,7 @@ class ServerSentEventStream implements Responsable
         return $this->responseFactory->stream(function () use ($request, $socket) {
             (new ServerSentEvent('connected', $socket))();
 
-            $this->eventSubscriber->start($this->eventHandler($request, $socket));
+            $this->eventSubscriber->start($this->eventHandler($request, $socket), $request);
         }, Response::HTTP_OK, self::HEADERS + ['X-Socket-Id' => $socket]);
     }
 

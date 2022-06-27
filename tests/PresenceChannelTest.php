@@ -150,10 +150,10 @@ it('successfully removes one of several connections', function () {
 
 function joinRequest($channelName, Authenticatable $user, string $connectionId)
 {
-    return actingAs($user)->post('presence-channel-users', ['channel_name' => 'presence-'.$channelName], ['X-Socket-Id' => $connectionId]);
+    return actingAs($user)->post(route('wave.presence-channel-users'), ['channel_name' => 'presence-'.$channelName], ['X-Socket-Id' => $connectionId]);
 }
 
 function leaveRequest($channelName, Authenticatable $user, string $connectionId)
 {
-    return actingAs($user)->delete('presence-channel-users', ['channel_name' => 'presence-'.$channelName], ['X-Socket-Id' => $connectionId]);
+    return actingAs($user)->delete(route('wave.presence-channel-users'), ['channel_name' => 'presence-'.$channelName], ['X-Socket-Id' => $connectionId]);
 }
