@@ -46,7 +46,7 @@ function waveConnection(Authenticatable $user = null)
                 $test = $test->actingAs($user);
             }
 
-            $this->response = $test->get('/wave');
+            $this->response = $test->get(route('wave.connection'));
         }
 
         public function id()
