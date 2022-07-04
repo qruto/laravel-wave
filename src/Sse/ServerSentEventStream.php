@@ -7,7 +7,7 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Broadcast;
-use Qruto\LaravelWave\PresenceChannelUsersRepository;
+use Qruto\LaravelWave\PresenceChannelUsersRedisRepository;
 use Qruto\LaravelWave\ServerSentEventSubscriber;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -24,7 +24,7 @@ class ServerSentEventStream implements Responsable
     public function __construct(
         protected ServerSentEventSubscriber $eventSubscriber,
         protected ResponseFactory $responseFactory,
-        protected PresenceChannelUsersRepository $store,
+        protected PresenceChannelUsersRedisRepository $store,
     ) {
     }
 

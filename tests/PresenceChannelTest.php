@@ -47,6 +47,20 @@ test('join request respond with actual count of channel users', function () {
     ]);
 });
 
+test('leave request respond with actual count of channel users', function () {
+    $connection = waveConnection();
+    joinRequest('presence-channel', $this->user, $connection->id());
+
+    /** @var \Illuminate\Contracts\Auth\Authenticatable */
+    $rick = User::factory()->create(['name' => 'Rick']);
+    $connectionRick = waveConnection($rick);
+    $response = leaveRequest('presence-channel', $rick, $connectionRick->id());
+
+    $response->assertJson([
+        $this->user->toArray(),
+    ]);
+});
+
 it('receives join channel event', function () {
     /** @var \Illuminate\Contracts\Auth\Authenticatable */
     $rick = User::factory()->create(['name' => 'Rick']);

@@ -1,9 +1,19 @@
 <?php
 
-use Qruto\LaravelWave\Tests\Events\SomeEvent;
+use Qruto\LaravelWave\Tests\Events\PublicEvent;
 use Qruto\LaravelWave\Tests\Events\SomePresenceEvent;
 use Qruto\LaravelWave\Tests\Events\SomePrivateEvent;
 use Qruto\LaravelWave\Tests\Support\User;
+
+it('successfully receives events for guest user', function () {
+    auth()->logout();
+
+    $connection = waveConnection();
+
+    event(new PublicEvent);
+
+    $connection->assertEventReceived(PublicEvent::class);
+});
 
 it('successfully subscribes to event stream', function () {
     $connection = waveConnection();
@@ -13,9 +23,9 @@ it('successfully subscribes to event stream', function () {
 
 it('successfully received public event', function () {
     $connection = waveConnection();
-    SomeEvent::dispatch();
+    PublicEvent::dispatch();
 
-    $connection->assertEventReceived(SomeEvent::class);
+    $connection->assertEventReceived(PublicEvent::class);
 });
 
 it('successfully received private event', function () {
@@ -34,18 +44,18 @@ it('successfully received presence event', function () {
 
 test('event not received when broadcasting to others', function () {
     $connection = waveConnection();
-    $event = new SomeEvent();
+    $event = new PublicEvent();
 
     $event->socket = $connection->response->headers->get('X-Socket-Id');
 
     broadcast($event);
 
-    $connection->assertEventNotReceived(SomeEvent::class);
+    $connection->assertEventNotReceived(PublicEvent::class);
 });
 
 test('others received an event when broadcasting to others', function () {
     $connection = waveConnection();
-    $event = new SomeEvent();
+    $event = new PublicEvent();
 
     $rick = User::factory()->create();
     $connectionRick = waveConnection($rick);
@@ -53,6 +63,6 @@ test('others received an event when broadcasting to others', function () {
     $event->socket = $connection->response->headers->get('X-Socket-Id');
     broadcast($event);
 
-    $connection->assertEventNotReceived(SomeEvent::class);
-    $connectionRick->assertEventReceived(SomeEvent::class);
+    $connection->assertEventNotReceived(PublicEvent::class);
+    $connectionRick->assertEventReceived(PublicEvent::class);
 });

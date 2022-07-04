@@ -28,6 +28,7 @@ class LaravelWaveServiceProvider extends PackageServiceProvider
     public function registeringPackage()
     {
         $this->app->bind(ServerSentEventSubscriber::class, RedisSubscriber::class);
+        $this->app->bind(PresenceChannelUsersRepository::class, PresenceChannelUsersRedisRepository::class);
     }
 
     public function bootingPackage()

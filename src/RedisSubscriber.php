@@ -15,7 +15,6 @@ class RedisSubscriber implements ServerSentEventSubscriber
 
         register_shutdown_function(function () use ($request) {
             if (connection_aborted() && auth()->check()) {
-                // TODO: pass request through params
                 event(new SseConnectionClosedEvent($request->user(), $request->header('X-Socket-Id')));
             }
         });

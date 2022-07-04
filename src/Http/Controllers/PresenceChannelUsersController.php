@@ -27,15 +27,15 @@ class PresenceChannelUsersController extends Controller
             broadcast(new PresenceChannelJoinEvent($request->user(), Str::after($request->channel_name, 'presence-')))->toOthers();
         }
 
-        return response()->json($this->repository->getUsers($request->channel_name));
+        return response()->json($this->repository->getUsers($request->channel_name, $request->user()));
     }
 
     public function destroy(Request $request)
     {
-        if ($this->repository->leave($request->channel_name, auth()->user(), request()->header('X-Socket-Id'))) {
+        if ($this->repository->leave($request->channel_name, $request->user(), $request->header('X-Socket-Id'))) {
             broadcast(new PresenceChannelLeaveEvent($request->user(), Str::after($request->channel_name, 'presence-')))->toOthers();
         }
 
-        return response()->json($this->repository->getUsers($request->channel_name));
+        return response()->json($this->repository->getUsers($request->channel_name, $request->user()));
     }
 }
