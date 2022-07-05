@@ -30,6 +30,6 @@ class RedisSubscriber implements ServerSentEventSubscriber
 
     private function channelName(string $pattern): string
     {
-        return Str::after($pattern, config('database.redis.options.prefix'));
+        return Str::after($pattern, config('database.redis.options.prefix', ''));
     }
 }
