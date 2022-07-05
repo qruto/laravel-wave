@@ -27,6 +27,10 @@ class LaravelWaveServiceProvider extends PackageServiceProvider
 
     public function registeringPackage()
     {
+        $redisConnectionName = config('broadcasting.connections.redis.connection');
+
+        config()->set("database.redis.$redisConnectionName-subscription", config("database.redis.$redisConnectionName"));
+
         $this->app->bind(ServerSentEventSubscriber::class, RedisSubscriber::class);
         $this->app->bind(PresenceChannelUsersRepository::class, PresenceChannelUsersRedisRepository::class);
     }

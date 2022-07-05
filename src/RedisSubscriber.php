@@ -11,7 +11,9 @@ class RedisSubscriber implements ServerSentEventSubscriber
 {
     public function start(callable $onMessage, Request $request)
     {
-        $connection = Redis::connection('subscription');
+        $redisConnectionName = config('broadcasting.connections.redis.connection');
+
+        $connection = Redis::connection("$redisConnectionName-subscription");
 
         register_shutdown_function(function () use ($request) {
             if (connection_aborted() && auth()->check()) {
