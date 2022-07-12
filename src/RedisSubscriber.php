@@ -11,21 +11,32 @@ class RedisSubscriber implements ServerSentEventSubscriber
 {
     public function start(callable $onMessage, Request $request)
     {
-        $redisConnectionName = config('broadcasting.connections.redis.connection');
-
-        $connection = Redis::connection("$redisConnectionName-subscription");
-
         register_shutdown_function(function () use ($request) {
-            if (connection_aborted() && auth()->check()) {
+            if (connection_aborted()) {
                 event(new SseConnectionClosedEvent($request->user(), $request->header('X-Socket-Id')));
             }
         });
 
-        $connection->psubscribe('*', function ($event, $pattern) use ($onMessage) {
-            $channel = $this->channelName($pattern);
+        $this->setupSubscription($onMessage);
+    }
 
-            $onMessage($event, $channel);
-        });
+    private function setupSubscription(callable $onMessage)
+    {
+        $redisConnectionName = config('broadcasting.connections.redis.connection');
+
+        $connection = Redis::connection("$redisConnectionName-subscription");
+
+        try {
+            $connection->psubscribe('*', function ($event, $pattern) use ($onMessage) {
+                $channel = $this->channelName($pattern);
+
+                $onMessage($event, $channel);
+            });
+        } catch (\Exception $e) {
+            $connection->disconnect();
+
+            $this->setupSubscription($onMessage);
+        }
     }
 
     private function channelName(string $pattern): string
