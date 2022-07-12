@@ -13,14 +13,14 @@ class Ping extends Command
      *
      * @var string
      */
-    protected $signature = 'sse:ping';
+    protected $signature = 'sse:ping {--interval= : interval in seconds}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Ping server side event connections';
+    protected $description = 'Ping server sent event connections';
 
     /**
      * Execute the console command.
@@ -29,12 +29,20 @@ class Ping extends Command
      */
     public function handle()
     {
-        while (true) {
-            event(new SsePingEvent());
+        $interval = $this->option('interval');
 
+        if ($interval) {
+            while (true) {
+                event(new SsePingEvent());
+
+                $this->info('Pinged: '.now());
+
+                sleep($interval);
+            }
+        } else {
             $this->info('Pinged: '.now());
 
-            sleep(30);
+            event(new SsePingEvent());
         }
     }
 }
