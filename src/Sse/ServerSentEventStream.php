@@ -17,7 +17,7 @@ class ServerSentEventStream implements Responsable
     private const HEADERS = [
         'Content-Type' => 'text/event-stream',
         'Connection' => 'keep-alive',
-        'Cache-Control' => 'no-cache',
+        'Cache-Control' => 'no-cache, no-store, must-revalidate, pre-check=0, post-check=0',
         'X-Accel-Buffering' => 'no',
     ];
 
