@@ -15,6 +15,10 @@ class RemoveStoredConnectionListener
 
     public function handle(SseConnectionClosedEvent $event)
     {
+        if (! $event->user) {
+            return;
+        }
+
         $this->store->getChannels($event->user)->each(function ($channel) use ($event) {
             if ($this->store->leave($channel, $event->user, $event->connectionId)) {
                 event(new PresenceChannelLeaveEvent($event->user, Str::after($channel, 'presence-')));
