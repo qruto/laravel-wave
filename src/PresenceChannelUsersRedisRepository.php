@@ -17,8 +17,7 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
 
     public function __construct()
     {
-        //TODO: select database
-        $this->db = Redis::connection();
+        $this->db = Redis::connection(config('broadcasting.connections.redis.connection'));
     }
 
     protected function userKey(Authenticatable $user): string
