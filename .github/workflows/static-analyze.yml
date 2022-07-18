@@ -9,8 +9,6 @@ on:
     paths:
       - '**.php'
       - 'phpstan.neon.dist'
-  schedule:
-    - cron: '0 0 * * *'
 
 jobs:
   phpstan:
