@@ -30,7 +30,8 @@ uses()->beforeEach(function () {
 
 function waveConnection(Authenticatable $user = null)
 {
-    return new class($user) {
+    return new class($user)
+    {
         use ReflectsClosures;
 
         public $response;
