@@ -14,18 +14,11 @@
     <a href="https://packagist.org/packages/qruto/laravel-wave"><img src="https://img.shields.io/packagist/v/qruto/laravel-wave" alt="Latest Stable Version"></a>
 </p>
 
-# SSE implementation
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/slavarazum/laravel-wave.svg?style=flat-square)](https://packagist.org/packages/slavarazum/laravel-wave)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/slavarazum/laravel-wave/run-tests?label=tests)](https://github.com/slavarazum/laravel-wave/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/slavarazum/laravel-wave/Check%20&%20fix%20styling?label=code%20style)](https://github.com/slavarazum/laravel-wave/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/slavarazum/laravel-wave.svg?style=flat-square)](https://packagist.org/packages/slavarazum/laravel-wave)
+# Introduction
 
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
 
 ## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laravel-wave.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laravel-wave)
 
 We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
 
