@@ -1,13 +1,13 @@
 name: static analyze
 
 on:
-  pull_request:
-  schedule:
-    - cron: '0 0 * * *'
   push:
     paths:
       - '**.php'
       - 'phpstan.neon.dist'
+  pull_request:
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
   phpstan:
