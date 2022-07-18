@@ -1,0 +1,37 @@
+name: fix code styling
+
+on:
+  workflow_call:
+    inputs:
+      php:
+        default: "8.1"
+        type: string
+      message:
+        default: Fix code styling
+        type: string
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php }}
+          extensions: json, dom, curl, libxml, mbstring
+          coverage: none
+
+      - name: Install Pint
+        run: composer global require laravel/pint
+
+      - name: Run Pint
+        run: pint
+
+      - name: Commit linted files
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: ${{ inputs.message }}
