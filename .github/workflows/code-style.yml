@@ -1,4 +1,4 @@
-name: fix code styling
+name: code style
 
 on:
   workflow_call:

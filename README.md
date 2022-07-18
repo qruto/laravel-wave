@@ -6,6 +6,14 @@
     </picture>
 </p>
 
+<p align="center">
+    <a href="https://github.com/qruto/laravel-wave/actions"><img src="https://github.com/qruto/laravel-wave/workflows/tests/badge.svg" alt="Build Status"></a>
+    <a href="https://github.com/qruto/laravel-wave/actions"><img src="https://github.com/qruto/laravel-wave/workflows/code-style/badge.svg" alt="Code Style"></a>
+    <a href="https://github.com/qruto/laravel-wave/actions"><img src="https://github.com/qruto/laravel-wave/workflows/static-analyze/badge.svg" alt="Static Analyze"></a>
+    <a href="https://packagist.org/packages/qruto/laravel-wave"><img src="https://img.shields.io/packagist/dt/qruto/laravel-wave" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/qruto/laravel-wave"><img src="https://img.shields.io/packagist/v/qruto/laravel-wave" alt="Latest Stable Version"></a>
+</p>
+
 # SSE implementation
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/slavarazum/laravel-wave.svg?style=flat-square)](https://packagist.org/packages/slavarazum/laravel-wave)
