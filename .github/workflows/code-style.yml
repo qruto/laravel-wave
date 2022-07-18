@@ -1,14 +1,10 @@
 name: code style
 
 on:
-  workflow_call:
-    inputs:
-      php:
-        default: "8.1"
-        type: string
-      message:
-        default: Fix code styling
-        type: string
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
   lint:
