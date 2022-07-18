@@ -2,7 +2,6 @@
     "name": "qruto/laravel-wave",
     "description": "SSE implementation",
     "keywords": [
-        "slavarazum",
         "laravel",
         "laravel-wave"
     ],
@@ -11,19 +10,19 @@
     "authors": [
         {
             "name": "Slava Razum",
-            "email": "modern.web.artisan@gmail.com",
+            "email": "razum@qruto.com",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.1",
-        "spatie/laravel-package-tools": "^1.9.2",
         "illuminate/broadcasting": "^9.14",
         "illuminate/console": "^9.14",
         "illuminate/contracts": "^9.14",
         "illuminate/http": "^9.14",
         "illuminate/queue": "^9.14",
-        "illuminate/routing": "^9.14"
+        "illuminate/routing": "^9.14",
+        "spatie/laravel-package-tools": "^1.9.2"
     },
     "require-dev": {
         "laravel/pint": "^0.1.7",

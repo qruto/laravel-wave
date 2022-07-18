@@ -69,6 +69,7 @@ composer test
 
 - redis subscription lifetime limited to 60 seconds
 - no ability stop script immediately on disconnect
+- suggest to better typing
 
 Potential solutions:
 
