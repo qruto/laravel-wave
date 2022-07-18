@@ -54,4 +54,9 @@ class RedisConnectionMock extends RedisMock implements Connection, Factory
     {
         return $this;
     }
+
+    public function disconnect()
+    {
+        return $this;
+    }
 }
