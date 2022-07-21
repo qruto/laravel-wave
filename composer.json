@@ -1,31 +1,38 @@
 {
     "name": "qruto/laravel-wave",
-    "description": "SSE implementation",
+    "description": "SSE Implementation",
     "keywords": [
+        "qruto",
         "laravel",
-        "laravel-wave"
+        "laravel-wave",
+        "php",
+        "sse",
+        "server sent events",
+        "event source",
+        "realtime",
+        "live-update"
     ],
-    "homepage": "https://github.com/slavarazum/laravel-wave",
+    "homepage": "https://github.com/qruto/laravel-wave",
     "license": "MIT",
     "authors": [
         {
             "name": "Slava Razum",
-            "email": "razum@qruto.com",
+            "email": "razum@qruto.to",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.1",
-        "illuminate/broadcasting": "^9.14",
-        "illuminate/console": "^9.14",
-        "illuminate/contracts": "^9.14",
-        "illuminate/http": "^9.14",
-        "illuminate/queue": "^9.14",
-        "illuminate/routing": "^9.14",
+        "illuminate/broadcasting": "^9.21",
+        "illuminate/console": "^9.21",
+        "illuminate/contracts": "^9.21",
+        "illuminate/http": "^9.21",
+        "illuminate/queue": "^9.21",
+        "illuminate/routing": "^9.21",
         "spatie/laravel-package-tools": "^1.9.2"
     },
     "require-dev": {
-        "laravel/pint": "^0.1.7",
+        "laravel/pint": "^1.0",
         "m6web/redis-mock": "^5.3",
         "nunomaduro/collision": "^6.0",
         "nunomaduro/larastan": "^2.0.1",
