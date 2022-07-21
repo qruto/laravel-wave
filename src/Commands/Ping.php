@@ -29,12 +29,12 @@ class Ping extends Command
             while (true) {
                 event(new SsePingEvent());
 
-                $this->info('Pinged: '.now());
+                $this->components->twoColumnDetail('<fg=gray>'.now().'</> SSE Wave Connections', '<fg=green;options=bold>PINGED</>');
 
                 sleep($interval);
             }
         } else {
-            $this->info('Pinged: '.now());
+            $this->components->twoColumnDetail('<fg=gray>'.now().'</> SSE Wave Connections', '<fg=green;options=bold>PINGED</>');
 
             event(new SsePingEvent());
         }
