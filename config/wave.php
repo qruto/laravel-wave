@@ -7,6 +7,9 @@ return [
      */
     'path' => 'wave',
 
+    /*
+     * Middleware for storing presence channel user routes.
+     */
     'middleware' => [
         'web',
     ],
