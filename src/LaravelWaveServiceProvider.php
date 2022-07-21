@@ -21,7 +21,7 @@ class LaravelWaveServiceProvider extends PackageServiceProvider
         $package
             ->name('laravel-wave')
             ->hasConfigFile()
-            ->hasRoute('web')
+            ->hasRoute('routes')
             ->hasCommand(Ping::class);
     }
 
