@@ -106,6 +106,8 @@ Redis::connection('subscription')->setOption(\Redis::OPT_READ_TIMEOUT, -1);
 ## TODO
 
 - Local driver
+- Stream continue
+- Laravel Octane
 
 ## Changelog
 

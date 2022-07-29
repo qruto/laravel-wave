@@ -2,6 +2,7 @@
 
 namespace Qruto\LaravelWave;
 
+use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Support\Facades\Event;
 use Qruto\LaravelWave\Commands\Ping;
 use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
@@ -30,6 +31,10 @@ class LaravelWaveServiceProvider extends PackageServiceProvider
         $redisConnectionName = config('broadcasting.connections.redis.connection');
 
         config()->set("database.redis.$redisConnectionName-subscription", config("database.redis.$redisConnectionName"));
+
+        $this->app->extend(BroadcastManager::class, function ($service, $app) {
+            return new BroadcastManagerExtended($app);
+        });
 
         $this->app->bind(ServerSentEventSubscriber::class, RedisSubscriber::class);
         $this->app->bind(PresenceChannelUsersRepository::class, PresenceChannelUsersRedisRepository::class);
