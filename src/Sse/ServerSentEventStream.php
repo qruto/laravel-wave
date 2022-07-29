@@ -40,7 +40,7 @@ class ServerSentEventStream implements Responsable
         $socket = Broadcast::socket($request);
 
         return $this->responseFactory->stream(function () use ($request, $socket) {
-            (new ServerSentEvent('connected', $socket, 'wave'))();
+            (new ServerSentEvent('connected', $socket, $request->hasHeader('Last-Event-ID') ? $request->header('Last-Event-ID') : 'wave'))();
 
             $handler = $this->eventHandler($request, $socket);
 
