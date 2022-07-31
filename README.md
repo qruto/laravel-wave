@@ -35,9 +35,9 @@ I would be very grateful for mentions or just a sincere "thank you".
 
 ## Installation
 
-Currently requires `redis`.
+Working with `redis` broadcasting driver.
 
-You can install the package via composer:
+You can install packages to server and client sides via composer with npm:
 
 ```bash
 composer require qruto/laravel-wave
@@ -52,11 +52,11 @@ BROADCAST_DRIVER=redis
 
 ## Usage
 
-> On the Wave request, server subscribes to channels with Redis, however it can't detect user disconnection to kill the subscriber until next event has been received.
+> On the event-stream connection request, server runs [Redis subscription process](https://laravel.com/docs/9.x/redis#wildcard-subscriptions), however it can't detect request disconnection to kill the subscriber until next event has been received.
 
-If your application will not send events frequently, to close outdated workers – ping event can help you.
+If your application will not send events frequently, use ping command to close outdated workers.
 
-We can use tasks scheduler in **app/Console/Kernel.php** to send ping event every minute:
+[Tasks scheduler](https://laravel.com/docs/9.x/scheduling#introduction) can help send ping events every minute:
 
 ```php
 protected function schedule(Schedule $schedule)
@@ -65,7 +65,7 @@ protected function schedule(Schedule $schedule)
 }
 ```
 
-When you need smaller interval between ping events, run the command with `--interval` option which received number in seconds:
+When you need smaller interval between ping events, run the command with `--interval` option which receives number in seconds:
 
 ```bash
 php artisan sse:ping --interval=30
@@ -227,16 +227,60 @@ window.Echo = new Echo({
 window.Wave = new Wave({ endpoint: 'custom-path' });
 ```
 
+## Persistent Connection / Fighting with Timeouts
+
+Looks like http and web servers weren't ready for persisted connections and set traps at several stages. Some of them disables on the package level:
+
+- [default_socket_timeout](https://www.php.net/manual/ru/filesystem.configuration.php#ini.default-socket-timeout) set to `-1` for disabling
+- [max_execution_time](https://www.php.net/manual/en/info.configuration.php#ini.max-execution-time) set to `0` for disabling by [set_time_limit](https://www.php.net/manual/ru/function.set-time-limit) function
+
+### Web Server
+
+Using Nginx as a web server, usually, connection limited to `1m` by [FastCGI](https://www.php.net/manual/install.fpm.php).
+
+Add next location directive below the end of `location ~ \.php$`:
+
+```nginx
+location = /wave {
+    rewrite ^/wave$ /index.php?$query_string break;
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+    fastcgi_index index.php;
+    include fastcgi_params;
+    fastcgi_read_timeout 2m;
+}
+```
+
+_*_ copy `fastcgi_pass` unix socket path from `location ~ \.php$`.
+
+### PHP FPM Timeouts / Final Round
+
+For example, [Laravel Forge](https://forge.laravel.com) configures PHP FPM pool with `request_terminate_timeout = 60` which forces to terminate all requests after 60 seconds.
+
+You can disable it in `/etc/php/8.1/fpm/pool.d/www.conf`:
+
+```ini
+request_terminate_timeout = 0
+```
+
+or configure another pool for SSE connection:
+
+_Writing instruction..._
+
+> ❇️ If the interval between events will be less than value set in `fastcgi_read_timeout` option and there are no other timeout options set, connection will be persisted.
+
+## Future Plans
+
+- Local broadcasting driver
+- Laravel Octane support
+- Two ways live models syncing
+- Something awesome with opened live abilities...
+
 ## Testing
 
 ```bash
 composer test
 ```
-
-## TODO
-
-+ Local driver
-+ Laravel Octane
 
 ## Changelog
 
