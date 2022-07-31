@@ -21,17 +21,17 @@ It means you need third-party services like Pusher, Ably or use self-hosted WebS
 
 Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broadcasting) for sending events from server to client. Previously, it was closely related to the WebSockets technology. Imagine that realtime, live-updating is possible without all of these extra steps listed above.
 
-🗼 Meet the [**Server-sent Events**](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) technology! Which works with default `redis` broadcasting driver and supports [Laravel Echo](https://github.com/laravel/echo). SSE is specially tuned to send events from the server through the HTTP protocol.
+🗼 Meet the [**Server-sent Events**](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) technology! Which works with default `redis` broadcasting driver and supports [Laravel Echo](https://github.com/laravel/echo). SSE is specially tuned to send events from the server to client through the HTTP protocol.
 
 ## Support
 
-I have spent a lot of time playing with SSE, Laravel broadcasting system and Redis to prepare **Laravel Wave** and make it available for everyone. Since of February 24, unfortunately I haven't any commercial work, permanent house, stable available time or the ability to plan anything for the long term. However, I have a greater desire to continue creating useful solutions for people around the world. It makes me feel better these days.
+I have spent a lot of time playing with SSE, Laravel broadcasting system and Redis to prepare **Laravel Wave** and make it available for everyone. Since of February 24, unfortunately I haven't any commercial work, permanent living place or the ability to plan anything for the long term. However, I have a greater desire to continue creating useful solutions for people around the world. It makes me feel better these days.
 
 [![support me](https://raw.githubusercontent.com/slavarazum/slavarazum/main/support-banner.png)](https://ko-fi.com/slavarazum)
 
 Now I'm trying to setup GitHub Sponsorships, but it currently not available for Ukrainian bank accounts. Searching for solutions through the 3rd party fiscal host. Looks like it requires some stars on the repository ❤️ ⭐
 
-I would be very grateful for mentions or just a sincere "thank you".
+I would be very grateful for mentions or just a sincere "thank you" 🤝
 
 ## Installation
 
