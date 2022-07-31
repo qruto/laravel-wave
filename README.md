@@ -59,11 +59,9 @@ If your application will not send events frequently, to close outdated workers â
 We can use tasks scheduler in **app/Console/Kernel.php** to send ping event every minute:
 
 ```php
-use Qruto\LaravelWave\Commands\SsePingCommand;
-
 protected function schedule(Schedule $schedule)
 {
-    $schedule->command(SsePingCommand::class)->everyMinute();
+    $schedule->command('sse:ping')->everyMinute();
 }
 ```
 
@@ -233,20 +231,6 @@ window.Wave = new Wave({ endpoint: 'custom-path' });
 
 ```bash
 composer test
-```
-
-## Knowing Issues
-
-+ redis subscription lifetime limited to 60 seconds
-+ no ability stop script immediately on disconnect
-+ suggest to better typing
-
-Potential solutions:
-
-```php
-ini_set('default_socket_timeout', -1);
-set_time_limit(0);
-Redis::connection('subscription')->setOption(\Redis::OPT_READ_TIMEOUT, -1);
 ```
 
 ## TODO
