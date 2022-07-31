@@ -3,13 +3,17 @@
 namespace Qruto\LaravelWave\Storage;
 
 use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class BroadcastEventHistoryCached implements BroadcastEventHistory
 {
-    public function __construct(protected Repository $cache)
+    protected int $lifetime;
+
+    public function __construct(protected Repository $cache, ConfigRepository $config)
     {
+        $this->lifetime = $config->get('wave.resume_lifetime', 60);
     }
 
     public function getEventsFrom(string $id, string $channelPrefix): Collection
@@ -36,10 +40,10 @@ class BroadcastEventHistoryCached implements BroadcastEventHistory
         ]);
 
         $events = $events->filter(function ($event) {
-            return time() - $event['timestamp'] < 60; // TODO: move value to config
+            return time() - $event['timestamp'] < $this->lifetime;
         })->values();
 
-        cache()->put('broadcasted_events', $events, 60);
+        cache()->put('broadcasted_events', $events, $this->lifetime);
 
         return $events->last()['timestamp'];
     }
