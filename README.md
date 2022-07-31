@@ -16,8 +16,8 @@
 
 # Introduction
 
-What do you think about when application needs realtime, live-updating functionality? The answer is usually obvious – WebSockets.
-It means you need third-party services like Pusher, Ably or another option is to use self-hosted WebSocket server which requires additional setup and maintenance. Run the server, setup connection through specific port or with reverse proxy, SSL configuration, keeping the socket server running with tool like `supervisord`, scaling configuration, etc. It frequently feels like an overkill for simple notification system or UI updates, given that WebSockets works for receiving and sending data, but is used mainly for sending events from server to client.
+What do you think about when an application needs realtime, live-updating functionality? The answer is usually obvious – WebSockets.
+It means you need third-party services like Pusher, Ably or use self-hosted WebSocket server which requires additional setup and maintenance. Run the server, setup connection through specific port or with reverse proxy, SSL configuration, keeping the socket server running with tool like `supervisord`, scaling configuration, etc. It frequently feels like an overkill for simple notification system or UI updates, given that WebSockets works for receiving and sending data, but is used mainly for sending events from server to client.
 
 Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broadcasting) for sending events from server to client. Previously, it was closely related to the WebSockets technology. Imagine that realtime, live-updating is possible without all of these extra steps listed above.
 
@@ -25,7 +25,7 @@ Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broa
 
 ## Support
 
-I have spent a lot of time playing with SSE, Laravel broadcasting and Redis to prepare **Laravel Wave** and make it available for everyone. Since of February 24, unfortunately I haven't any commercial work, home, stable available time or the ability to plan anything for the long term. However, I have a greater desire to continue creating useful solutions for people around the world. It makes me feel better these days.
+I have spent a lot of time playing with SSE, Laravel broadcasting system and Redis to prepare **Laravel Wave** and make it available for everyone. Since of February 24, unfortunately I haven't any commercial work, permanent house, stable available time or the ability to plan anything for the long term. However, I have a greater desire to continue creating useful solutions for people around the world. It makes me feel better these days.
 
 [![support me](https://raw.githubusercontent.com/slavarazum/slavarazum/main/support-banner.png)](https://ko-fi.com/slavarazum)
 
@@ -85,9 +85,9 @@ window.Echo = new Echo({
 });
 ```
 
-By default, you can find Echo connection in **resources/js/bootstrap.js**.
+By default, you can find Echo connection in **resources/js/bootstrap.js** file.
 
-You can replace it by the snippet above:
+Replace it by the snippet above:
 <details>
     <summary>Show diff</summary>
 
@@ -142,8 +142,9 @@ wave.model('User', '1')
     .updated('Team', (team) => console.log('team updated', team));
 ```
 
-Firstly, we should pass model name and id to the `model` method of the Wave instance.
-By default Wave prefixed model name with `App.Models` namespace. You can override it with `namespace` option:
+Let's start by passing model name and id to the `model` method of the Wave instance.
+
+By default Wave prefixes model name with `App.Models` namespace. You can override it with `namespace` option:
 
 ```javascript
 window.Wave = new Wave({ namespace: 'App.Path.Models' });
@@ -229,7 +230,7 @@ window.Wave = new Wave({ endpoint: 'custom-path' });
 
 ## Persistent Connection / Fighting with Timeouts
 
-Depend on web server configuration you may notice that the connection drops at a certain interval. SSE automatically reconnecting after request timeout. Don't worry to lost events during reconnection, Laravel Wave stores events history in one minute. You can change `resume_lifetime` value in config file.
+Depend on web server configuration you may notice that the connection drops at a certain interval. SSE automatically reconnecting after request timeout. Don't worry to lost events during reconnection, Laravel Wave stores events history in one minute by default. You can change `resume_lifetime` value in config file.
 
 Looks like http and web servers weren't ready for persisted connections and set traps at several stages. Some of them disables on the package level:
 
@@ -238,9 +239,9 @@ Looks like http and web servers weren't ready for persisted connections and set 
 
 ### Web Server
 
-Using Nginx as a web server, usually connection limited to `1m` by [FastCGI](https://www.php.net/manual/install.fpm.php).
+Using Nginx + PHP FPM setup, usually connection limited to `1m` by [FastCGI](https://www.php.net/manual/install.fpm.php).
 
-Add next location directive below the end of `location ~ \.php$`:
+Add next location directive below the end of `location ~ \.php$` body:
 
 ```nginx
 location = /wave {
