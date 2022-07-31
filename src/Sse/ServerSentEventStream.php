@@ -71,10 +71,8 @@ class ServerSentEventStream implements Responsable
 
             ['event' => $event, 'data' => $data] = is_array($message) ? $message : json_decode($message, true);
 
-            // TODO: Test if it data exists with websockets
             $eventSocketId = Arr::pull($data, 'socket');
-            // TODO: Change uuid name
-            $uuid = Arr::pull($data, 'uuid');
+            $eventId = Arr::pull($data, 'broadcast_event_id');
 
             if ($eventSocketId === $socket) {
                 return;
@@ -83,7 +81,7 @@ class ServerSentEventStream implements Responsable
             (new ServerSentEvent(
                 "$channel.$event",
                 json_encode(['data' => $data]),
-                "$channel.$uuid"
+                "$channel.$eventId"
             ))();
         };
     }

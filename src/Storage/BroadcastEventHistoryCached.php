@@ -19,7 +19,7 @@ class BroadcastEventHistoryCached implements BroadcastEventHistory
         $key = $events->search(function ($item) use ($id, $channelPrefix) {
             $channel = Str::after($item['channel'], $channelPrefix);
 
-            return $id === ($channel.'.'.$item['event']['data']['uuid']);
+            return $id === ($channel.'.'.$item['event']['data']['broadcast_event_id']);
         });
 
         return $events->slice($key === false ? 0 : $key + 1);

@@ -22,8 +22,7 @@ class BroadcastManagerExtended extends BroadcastManager
 
             public function broadcast(array $channels, $event, array $payload = [])
             {
-                // TODO: change uuid name
-                $payload['uuid'] = (string) Str::uuid();
+                $payload['broadcast_event_id'] = (string) Str::uuid();
 
                 foreach ($this->formatChannels($channels) as $channel) {
                     $this->history->pushEvent($channel, [
