@@ -16,7 +16,9 @@ uses(TestCase::class)->in(__DIR__);
 
 uses()->beforeEach(function () {
     $redisMock = new RedisConnectionMock();
+
     $this->instance('redis', $redisMock);
+
     $redisMock->flushdb();
     $redisMock->flushEventsQueue();
 
@@ -28,9 +30,9 @@ uses()->beforeEach(function () {
     $this->actingAs($this->user);
 })->in(__DIR__);
 
-function waveConnection(Authenticatable $user = null)
+function waveConnection(Authenticatable $user = null, string $lastEventId = null)
 {
-    return new class($user)
+    return new class($user, $lastEventId)
     {
         use ReflectsClosures;
 
@@ -39,7 +41,7 @@ function waveConnection(Authenticatable $user = null)
         /** @var \Illuminate\Support\Collection */
         private $sentEvents;
 
-        public function __construct(public Authenticatable|null $user = null)
+        public function __construct(public Authenticatable|null $user = null, public string|null $lastEventId)
         {
             $test = test();
 
@@ -47,12 +49,17 @@ function waveConnection(Authenticatable $user = null)
                 $test = $test->actingAs($user);
             }
 
-            $this->response = $test->get(route('wave.connection'));
+            $this->response = $test->get(route('wave.connection'), $this->lastEventId ? ['Last-Event-ID' => $this->lastEventId] : []);
         }
 
         public function id()
         {
             return $this->response->headers->get('X-Socket-Id');
+        }
+
+        public function lastEventId()
+        {
+            return collect($this->getSentEvents())->last()[0]['id'];
         }
 
         public function received($event, $callback = null)
@@ -152,9 +159,10 @@ function waveConnection(Authenticatable $user = null)
 
                     return [
                         'event' => Str::after($rows[0], 'event: '),
+                        'id' => Str::after($rows[2], 'id: '),
                         'data' => $data,
                     ];
-                })->mapToGroups(fn ($item) => [$item['event'] => ['data' => $item['data']]]);
+                })->mapToGroups(fn ($item) => [$item['event'] => ['data' => $item['data'], 'id' => $item['id']]]);
             }
 
             return $this->sentEvents;

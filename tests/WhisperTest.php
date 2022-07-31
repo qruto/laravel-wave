@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Event;
 use function Pest\Laravel\post;
 use Qruto\LaravelWave\Events\ClientEvent;
+use Qruto\LaravelWave\Tests\Support\User;
 
 it('successfully send whisper event', function () {
     Event::fake([ClientEvent::class]);
@@ -19,11 +20,13 @@ it('successfully send whisper event', function () {
 it('successfully received whisper event', function () {
     $connection = waveConnection();
 
+    $connectionTwo = waveConnection(User::factory()->create());
+
     post(route('wave.whisper'), [
         'event_name' => 'typing',
         'channel_name' => 'private-private-channel',
         'data' => 'some-data',
-    ]);
+    ], ['X-Socket-Id' => $connection->id()]);
 
-    $connection->assertEventReceived('private-private-channel.client-typing');
+    $connectionTwo->assertEventReceived('private-private-channel.client-typing');
 });

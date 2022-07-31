@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Contracts\Redis\Connection;
 use Illuminate\Contracts\Redis\Factory;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Str;
 use M6Web\Component\RedisMock\RedisMock;
 
@@ -19,10 +20,25 @@ class RedisConnectionMock extends RedisMock implements Connection, Factory
     public function eval($script, $numberOfKeys, ...$arguments)
     {
         if (Str::contains($script, 'publish')) {
-            self::$events[] = [
-                'message' => $arguments[0],
-                'pattern' => $arguments[1],
-            ];
+            collect(self::$events)->keys()->each(function ($connection) use ($arguments) {
+                self::$events[$connection][] = [
+                    'message' => $arguments[0],
+                    'pattern' => $arguments[1],
+                ];
+            });
+
+            $socket = Broadcast::socket();
+
+            if (! $socket) {
+                return;
+            }
+
+            if (! isset(self::$events[$socket])) {
+                self::$events[$socket] = [[
+                    'message' => $arguments[0],
+                    'pattern' => $arguments[1],
+                ]];
+            }
 
             return;
         }
@@ -31,7 +47,16 @@ class RedisConnectionMock extends RedisMock implements Connection, Factory
     public function psubscribe($channels, Closure $callback)
     {
         if ($channels === '*') {
-            Collection::make(self::$events)->each(fn ($event) => $callback($event['message'], $event['pattern']));
+            $socket = Broadcast::socket();
+
+            if (! $socket || ! isset(self::$events[$socket])) {
+                return;
+            }
+
+            Collection::make(self::$events[$socket])
+                ->each(function ($event) use ($callback) {
+                    $callback($event['message'], $event['pattern']);
+                });
         }
     }
 
