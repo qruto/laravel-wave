@@ -16,26 +16,24 @@
 
 # Introduction
 
-What do you think about when your need implement realtime, live-updating user interfaces? The answer is usually obvious – WebSockets.
-This means you need third-party services like Pusher or Ably. Another option is to use self-hosted WebSocket server which requires additional setup and maintenance. Run the server, setup connection through specific port or with reverse proxy, SSL configuration, keeping the socket server running with tool like `supervisord`, scaling configuration, etc. It frequently feels like an overkill for simple notification system or UI updates, given that WebSockets works for receiving and sending data, but is used mainly for receiving.
+What do you think about when application needs realtime, live-updating functionality? The answer is usually obvious – WebSockets.
+It means you need third-party services like Pusher, Ably or another option is to use self-hosted WebSocket server which requires additional setup and maintenance. Run the server, setup connection through specific port or with reverse proxy, SSL configuration, keeping the socket server running with tool like `supervisord`, scaling configuration, etc. It frequently feels like an overkill for simple notification system or UI updates, given that WebSockets works for receiving and sending data, but is used mainly for sending events from server to client.
 
 Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broadcasting) for sending events from server to client. Previously, it was closely related to the WebSockets technology. Imagine that realtime, live-updating is possible without all of these extra steps listed above.
 
-🗼 Meet the [**Server-sent Events**](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) technology! Which works with default `redis` broadcasting driver and supports [Laravel Echo](https://github.com/laravel/echo). The technology is specially tuned to send events from the server through the HTTP protocol.
+🗼 Meet the [**Server-sent Events**](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) technology! Which works with default `redis` broadcasting driver and supports [Laravel Echo](https://github.com/laravel/echo). SSE is specially tuned to send events from the server through the HTTP protocol.
 
 ## Support
 
-I have spent a lot of time to investigate SSE technology, Laravel broadcasting system, Redis driver for implement and pack this solution to make available it free for everyone. Since of February 24, unfortunately I haven't any commercial work, home, stable available time or the ability to plan anything for the long term. However, I have a greater desire to continue creating useful solutions for people around the world. It makes me feel better these days.
-
-Now I'm trying to setup native GitHub Sponsorships, but it currently not available for Ukrainian bank accounts. Searching for solutions through the 3rd party fiscal host. Looks like it requires some stars on the repository ❤️ ⭐
+I have spent a lot of time playing with SSE, Laravel broadcasting and Redis to prepare **Laravel Wave** and make it available for everyone. Since of February 24, unfortunately I haven't any commercial work, home, stable available time or the ability to plan anything for the long term. However, I have a greater desire to continue creating useful solutions for people around the world. It makes me feel better these days.
 
 [![support me](https://raw.githubusercontent.com/slavarazum/slavarazum/main/support-banner.png)](https://ko-fi.com/slavarazum)
+
+Now I'm trying to setup GitHub Sponsorships, but it currently not available for Ukrainian bank accounts. Searching for solutions through the 3rd party fiscal host. Looks like it requires some stars on the repository ❤️ ⭐
 
 I would be very grateful for mentions or just a sincere "thank you".
 
 ## Installation
-
-Working with `redis` broadcasting driver.
 
 You can install packages to server and client sides via composer with npm:
 
@@ -52,7 +50,7 @@ BROADCAST_DRIVER=redis
 
 ## Usage
 
-> On the event-stream connection request, server runs [Redis subscription process](https://laravel.com/docs/9.x/redis#wildcard-subscriptions), however it can't detect request disconnection to kill the subscriber until next event has been received.
+> ⚠️ On the event-stream connection request, server runs [Redis subscription process](https://laravel.com/docs/9.x/redis#wildcard-subscriptions), however it can't detect request disconnection to kill the subscriber until next event has been received.
 
 If your application will not send events frequently, use ping command to close outdated workers.
 
@@ -71,9 +69,11 @@ When you need smaller interval between ping events, run the command with `--inte
 php artisan sse:ping --interval=30
 ```
 
+For example, basic `fastcgi_read_timeout` set to 60s. Which means that events in the connection must occur more often than 60 seconds.
+
 ### With Laravel Echo
 
-Import Laravel Echo with Wave and pass `WaveConnector` to the broadcaster option:
+Import Laravel Echo with `WaveConnector` and pass it to the broadcaster option:
 
 ```javascript
 import Echo from 'laravel-echo';
@@ -111,7 +111,7 @@ You can replace it by the snippet above:
 + import { WaveConnector } from 'laravel-wave';
 
 + window.Echo = new Echo({
-+  broadcaster: WaveConnector,
++     broadcaster: WaveConnector,
 + });
 ```
 
@@ -124,7 +124,7 @@ Now you can use [Echo and Broadcasting](https://laravel.com/docs/8.x/broadcastin
 In Laravel we have great native abilities for [Model Events Broadcasting](https://laravel.com/docs/8.x/broadcasting#model-broadcasting)
 and [Broadcast Notifications](https://laravel.com/docs/8.x/notifications#broadcast-notifications).
 
-**Laravel Wave** provides an clear api to receive these events.
+**Laravel Wave** provides a clear api to receive it.
 
 ```javascript
 import { Wave } from 'laravel-wave';
@@ -143,7 +143,7 @@ wave.model('User', '1')
 ```
 
 Firstly, we should pass model name and id to the `model` method of the Wave instance.
-By default it searches in `App.Models` namespace. You can override it with `namespace` option:
+By default Wave prefixed model name with `App.Models` namespace. You can override it with `namespace` option:
 
 ```javascript
 window.Wave = new Wave({ namespace: 'App.Path.Models' });
@@ -229,14 +229,16 @@ window.Wave = new Wave({ endpoint: 'custom-path' });
 
 ## Persistent Connection / Fighting with Timeouts
 
+Depend on web server configuration you may notice that the connection drops at a certain interval. SSE automatically reconnecting after request timeout. Don't worry to lost events during reconnection, Laravel Wave stores events history in one minute. You can change `resume_lifetime` value in config file.
+
 Looks like http and web servers weren't ready for persisted connections and set traps at several stages. Some of them disables on the package level:
 
-- [default_socket_timeout](https://www.php.net/manual/ru/filesystem.configuration.php#ini.default-socket-timeout) set to `-1` for disabling
-- [max_execution_time](https://www.php.net/manual/en/info.configuration.php#ini.max-execution-time) set to `0` for disabling by [set_time_limit](https://www.php.net/manual/ru/function.set-time-limit) function
+- [default_socket_timeout](https://www.php.net/manual/ru/filesystem.configuration.php#ini.default-socket-timeout) set to `-1`
+- [max_execution_time](https://www.php.net/manual/en/info.configuration.php#ini.max-execution-time) set to `0` by [set_time_limit](https://www.php.net/manual/ru/function.set-time-limit) function
 
 ### Web Server
 
-Using Nginx as a web server, usually, connection limited to `1m` by [FastCGI](https://www.php.net/manual/install.fpm.php).
+Using Nginx as a web server, usually connection limited to `1m` by [FastCGI](https://www.php.net/manual/install.fpm.php).
 
 Add next location directive below the end of `location ~ \.php$`:
 
@@ -251,9 +253,11 @@ location = /wave {
 }
 ```
 
-_*_ copy `fastcgi_pass` unix socket path from `location ~ \.php$`.
+__*__ copy `fastcgi_pass` unix socket path from `location ~ \.php$`.
 
-### PHP FPM Timeouts / Final Round
+> ❇️ If the interval between events will be less than value set in `fastcgi_read_timeout` option and there are no other timeout options set, connection will be persisted.
+
+### PHP FPM Timeouts
 
 For example, [Laravel Forge](https://forge.laravel.com) configures PHP FPM pool with `request_terminate_timeout = 60` which forces to terminate all requests after 60 seconds.
 
@@ -267,14 +271,12 @@ or configure another pool for SSE connection:
 
 _Writing instruction..._
 
-> ❇️ If the interval between events will be less than value set in `fastcgi_read_timeout` option and there are no other timeout options set, connection will be persisted.
-
 ## Future Plans
 
-- Local broadcasting driver
-- Laravel Octane support
-- Two ways live models syncing
-- Something awesome with opened live abilities...
+- 📍 local broadcasting driver
+- ◻️ Laravel Octane support
+- 📥 📤 two ways live models syncing
+- 📡 Something awesome with opened live abilities...
 
 ## Testing
 
