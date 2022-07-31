@@ -5,7 +5,7 @@ namespace Qruto\LaravelWave\Commands;
 use Illuminate\Console\Command;
 use Qruto\LaravelWave\Events\SsePingEvent;
 
-class Ping extends Command
+class SsePingCommand extends Command
 {
     /**
      * The name and signature of the console command.

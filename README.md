@@ -52,6 +52,27 @@ BROADCAST_DRIVER=redis
 
 ## Usage
 
+> On the Wave request, server subscribes to channels with Redis, however it can't detect user disconnection to kill the subscriber until next event has been received.
+
+If your application will not send events frequently, to close outdated workers – ping event can help you.
+
+We can use tasks scheduler in **app/Console/Kernel.php** to send ping event every minute:
+
+```php
+use Qruto\LaravelWave\Commands\SsePingCommand;
+
+protected function schedule(Schedule $schedule)
+{
+    $schedule->command(SsePingCommand::class)->everyMinute();
+}
+```
+
+When you need smaller interval between ping events, run the command with `--interval` option which received number in seconds:
+
+```bash
+php artisan sse:ping --interval=30
+```
+
 ### With Laravel Echo
 
 Import Laravel Echo with Wave and pass `WaveConnector` to the broadcaster option:
@@ -73,27 +94,27 @@ You can replace it by the snippet above:
     <summary>Show diff</summary>
 
 ```diff
--import Echo from 'laravel-echo';
+- import Echo from 'laravel-echo';
 
--import Pusher from 'pusher-js';
--window.Pusher = Pusher;
+- import Pusher from 'pusher-js';
+- window.Pusher = Pusher;
 
--window.Echo = new Echo({
--    broadcaster: 'pusher',
--    key: import.meta.env.VITE_PUSHER_APP_KEY,
--    wsHost: import.meta.env.VITE_PUSHER_HOST ?? `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
--    wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
--    wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
--    forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
--    enabledTransports: ['ws', 'wss'],
--});
-+import Echo from 'laravel-echo';
+- window.Echo = new Echo({
+-     broadcaster: 'pusher',
+-     key: import.meta.env.VITE_PUSHER_APP_KEY,
+-     wsHost: import.meta.env.VITE_PUSHER_HOST ?? `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+-     wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
+-     wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
+-     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
+-     enabledTransports: ['ws', 'wss'],
+- });
++ import Echo from 'laravel-echo';
 
-+import { WaveConnector } from 'laravel-wave';
++ import { WaveConnector } from 'laravel-wave';
 
-+window.Echo = new Echo({
-+ broadcaster: WaveConnector,
-+});
++ window.Echo = new Echo({
++  broadcaster: WaveConnector,
++ });
 ```
 
 </details>
@@ -123,7 +144,7 @@ wave.model('User', '1')
     .updated('Team', (team) => console.log('team updated', team));
 ```
 
-At first, we should pass model name and id to model method of the Wave instance.
+Firstly, we should pass model name and id to the `model` method of the Wave instance.
 By default it searches in `App.Models` namespace. You can override it with `namespace` option:
 
 ```javascript
@@ -193,6 +214,19 @@ return [
     */
     'resume_lifetime' => 60,
 ];
+```
+
+If you want to change base path from `wave` to another, don't forget to pass it in `Echo` or `Wave` instance:
+
+```javascript
+window.Echo = new Echo({
+   broadcaster: WaveConnector,
+   endpoint: 'custom-path',
+});
+
+// or
+
+window.Wave = new Wave({ endpoint: 'custom-path' });
 ```
 
 ## Testing
