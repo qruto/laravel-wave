@@ -1,6 +1,6 @@
 <?php
 
-namespace Qruto\LaravelWave;
+namespace Qruto\LaravelWave\Storage;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;

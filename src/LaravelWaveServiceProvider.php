@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Event;
 use Qruto\LaravelWave\Commands\Ping;
 use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
 use Qruto\LaravelWave\Listeners\RemoveStoredConnectionListener;
+use Qruto\LaravelWave\Storage\BroadcastEventHistory;
+use Qruto\LaravelWave\Storage\BroadcastEventHistoryCached;
+use Qruto\LaravelWave\Storage\PresenceChannelUsersRedisRepository;
+use Qruto\LaravelWave\Storage\PresenceChannelUsersRepository;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -31,6 +35,8 @@ class LaravelWaveServiceProvider extends PackageServiceProvider
         $redisConnectionName = config('broadcasting.connections.redis.connection');
 
         config()->set("database.redis.$redisConnectionName-subscription", config("database.redis.$redisConnectionName"));
+
+        $this->app->bind(BroadcastEventHistory::class, BroadcastEventHistoryCached::class);
 
         $this->app->extend(BroadcastManager::class, function ($service, $app) {
             return new BroadcastManagerExtended($app);

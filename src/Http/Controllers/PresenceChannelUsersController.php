@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Str;
 use Qruto\LaravelWave\Events\PresenceChannelJoinEvent;
 use Qruto\LaravelWave\Events\PresenceChannelLeaveEvent;
-use Qruto\LaravelWave\PresenceChannelUsersRepository;
+use Qruto\LaravelWave\Storage\PresenceChannelUsersRepository;
 
 class PresenceChannelUsersController extends Controller
 {

@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Str;
-use Qruto\LaravelWave\EventsStorage;
-use Qruto\LaravelWave\PresenceChannelUsersRedisRepository;
 use Qruto\LaravelWave\ServerSentEventSubscriber;
+use Qruto\LaravelWave\Storage\BroadcastEventHistory;
+use Qruto\LaravelWave\Storage\PresenceChannelUsersRedisRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -29,7 +29,7 @@ class ServerSentEventStream implements Responsable
         protected ServerSentEventSubscriber $eventSubscriber,
         protected ResponseFactory $responseFactory,
         protected PresenceChannelUsersRedisRepository $store,
-        protected EventsStorage $eventsHistory,
+        protected BroadcastEventHistory $eventsHistory,
     ) {
         $this->channelPrefix = config('database.redis.options.prefix', '');
     }

@@ -1,14 +1,13 @@
 <?php
 
-namespace Qruto\LaravelWave;
+namespace Qruto\LaravelWave\Storage;
 
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-class EventsStorage
+class BroadcastEventHistoryCached implements BroadcastEventHistory
 {
-    // TODO: create abstraction
     public function __construct(protected Repository $cache)
     {
     }
@@ -26,7 +25,7 @@ class EventsStorage
         return $events->slice($key === false ? 0 : $key + 1);
     }
 
-    public function pushEvent($channel, $event)
+    public function pushEvent(string $channel, $event)
     {
         $events = $this->getCached();
 
@@ -37,7 +36,7 @@ class EventsStorage
         ]);
 
         $events = $events->filter(function ($event) {
-            return time() - $event['timestamp'] < 60;
+            return time() - $event['timestamp'] < 60; // TODO: move value to config
         })->values();
 
         cache()->put('broadcasted_events', $events, 60);
