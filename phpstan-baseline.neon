@@ -6,6 +6,6 @@ parameters:
             path: src/Commands/Ping.php
 
         -
-            message: "#^Property Qruto\\\\LaravelWave\\\\PresenceChannelUsersRedisRepository\\:\\:\\$db.+does not accept Illuminate\\\\Redis\\\\Connections\\\\Connection\\.$#"
+            message: "#^Property Qruto\\\\LaravelWave\\\\Storage\\\\PresenceChannelUsersRedisRepository\\:\\:\\$db.+does not accept Illuminate\\\\Redis\\\\Connections\\\\Connection\\.$#"
             count: 1
-            path: src/PresenceChannelUsersRedisRepository.php
+            path: src/Storage/PresenceChannelUsersRedisRepository.php

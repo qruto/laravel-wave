@@ -2,9 +2,11 @@
 
 namespace Qruto\LaravelWave\Storage;
 
+use Illuminate\Support\Collection;
+
 interface BroadcastEventHistory
 {
-    public function getEventsFrom(string $id, string $channelPrefix): iterable;
+    public function getEventsFrom(string $id, string $channelPrefix): Collection;
 
     public function pushEvent(string $channel, $event);
 }

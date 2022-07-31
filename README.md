@@ -52,6 +52,84 @@ BROADCAST_DRIVER=redis
 
 ## Usage
 
+### With Laravel Echo
+
+Import Laravel Echo with Wave and pass `WaveConnector` to the broadcaster option:
+
+```javascript
+import Echo from 'laravel-echo';
+
+import { WaveConnector } from 'laravel-wave';
+
+window.Echo = new Echo({
+   broadcaster: WaveConnector,
+});
+```
+
+By default, you can find Echo connection in **resources/js/bootstrap.js**.
+
+You can replace it by the snippet above:
+<details>
+    <summary>Show diff</summary>
+
+```diff
+-import Echo from 'laravel-echo';
+
+-import Pusher from 'pusher-js';
+-window.Pusher = Pusher;
+
+-window.Echo = new Echo({
+-    broadcaster: 'pusher',
+-    key: import.meta.env.VITE_PUSHER_APP_KEY,
+-    wsHost: import.meta.env.VITE_PUSHER_HOST ?? `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+-    wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
+-    wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
+-    forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
+-    enabledTransports: ['ws', 'wss'],
+-});
++import Echo from 'laravel-echo';
+
++import { WaveConnector } from 'laravel-wave';
+
++window.Echo = new Echo({
++ broadcaster: WaveConnector,
++});
+```
+
+</details>
+
+Now you can use [Echo and Broadcasting](https://laravel.com/docs/8.x/broadcasting#broadcasting-to-presence-channels) system as usual with all of the supported features!
+
+### Wave Models
+
+In Laravel we have great native abilities for [Model Events Broadcasting](https://laravel.com/docs/8.x/broadcasting#model-broadcasting)
+and [Broadcast Notifications](https://laravel.com/docs/8.x/notifications#broadcast-notifications).
+
+**Laravel Wave** provides an clear api to receive these events.
+
+```javascript
+import { Wave } from 'laravel-wave';
+
+window.Wave = new Wave();
+
+wave.model('User', '1')
+    .notification('team.invite', (notification) => {
+        console.log(notification);
+    })
+    .updated((user) => console.log('user updated', user))
+    .deleted((user) => console.log('user deleted', user))
+    .trashed((user) => console.log('user trashed', user))
+    .restored((user) => console.log('user restored', user))
+    .updated('Team', (team) => console.log('team updated', team));
+```
+
+At first, we should pass model name and id to model method of the Wave instance.
+By default it searches in `App.Models` namespace. You can override it with `namespace` option:
+
+```javascript
+window.Wave = new Wave({ namespace: 'App.Path.Models' });
+```
+
 ### Optional
 
 You can publish the config file with:
@@ -66,20 +144,54 @@ This is the contents of the published config file:
 return [
 
     /*
-     * This path will be used to register the necessary routes for the package.
-     */
+    |--------------------------------------------------------------------------
+    | Routes Path
+    |--------------------------------------------------------------------------
+    |
+    | This path will be used to register necessary routes for Wave connection,
+    | presence channel users storing and simple whisper events.
+    |
+    */
     'path' => 'wave',
 
     /*
-     * Middleware for storing presence channel user routes.
+     |--------------------------------------------------------------------------
+     | Route Middleware
+     |--------------------------------------------------------------------------
+     |
+     | Here you may specify which middleware Wave will assign to the routes
+     | that it registers with the package. When necessary, you may modify
+     | these middleware; however, this default value is usually sufficient.
+     |
      */
     'middleware' => [
         'web',
     ],
 
+    /*
+     |--------------------------------------------------------------------------
+     | Auth & Guard
+     |--------------------------------------------------------------------------
+     |
+     | Default authentication middleware and guard type for authenticate
+     | users for presence channels and whisper events
+     |
+     */
     'auth_middleware' => 'auth',
 
     'guard' => 'web',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Resume Lifetime
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the number of seconds that you wish an event stream
+    | to be persisted to resume it after reconnect. The connection is
+    | immediately re-established every closed response.
+    |
+    */
+    'resume_lifetime' => 60,
 ];
 ```
 
@@ -91,9 +203,9 @@ composer test
 
 ## Knowing Issues
 
-- redis subscription lifetime limited to 60 seconds
-- no ability stop script immediately on disconnect
-- suggest to better typing
++ redis subscription lifetime limited to 60 seconds
++ no ability stop script immediately on disconnect
++ suggest to better typing
 
 Potential solutions:
 
@@ -105,9 +217,8 @@ Redis::connection('subscription')->setOption(\Redis::OPT_READ_TIMEOUT, -1);
 
 ## TODO
 
-- Local driver
-- Stream continue
-- Laravel Octane
++ Local driver
++ Laravel Octane
 
 ## Changelog
 
@@ -123,8 +234,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [Slava Razum](https://github.com/slavarazum)
-- [All Contributors](../../contributors)
++ [Slava Razum](https://github.com/slavarazum)
++ [All Contributors](../../contributors)
 
 ## License
 
