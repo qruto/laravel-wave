@@ -6,7 +6,7 @@
     </picture>
 </p>
 
-<p align="center"><em>Bring <strong>live</strong> to your application</em></p>
+<p align="center">Bring <strong>live</strong> to your application</p>
 
 <p align="center">
     <a href="https://github.com/qruto/laravel-wave/actions/workflows/tests.yml"><img src="https://github.com/qruto/laravel-wave/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
@@ -19,7 +19,7 @@
 # Introduction
 
 What do you think about when an application needs realtime, live-updating functionality? The answer is usually obvious – WebSockets.
-It means you need third-party services like Pusher, Ably or use self-hosted WebSocket server which requires additional setup and maintenance. Run the server, setup connection through specific port or with reverse proxy, SSL configuration, keeping the socket server running with tool like `supervisord`, scaling configuration, etc. It frequently feels like an overkill for simple notification system or UI updates, given that WebSockets works for receiving and sending data, but is used mainly for sending events from server to client.
+It means you need third-party services like Pusher, Ably or use self-hosted WebSocket server which requires additional setup and maintenance: run the server, setup connection through specific port or with reverse proxy, SSL configuration, keeping the socket server running with tool like `supervisord`, scaling configuration, etc. It frequently feels like an overkill for simple notification system or UI updates, given that WebSockets works for receiving and sending data, but is used mainly for sending events from server to client.
 
 Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broadcasting) for sending events from server to client. Previously, it was closely related to the WebSockets technology. Imagine that realtime, live-updating is possible without all of these extra steps listed above.
 
@@ -54,7 +54,7 @@ BROADCAST_DRIVER=redis
 
 > ⚠️ On the event-stream connection request, server runs [Redis subscription process](https://laravel.com/docs/9.x/redis#wildcard-subscriptions), however it can't detect request disconnection to kill the subscriber until next event has been received.
 
-If your application will not send events frequently, use ping command to close outdated workers.
+If your server will not send events frequently, use ping command to close outdated workers.
 
 [Tasks scheduler](https://laravel.com/docs/9.x/scheduling#introduction) can help send ping events every minute:
 
@@ -65,13 +65,13 @@ protected function schedule(Schedule $schedule)
 }
 ```
 
-When you need smaller interval between ping events, run the command with `--interval` option which receives number in seconds:
+When you need smaller interval between ping events, run command with `--interval` option which receives number in seconds:
 
 ```bash
 php artisan sse:ping --interval=30
 ```
 
-For example, basic `fastcgi_read_timeout` set to 60s. Which means that events in the connection must occur more often than 60 seconds.
+For example, basic `fastcgi_read_timeout` set to `60s`. Which means that events in the connection must occur more often than 60 seconds.
 
 ### With Laravel Echo
 
@@ -82,12 +82,10 @@ import Echo from 'laravel-echo';
 
 import { WaveConnector } from 'laravel-wave';
 
-window.Echo = new Echo({
-   broadcaster: WaveConnector,
-});
+window.Echo = new Echo({ broadcaster: WaveConnector });
 ```
 
-By default, you can find Echo connection in **resources/js/bootstrap.js** file.
+By default, you can find Echo connection sources in **resources/js/bootstrap.js** file.
 
 Replace it by the snippet above:
 <details>
@@ -112,18 +110,16 @@ Replace it by the snippet above:
 
 + import { WaveConnector } from 'laravel-wave';
 
-+ window.Echo = new Echo({
-+     broadcaster: WaveConnector,
-+ });
++ window.Echo = new Echo({ broadcaster: WaveConnector });
 ```
 
 </details>
 
-Now you can use [Echo and Broadcasting](https://laravel.com/docs/8.x/broadcasting#broadcasting-to-presence-channels) system as usual with all of the supported features!
+Now you can use [Echo and Broadcasting](https://laravel.com/docs/8.x/broadcasting#broadcasting-to-presence-channels) as usual with all of the supported features!
 
 ### Wave Models
 
-In Laravel we have great native abilities for [Model Events Broadcasting](https://laravel.com/docs/8.x/broadcasting#model-broadcasting)
+In Laravel we have great abilities for [Model Events Broadcasting](https://laravel.com/docs/8.x/broadcasting#model-broadcasting)
 and [Broadcast Notifications](https://laravel.com/docs/8.x/notifications#broadcast-notifications).
 
 **Laravel Wave** provides a clear api to receive it.
@@ -144,7 +140,7 @@ wave.model('User', '1')
     .updated('Team', (team) => console.log('team updated', team));
 ```
 
-Let's start by passing model name and id to the `model` method of the Wave instance.
+Let's start by passing model name and key to the `model` method of the Wave instance.
 
 By default Wave prefixes model name with `App.Models` namespace. You can override it with `namespace` option:
 
@@ -210,7 +206,7 @@ return [
     |
     | Here you may specify the number of seconds that you wish an event stream
     | to be persisted to resume it after reconnect. The connection is
-    | immediately re-established every closed response.
+    | immediately re-established after break.
     |
     */
     'resume_lifetime' => 60,
@@ -264,7 +260,7 @@ __*__ copy `fastcgi_pass` unix socket path from `location ~ \.php$`.
 
 For example, [Laravel Forge](https://forge.laravel.com) configures PHP FPM pool with `request_terminate_timeout = 60` which forces to terminate all requests after 60 seconds.
 
-You can disable it in `/etc/php/8.1/fpm/pool.d/www.conf`:
+You can disable it in `/etc/php/8.1/fpm/pool.d/www.conf` config file:
 
 ```ini
 request_terminate_timeout = 0
@@ -301,8 +297,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-+ [Slava Razum](https://github.com/slavarazum)
-+ [All Contributors](../../contributors)
+- [Slava Razum](https://github.com/slavarazum)
+- [All Contributors](../../contributors)
 
 ## License
 
