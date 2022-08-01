@@ -25,7 +25,9 @@ it('successfully received whisper event', function () {
     post(route('wave.whisper'), [
         'event_name' => 'typing',
         'channel_name' => 'private-private-channel',
-        'data' => 'some-data',
+        'data' => [
+            'name' => 'John',
+        ],
     ], ['X-Socket-Id' => $connection->id()]);
 
     $connectionTwo->assertEventReceived('private-private-channel.client-typing');
