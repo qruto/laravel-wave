@@ -9,6 +9,14 @@
 <p align="center">Bring <strong>live</strong> to your application</p>
 
 <p align="center">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/qruto/laravel-wave/raw/HEAD/art/connection-demo-light.png">
+        <source media="(prefers-color-scheme: light)" srcset="https://github.com/qruto/laravel-wave/raw/HEAD/art/connection-demo-dark.png">
+        <img alt="Laravel Wave Logo" src="https://github.com/qruto/laravel-wave/raw/HEAD/art/connection-demo-light.png">
+    </picture>
+</p>
+
+<p align="center">
     <a href="https://github.com/qruto/laravel-wave/actions/workflows/tests.yml"><img src="https://github.com/qruto/laravel-wave/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
     <a href="https://github.com/qruto/laravel-wave/actions/workflows/code-style.yml"><img src="https://github.com/qruto/laravel-wave/actions/workflows/code-style.yml/badge.svg" alt="Code Style"></a>
     <a href="https://github.com/qruto/laravel-wave/actions/workflows/static-analyze.yml"><img src="https://github.com/qruto/laravel-wave/actions/workflows/static-analyze.yml/badge.svg" alt="Static Analyze"></a>
@@ -18,10 +26,7 @@
 
 # Introduction
 
-What do you think about when an application needs realtime, live-updating functionality? The answer is usually obvious – WebSockets.
-It means you need third-party services like Pusher, Ably or use self-hosted WebSocket server which requires additional setup and maintenance: run the server, setup connection through specific port or with reverse proxy, SSL configuration, keeping the socket server running with tool like `supervisord`, scaling configuration, etc. It frequently feels like an overkill for simple notification system or UI updates, given that WebSockets works for receiving and sending data, but is used mainly for sending events from server to client.
-
-Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broadcasting) for sending events from server to client. Previously, it was closely related to the WebSockets technology. Imagine that realtime, live-updating is possible without all of these extra steps listed above.
+Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broadcasting) for sending events from server to client. Previously, it was closely related to the WebSockets. Imagine that realtime in application is possible through HTTP .
 
 🗼 Meet the [**Server-sent Events**](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) technology! Which works with default `redis` broadcasting driver and supports [Laravel Echo](https://github.com/laravel/echo). SSE is specially tuned to send events from the server to client through the HTTP protocol.
 
@@ -36,6 +41,8 @@ Now I'm trying to setup GitHub Sponsorships, but it currently not available for 
 I would be very grateful for mentions or just a sincere "thank you" 🤝
 
 ## Installation
+
+First release 🎉 Works well in home, but should be battle tested before **1.0**. I would appreciate your feedback.
 
 You can install packages to server and client sides via composer with npm:
 
