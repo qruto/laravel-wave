@@ -20,7 +20,6 @@ class ClientEvent implements ShouldBroadcast
      */
     public function __construct(protected string $name, protected string $channel, public $data)
     {
-        //
     }
 
     /**
@@ -35,6 +34,11 @@ class ClientEvent implements ShouldBroadcast
         return $channelName->startsWith('presence-')
                 ? new PresenceChannel($channelName->after('presence-'))
                 : new PrivateChannel($channelName->after('private-'));
+    }
+
+    public function broadcastWith()
+    {
+        return $this->data;
     }
 
     public function broadcastAs()
