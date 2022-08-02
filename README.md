@@ -261,7 +261,7 @@ location = /wave {
 }
 ```
 
-***** copy `fastcgi_pass` unix socket path from `location ~ \.php$`.
+**\*** copy `fastcgi_pass` unix socket path from `location ~ \.php$`.
 
 > ❇️ If the interval between events will be less than value set in `fastcgi_read_timeout` option and there are no other timeout options set, connection will be persisted.
 
