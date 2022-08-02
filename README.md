@@ -309,6 +309,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 - [Slava Razum](https://github.com/slavarazum)
 - [All Contributors](../../contributors)
 
+Package template based on [Spatie Laravel Skeleton](https://github.com/spatie/package-skeleton-laravel).
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
