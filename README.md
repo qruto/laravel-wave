@@ -59,8 +59,6 @@ BROADCAST_DRIVER=redis
 
 ## Usage
 
-> ⚠️ On the event-stream connection request, server runs [Redis subscription process](https://laravel.com/docs/9.x/redis#wildcard-subscriptions), however it can't detect request disconnection to kill the subscriber until next event has been received.
-
 If your server will not send events frequently, use ping command to close outdated workers.
 
 [Tasks scheduler](https://laravel.com/docs/9.x/scheduling#introduction) can help send ping events every minute:
@@ -71,6 +69,8 @@ protected function schedule(Schedule $schedule)
     $schedule->command('sse:ping')->everyMinute();
 }
 ```
+
+> ⚠️ On the event-stream connection request, server runs [Redis subscription process](https://laravel.com/docs/9.x/redis#wildcard-subscriptions), however it can't detect request disconnection to kill the subscriber until next event has been received.
 
 When you need smaller interval between ping events, run command with `--interval` option which receives number in seconds:
 
