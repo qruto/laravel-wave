@@ -18,21 +18,21 @@
 
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/qruto/laravel-wave/raw/HEAD/art/connection-demo-light.png">
-        <source media="(prefers-color-scheme: light)" srcset="https://github.com/qruto/laravel-wave/raw/HEAD/art/connection-demo-dark.png">
+        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/qruto/laravel-wave/raw/HEAD/art/connection-demo-dark.png">
+        <source media="(prefers-color-scheme: light)" srcset="https://github.com/qruto/laravel-wave/raw/HEAD/art/connection-demo-light.png">
         <img alt="Laravel Wave Logo" src="https://github.com/qruto/laravel-wave/raw/HEAD/art/connection-demo-light.png" width="400">
     </picture>
 </p>
 
 # Introduction
 
-Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broadcasting) for sending events from server to client. Previously, it was closely related to the WebSockets. Imagine that realtime in application is possible through vanilla HTTP.
+Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broadcasting) for sending events from server to client. Previously, it was closely related to the WebSockets. Imagine that real-time broadcasting is possible through native HTTP without any WebSockets setup.
 
 🗼 Meet the [**Server-sent Events**](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)! Which works with default `redis` broadcasting driver and supports [Laravel Echo](https://github.com/laravel/echo). SSE is specially tuned to send events from the server to client through the HTTP protocol.
 
 ## Support
 
-I have spent a lot of time playing with SSE, Laravel broadcasting system and Redis to prepare **Laravel Wave** and make it available for everyone. Since of February 24, unfortunately I haven't any commercial work, permanent living place or the ability to plan anything for the long term. However, I have a greater desire to continue creating useful solutions for people around the world. It makes me feel better these days.
+I have spent a lot of time playing with SSE, Laravel broadcasting system and Redis 👨‍💻 to prepare **Laravel Wave** and make it available for everyone. Since of February 24, unfortunately I haven't any commercial work, permanent living place or the ability to plan anything for the long term. However, I have a greater desire to continue creating useful solutions for people around the world. It makes me feel better these days.
 
 [![support me](https://raw.githubusercontent.com/slavarazum/slavarazum/main/support-banner.png)](https://ko-fi.com/slavarazum)
 
@@ -42,7 +42,7 @@ I would be very grateful for mentions or just a sincere "thank you" 🤝
 
 ## Installation
 
-First release 🎉 Works well in home, but should be battle tested before **1.0**. I would appreciate your feedback.
+First release 🎉 Works well in home, but should be battle tested before **1.0**. Feedbacks appreciated!
 
 You can install packages to server and client sides via composer with npm:
 
@@ -79,6 +79,8 @@ php artisan sse:ping --interval=30
 ```
 
 For example, basic `fastcgi_read_timeout` set to `60s`. Which means that events in the connection must occur more often than 60 seconds.
+
+🐞 Ping with small interval can help for development purposes.
 
 ### With Laravel Echo
 
@@ -259,7 +261,7 @@ location = /wave {
 }
 ```
 
-__*__ copy `fastcgi_pass` unix socket path from `location ~ \.php$`.
+***** copy `fastcgi_pass` unix socket path from `location ~ \.php$`.
 
 > ❇️ If the interval between events will be less than value set in `fastcgi_read_timeout` option and there are no other timeout options set, connection will be persisted.
 
