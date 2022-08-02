@@ -1,6 +1,6 @@
 {
     "name": "qruto/laravel-wave",
-    "description": "SSE connection for Laravel broadcasting system.",
+    "description": "Painless Laravel Broadcasting with SSE.",
     "keywords": [
         "qruto",
         "laravel",

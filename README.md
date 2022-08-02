@@ -42,7 +42,7 @@ I would be very grateful for mentions or just a sincere "thank you" 🤝
 
 ## Installation
 
-First release 🎉 Works well in home, but should be battle tested before **1.0**. Feedbacks appreciated!
+First release 🎉 Works well at home, but should be battle tested before **1.0**. Feedbacks appreciated!
 
 You can install packages to server and client sides via composer with npm:
 
@@ -59,7 +59,7 @@ BROADCAST_DRIVER=redis
 
 ## Usage
 
-If your server will not send events frequently, use ping command to close outdated workers.
+If your server will not send events frequently, use ping command to close outdated workers and keep a permanent connection.
 
 [Tasks scheduler](https://laravel.com/docs/9.x/scheduling#introduction) can help send ping events every minute:
 
@@ -70,17 +70,17 @@ protected function schedule(Schedule $schedule)
 }
 ```
 
-> ⚠️ On the event-stream connection request, server runs [Redis subscription process](https://laravel.com/docs/9.x/redis#wildcard-subscriptions), however it can't detect request disconnection to kill the subscriber until next event has been received.
+> ⚠️ On the event-stream connection request, server runs [Redis subscription process](https://laravel.com/docs/9.x/redis#wildcard-subscriptions), however it can't detect request disconnection to kill the subscriber immediately, until next event has been received.
 
-When you need smaller interval between ping events, run command with `--interval` option which receives number in seconds:
+When you need shorter interval between ping events, run command with `--interval` option which receives number in seconds:
 
 ```bash
 php artisan sse:ping --interval=30
 ```
 
-For example, basic `fastcgi_read_timeout` set to `60s`. Which means that events in the connection must occur more often than 60 seconds.
+For example, basic `fastcgi_read_timeout` set to `60s`. Which means that events in the connection must occur more often than 60 seconds to save it persistent.
 
-🐞 Ping with small interval can help for development purposes.
+🐞 Ping with short interval can help you during development to debug a connection and close outdated workers on tiny local server limits.
 
 ### With Laravel Echo
 
@@ -124,7 +124,7 @@ Replace it by the snippet above:
 
 </details>
 
-Now you can use [Echo and Broadcasting](https://laravel.com/docs/8.x/broadcasting#broadcasting-to-presence-channels) as usual with all of the supported features!
+Congrats, you can use [Echo and Broadcasting](https://laravel.com/docs/8.x/broadcasting#broadcasting-to-presence-channels) as usual with all of the supported features!
 
 ### Wave Models
 
@@ -134,7 +134,7 @@ and [Broadcast Notifications](https://laravel.com/docs/8.x/notifications#broadca
 **Laravel Wave** provides a clear api to receive it.
 
 ```javascript
-import { Wave } from 'laravel-wave';
+import Wave from 'laravel-wave';
 
 window.Wave = new Wave();
 
@@ -187,8 +187,8 @@ return [
      |--------------------------------------------------------------------------
      |
      | Here you may specify which middleware Wave will assign to the routes
-     | that it registers with the package. When necessary, you may modify
-     | these middleware; however, this default value is usually sufficient.
+     | that it registers. When necessary, you may modify these middleware;
+     | however, this default value is usually sufficient.
      |
      */
     'middleware' => [
@@ -239,7 +239,7 @@ window.Wave = new Wave({ endpoint: 'custom-path' });
 
 Depend on web server configuration you may notice that the connection drops at a certain interval. SSE automatically reconnecting after request timeout. Don't worry to lost events during reconnection, Laravel Wave stores events history in one minute by default. You can change `resume_lifetime` value in config file.
 
-Looks like http and web servers weren't ready for persisted connections and set traps at several stages. Some of them disables on the package level:
+Looks like http and web servers weren't expect persisted HTTP connections and set traps at several stages 😟 Some of them disables on the package level:
 
 - [default_socket_timeout](https://www.php.net/manual/ru/filesystem.configuration.php#ini.default-socket-timeout) set to `-1`
 - [max_execution_time](https://www.php.net/manual/en/info.configuration.php#ini.max-execution-time) set to `0` by [set_time_limit](https://www.php.net/manual/ru/function.set-time-limit) function

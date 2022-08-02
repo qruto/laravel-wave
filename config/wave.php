@@ -19,8 +19,8 @@ return [
      |--------------------------------------------------------------------------
      |
      | Here you may specify which middleware Wave will assign to the routes
-     | that it registers with the package. When necessary, you may modify
-     | these middleware; however, this default value is usually sufficient.
+     | that it registers. When necessary, you may modify these middleware;
+     | however, this default value is usually sufficient.
      |
      */
     'middleware' => [
