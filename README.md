@@ -26,7 +26,7 @@
 
 # Introduction
 
-Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broadcasting) for sending events from server to client. Previously, it was closely related to the WebSockets. Imagine that real-time broadcasting is possible through native HTTP without any WebSockets setup.
+Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broadcasting) for sending events from server to client. Imagine that real-time broadcasting is possible through native HTTP without any WebSockets setup.
 
 🗼 Meet the [**Server-sent Events**](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)! Which works with default `redis` broadcasting driver and supports [Laravel Echo](https://github.com/laravel/echo). SSE is specially tuned to send events from the server to client through the HTTP protocol.
 
@@ -78,7 +78,7 @@ When you need shorter interval between ping events, run command with `--interval
 php artisan sse:ping --interval=30
 ```
 
-For example, basic `fastcgi_read_timeout` set to `60s`. Which means that events in the connection must occur more often than 60 seconds to save it persistent.
+For example, basic `fastcgi_read_timeout` value is `60s` for Nginx + PHP FastCGI server setup. Which means that events in the connection must occur more often than 60 seconds to save it persistence.
 
 🐞 Ping with short interval can help you during development to debug a connection and close outdated workers on tiny local server limits.
 
