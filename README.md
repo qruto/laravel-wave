@@ -139,13 +139,13 @@ Depend on web server configuration you may notice that the connection drops at a
 
 > ❇️ Interval between events should be less than web server request timeout and no other low-level timeout options set, to save connection persisted.
 
-By default Wave try to send ping event during SSE connection request if the last event occurred earlier than the number of seconds set in `ping.frequency` config value.
-If application does not expect SSE connections frequently. You can specify the environment for which a ping event will be sent on each Wave request.
+Wave try to send ping event during SSE connection request if the last event occurred earlier than the number of seconds set in `ping.frequency` config value.
+If application does not expect SSE connections frequently, specify the environment for which a ping event will be sent on each Wave request.
 Set to `local` by default.
 
 ### Manual Ping Control
 
-If you want to control ping event by your own, disable automatic sending in `ping.enable` config value.
+If you want to control ping event by your own, disable automatic sending in the `ping.enable` config value.
 
 Laravel Wave provides simple `sse:ping` command which can send single ping or working with interval.
 
