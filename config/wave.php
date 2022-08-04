@@ -4,6 +4,40 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Resume Lifetime
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the number of seconds that you wish an event stream
+    | to be persisted to resume it after reconnect. The connection is
+    | immediately re-established every closed response.
+    |
+    */
+    'resume_lifetime' => 60,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Ping
+    |--------------------------------------------------------------------------
+    |
+    | Automatically sends a ping event during SSE connection request if the
+    | last event occurred before the `frequency` value set in seconds.
+    | It's necessary to keep the connection persisted.
+    |
+    | By setting `eager_env` option a ping event will be sent each request.
+    | It suits for development purposes or in case if the application
+    | is not expecting events frequently. Accepts `array` or `null`.
+    |
+    | For manual ping event control with `sse:ping` command
+    | you can disable this option.
+    */
+    'ping' => [
+        'enable' => true,
+        'frequency' => 30,
+        'eager_env' => 'local', // null or array
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Routes Path
     |--------------------------------------------------------------------------
     |
@@ -40,15 +74,4 @@ return [
 
     'guard' => 'web',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Resume Lifetime
-    |--------------------------------------------------------------------------
-    |
-    | Here you may specify the number of seconds that you wish an event stream
-    | to be persisted to resume it after reconnect. The connection is
-    | immediately re-established every closed response.
-    |
-    */
-    'resume_lifetime' => 60,
 ];

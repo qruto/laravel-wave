@@ -29,6 +29,13 @@ class BroadcastEventHistoryCached implements BroadcastEventHistory
         return $events->slice($key === false ? 0 : $key + 1);
     }
 
+    public function lastEventTimestamp(): int
+    {
+        $lastEvent = $this->getCached()->last();
+
+        return $lastEvent ? $lastEvent['timestamp'] : 0;
+    }
+
     public function pushEvent(string $channel, $event)
     {
         $events = $this->getCached();
