@@ -19,8 +19,8 @@ return [
     | Ping
     |--------------------------------------------------------------------------
     |
-    | Automatically sends a ping event during SSE connection request if the
-    | last event occurred before the `frequency` value set in seconds.
+    | Automatically sends a ping event during SSE connection request if the last event
+    | occurred earlier than the number of seconds set in `frequency` option.
     | It's necessary to keep the connection persisted.
     |
     | By setting `eager_env` option a ping event will be sent each request.
