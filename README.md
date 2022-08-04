@@ -59,7 +59,10 @@ BROADCAST_DRIVER=redis
 
 ## Usage
 
+
 After installation, the server is ready to send broadcast events. Let's setup the client part.
+
+📄 [Broadcasting Documentation](https://laravel.com/docs/9.x/broadcasting)
 
 ### With Laravel Echo
 
@@ -73,7 +76,7 @@ import { WaveConnector } from 'laravel-wave';
 window.Echo = new Echo({ broadcaster: WaveConnector });
 ```
 
-By default, you can find Echo connection sources in **resources/js/bootstrap.js** file.
+In a fresh application, you can find Echo connection sources in **resources/js/bootstrap.js** file.
 
 Replace it by the snippet above:
 <details>
@@ -140,16 +143,16 @@ Depend on web server configuration you may notice that the connection drops at a
 > ❇️ Interval between events should be less than web server request timeout and no other low-level timeout options set, to save connection persisted.
 
 Wave try to send ping event during SSE connection request if the last event occurred earlier than the number of seconds set in `ping.frequency` config value.
-If application does not expect SSE connections frequently, specify the environment for which a ping event will be sent on each Wave request.
-Set to `local` by default.
+If application does not expect SSE connections frequently, specify the environment on which a ping event will be sent each Wave request.
+Default is `local`.
 
 ### Manual Ping Control
 
 If you want to control ping event by your own, disable automatic sending in the `ping.enable` config value.
 
-Laravel Wave provides simple `sse:ping` command which can send single ping or working with interval.
+Laravel Wave provides simple `sse:ping` command which can send a single ping or working with interval.
 
-[Tasks scheduler](https://laravel.com/docs/9.x/scheduling#introduction) can help send ping events every minute:
+[Tasks scheduler](https://laravel.com/docs/9.x/scheduling#introduction) can help send ping event every minute:
 
 ```php
 protected function schedule(Schedule $schedule)
