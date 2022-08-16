@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-wave` will be documented in this file.
 
+## 0.5.2 - 2022-08-16
+
+Required php version dropped to 8.0 ⬇️
+
 ## 0.5.1 - 2022-08-04
 
 🤖 Automated ping events triggered by Wave connection requests.
