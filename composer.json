@@ -22,7 +22,7 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.0",
         "illuminate/broadcasting": "^9.21",
         "illuminate/console": "^9.21",
         "illuminate/contracts": "^9.21",
