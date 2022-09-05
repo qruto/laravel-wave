@@ -34,11 +34,13 @@ Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broa
 
 I have spent a lot of effort playing with SSE, Laravel broadcasting system and Redis 👨‍💻 to prepare **Laravel Wave** and make it available for everyone. Since of February 24, unfortunately I haven't any commercial work, permanent living place or the ability to plan anything for the long term. However, I have a greater desire to continue creating useful solutions for people around the world. It makes me feel better these days.
 
-[![support me](https://raw.githubusercontent.com/slavarazum/slavarazum/main/support-banner.png)](https://ko-fi.com/slavarazum)
+[![support me](https://raw.githubusercontent.com/slavarazum/slavarazum/main/support-banner.png)](https://github.com/sponsors/qruto)
 
-Now I'm trying to setup GitHub Sponsorships, but it currently not available for Ukrainian bank accounts. Searching for solutions through the 3rd party fiscal host. Looks like it requires some stars on the repository ❤️ ⭐
+[GitHub Sponsorships profile](https://github.com/sponsors/qruto) is ready! Your stars make me happier each day ❤️ ⭐ Sponsorship will enable us to live more peacefully and continue to work on useful solutions for you.
 
 I would be very grateful for mentions or just a sincere "thank you" 🤝
+
+[Sponsoring on Ko-Fi with PayPal or Credit Card](https://ko-fi.com/slavarazum).
 
 ## Installation
 
@@ -58,7 +60,6 @@ BROADCAST_DRIVER=redis
 ```
 
 ## Usage
-
 
 After installation, the server is ready to send broadcast events. Let's setup the client part.
 
