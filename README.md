@@ -36,7 +36,7 @@ I have spent a lot of effort playing with SSE, Laravel broadcasting system and R
 
 [![support me](https://raw.githubusercontent.com/slavarazum/slavarazum/main/support-banner.png)](https://github.com/sponsors/qruto)
 
-[GitHub Sponsorships profile](https://github.com/sponsors/qruto) is ready! Your stars make me happier each day ❤️ ⭐ Sponsorship will enable us to live more peacefully and continue to work on useful solutions for you.
+[GitHub Sponsorships profile](https://github.com/sponsors/qruto) is ready! There you can find current work, future plans, goals and dreams... Your stars make me happier each day ❤️ ⭐ Sponsorship will enable us to live more peacefully and continue to work on useful solutions for you.
 
 I would be very grateful for mentions or just a sincere "thank you" 🤝
 
