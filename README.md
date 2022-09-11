@@ -30,6 +30,8 @@ Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broa
 
 🗼 Meet the [**Server-sent Events**](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)! Which works with default `redis` broadcasting driver and supports [Laravel Echo](https://github.com/laravel/echo). SSE is specially tuned to send events from the server to client through the HTTP protocol.
 
+[Demo with stream of tweets](https://wave.qruto.dev) 🐤
+
 ## Support
 
 I have spent a lot of effort playing with SSE, Laravel broadcasting system and Redis 👨‍💻 to prepare **Laravel Wave** and make it available for everyone. Since of February 24, unfortunately I haven't any commercial work, permanent living place or the ability to plan anything for the long term. However, I have a greater desire to continue creating useful solutions for people around the world. It makes me feel better these days.
