@@ -109,6 +109,10 @@ Replace it by the snippet above:
 
 </details>
 
+Now you can use Echo as usual.
+
+[Receiving Broadcasts](https://laravel.com/docs/9.x/broadcasting#receiving-broadcasts)
+
 ### Wave Models
 
 With native conventions of [Model Events Broadcasting](https://laravel.com/docs/8.x/broadcasting#model-broadcasting)
