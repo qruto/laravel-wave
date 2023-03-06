@@ -35,10 +35,6 @@ class WaveConnection extends Controller
             return true;
         }
 
-        if (time() - $this->eventHistory->lastEventTimestamp() > config('wave.ping.frequency', 30)) {
-            return true;
-        }
-
-        return false;
+        return time() - $this->eventHistory->lastEventTimestamp() > config('wave.ping.frequency', 30);
     }
 }

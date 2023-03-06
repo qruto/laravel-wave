@@ -32,7 +32,7 @@ class PresenceChannelJoinEvent implements ShouldBroadcast
         return new PresenceChannel($this->channel);
     }
 
-    public function broadcastAs()
+    public function broadcastAs(): string
     {
         return 'join';
     }

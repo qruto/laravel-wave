@@ -15,7 +15,7 @@ class RemoveStoredConnectionListener
 
     public function handle(SseConnectionClosedEvent $event)
     {
-        if (! $event->user) {
+        if ($event->user === null) {
             return;
         }
 

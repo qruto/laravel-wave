@@ -24,7 +24,7 @@ class SsePingEvent implements ShouldBroadcast
         return new Channel('general');
     }
 
-    public function broadcastAs()
+    public function broadcastAs(): string
     {
         return 'ping';
     }

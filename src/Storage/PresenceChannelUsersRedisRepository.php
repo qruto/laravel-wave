@@ -40,7 +40,7 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
 
         $userConnections = collect();
 
-        if ($this->db->exists($key)) {
+        if ((bool) $this->db->exists($key)) {
             /** @var \Illuminate\Support\Collection $userConnections */
             $userConnections = unserialize($this->db->get($key));
             if ($userConnections->doesntContain($connectionId)) {
@@ -63,7 +63,7 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
 
         $key = $this->connectionsKey($user, $channel);
 
-        if (! $this->db->exists($key)) {
+        if ($this->db->exists($key) === 0) {
             return $disconnected;
         }
 
@@ -72,9 +72,8 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
 
         if ($userConnections->isEmpty() || $userConnections->count() === 1 && $userConnections->contains($connectionId)) {
             $this->db->del($key);
-            $disconnected = true;
 
-            return $disconnected;
+            return true;
         }
 
         $this->db->set($key, serialize($userConnections->filter(fn ($id) => $id !== $connectionId)));
@@ -93,6 +92,6 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
     // get all users from all channels
     public function getChannels(Authenticatable $user): Collection
     {
-        return collect($this->db->keys('presence_channel:*:user:'.$this->userKey($user)))->map(fn($key) => Str::between($key, 'presence_channel:', ':user'));
+        return collect($this->db->keys('presence_channel:*:user:'.$this->userKey($user)))->map(fn ($key) => Str::between($key, 'presence_channel:', ':user'));
     }
 }

@@ -41,7 +41,7 @@ class ClientEvent implements ShouldBroadcast
         return is_scalar($this->data) ? [$this->data] : $this->data;
     }
 
-    public function broadcastAs()
+    public function broadcastAs(): string
     {
         return 'client-'.$this->name;
     }
