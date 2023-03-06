@@ -1,8 +1,8 @@
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="/art/logo-dark.png">
-        <source media="(prefers-color-scheme: light)" srcset="/art/logo-light.png">
-        <img alt="Laravel Wave Logo" src="/art/logo-light.png" width="470">
+        <source width="350" media="(prefers-color-scheme: dark)" srcset="/art/logo-dark.png">
+        <source width="350" media="(prefers-color-scheme: light)" srcset="/art/logo-light.png">
+        <img alt="Laravel Wave Logo" src="/art/logo-light.png" width="350">
     </picture>
 </p>
 
