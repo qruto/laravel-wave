@@ -14,7 +14,7 @@ class PresenceChannelUsersController extends Controller
 {
     public function __construct(protected PresenceChannelUsersRepository $repository)
     {
-        $this->middleware(function ($request, $next) {
+        $this->middleware(static function ($request, $next) {
             Broadcast::auth($request);
 
             return $next($request);

@@ -16,6 +16,9 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class ServerSentEventStream implements Responsable
 {
+    /**
+     * @var array<string, string>
+     */
     protected const HEADERS = [
         'Content-Type' => 'text/event-stream',
         'Connection' => 'keep-alive',
@@ -49,7 +52,7 @@ class ServerSentEventStream implements Responsable
             if ($request->hasHeader('Last-Event-ID')) {
                 $missedEvents = $this->eventsHistory->getEventsFrom($request->header('Last-Event-ID'), $this->channelPrefix);
 
-                $missedEvents->each(function ($event) use ($handler) {
+                $missedEvents->each(static function ($event) use ($handler) {
                     $handler($event['event'], $event['channel']);
                 });
             }
@@ -81,9 +84,9 @@ class ServerSentEventStream implements Responsable
             }
 
             (new ServerSentEvent(
-                "$channel.$event",
+                sprintf('%s.%s', $channel, $event),
                 json_encode(['data' => $data], JSON_THROW_ON_ERROR),
-                "$channel.$eventId"
+                sprintf('%s.%s', $channel, $eventId)
             ))();
         };
     }
