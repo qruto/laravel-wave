@@ -2,7 +2,7 @@
     <picture>
         <source media="(prefers-color-scheme: dark)" srcset="/art/logo-dark.svg">
         <source media="(prefers-color-scheme: light)" srcset="/art/logo-light.svg">
-        <img alt="Laravel Wave Logo" src="/art/logo-light.svg" width="400">
+        <img alt="Laravel Wave Logo" src="/art/logo-light.svg" width="470">
     </picture>
 </p>
 
@@ -21,7 +21,7 @@
     <picture>
         <source media="(prefers-color-scheme: dark)" srcset="/art/connection-demo-dark.png">
         <source media="(prefers-color-scheme: light)" srcset="/art/connection-demo-light.png">
-        <img alt="Laravel Wave Logo" src="/art/connection-demo-light.png" width="400">
+        <img alt="Laravel Wave Demo" src="/art/connection-demo-light.png" width="400">
     </picture>
 </p>
 
