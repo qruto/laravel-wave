@@ -93,8 +93,6 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
     // get all users from all channels
     public function getChannels(Authenticatable $user): Collection
     {
-        return collect($this->db->keys('presence_channel:*:user:'.$this->userKey($user)))->map(function ($key) {
-            return Str::between($key, 'presence_channel:', ':user');
-        });
+        return collect($this->db->keys('presence_channel:*:user:'.$this->userKey($user)))->map(fn($key) => Str::between($key, 'presence_channel:', ':user'));
     }
 }

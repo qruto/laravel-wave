@@ -46,9 +46,7 @@ class BroadcastEventHistoryCached implements BroadcastEventHistory
             'timestamp' => time(),
         ]);
 
-        $events = $events->filter(function ($event) {
-            return time() - $event['timestamp'] < $this->lifetime;
-        })->values();
+        $events = $events->filter(fn($event) => time() - $event['timestamp'] < $this->lifetime)->values();
 
         cache()->put('broadcasted_events', $events, $this->lifetime);
 

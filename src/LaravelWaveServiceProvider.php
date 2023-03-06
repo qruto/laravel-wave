@@ -38,9 +38,7 @@ class LaravelWaveServiceProvider extends PackageServiceProvider
 
         $this->app->bind(BroadcastEventHistory::class, BroadcastEventHistoryCached::class);
 
-        $this->app->extend(BroadcastManager::class, function ($service, $app) {
-            return new BroadcastManagerExtended($app);
-        });
+        $this->app->extend(BroadcastManager::class, fn($service, $app) => new BroadcastManagerExtended($app));
 
         $this->app->bind(ServerSentEventSubscriber::class, RedisSubscriber::class);
         $this->app->bind(PresenceChannelUsersRepository::class, PresenceChannelUsersRedisRepository::class);

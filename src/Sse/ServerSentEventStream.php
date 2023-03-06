@@ -67,12 +67,12 @@ class ServerSentEventStream implements Responsable
             if ($this->needsAuth($channel)) {
                 try {
                     $this->authChannel($channel, $request);
-                } catch (AccessDeniedHttpException $e) {
+                } catch (AccessDeniedHttpException) {
                     return;
                 }
             }
 
-            ['event' => $event, 'data' => $data] = is_array($message) ? $message : json_decode($message, true);
+            ['event' => $event, 'data' => $data] = is_array($message) ? $message : json_decode($message, true, 512, JSON_THROW_ON_ERROR);
 
             $eventSocketId = Arr::pull($data, 'socket');
             $eventId = Arr::pull($data, 'broadcast_event_id');
@@ -83,7 +83,7 @@ class ServerSentEventStream implements Responsable
 
             (new ServerSentEvent(
                 "$channel.$event",
-                json_encode(['data' => $data]),
+                json_encode(['data' => $data], JSON_THROW_ON_ERROR),
                 "$channel.$eventId"
             ))();
         };

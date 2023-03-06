@@ -2,7 +2,9 @@
 
 namespace Qruto\LaravelWave\Sse;
 
-class ServerSentEvent
+use Stringable;
+
+class ServerSentEvent implements Stringable
 {
     public function __construct(
         private string $event,
@@ -38,7 +40,7 @@ class ServerSentEvent
         return "$property: ".$this->$property.PHP_EOL;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $event = $this->propertyString('event');
 
