@@ -9,12 +9,12 @@
 <p align="center">Bring <strong>live</strong> to your application</p>
 
 <p align="center">
-    <a href="https://github.com/qruto/laravel-flora/actions/workflows/tests.yml"><img src="https://github.com/qruto/laravel-flora/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
-    <a href="https://github.com/qruto/laravel-flora/actions/workflows/styles.yml"><img src="https://github.com/qruto/laravel-flora/actions/workflows/styles.yml/badge.svg" alt="Styles check"></a>
-    <a href="https://github.com/qruto/laravel-flora/actions/workflows/types.yml"><img src="https://github.com/qruto/laravel-flora/actions/workflows/types.yml/badge.svg" alt="Types check"></a>
-    <a href="https://github.com/qruto/laravel-flora/actions/workflows/refactor.yml"><img src="https://github.com/qruto/laravel-flora/actions/workflows/refactor.yml/badge.svg" alt="Refactor code"></a>
-    <a href="https://packagist.org/packages/qruto/laravel-flora"><img src="https://img.shields.io/packagist/dt/qruto/laravel-flora" alt="Total Downloads"></a>
-    <a href="https://packagist.org/packages/qruto/laravel-flora"><img src="https://img.shields.io/packagist/v/qruto/laravel-flora" alt="Latest Stable Version"></a>
+    <a href="https://github.com/qruto/laravel-wave/actions/workflows/tests.yml"><img src="https://github.com/qruto/laravel-wave/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
+    <a href="https://github.com/qruto/laravel-wave/actions/workflows/styles.yml"><img src="https://github.com/qruto/laravel-wave/actions/workflows/styles.yml/badge.svg" alt="Styles check"></a>
+    <a href="https://github.com/qruto/laravel-wave/actions/workflows/types.yml"><img src="https://github.com/qruto/laravel-wave/actions/workflows/types.yml/badge.svg" alt="Types check"></a>
+    <a href="https://github.com/qruto/laravel-wave/actions/workflows/refactor.yml"><img src="https://github.com/qruto/laravel-wave/actions/workflows/refactor.yml/badge.svg" alt="Refactor code"></a>
+    <a href="https://packagist.org/packages/qruto/laravel-wave"><img src="https://img.shields.io/packagist/dt/qruto/laravel-wave" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/qruto/laravel-wave"><img src="https://img.shields.io/packagist/v/qruto/laravel-wave" alt="Latest Stable Version"></a>
 </p>
 
 <p align="center">
