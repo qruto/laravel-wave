@@ -1,0 +1,32 @@
+name: refactor
+
+on:
+  push:
+    paths:
+      - '**.php'
+
+jobs:
+  rector:
+    name: Rector
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@v2
+
+      - name: Run Rector
+        run: ./vendor/bin/rector --debug
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Refactor code

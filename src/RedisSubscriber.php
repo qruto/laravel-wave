@@ -13,6 +13,7 @@ class RedisSubscriber implements ServerSentEventSubscriber
     {
         $redisConnectionName = config('broadcasting.connections.redis.connection');
 
+        /** @var \Illuminate\Redis\Connections\PhpRedisConnection|\Illuminate\Redis\Connections\PredisConnection $connection */
         $connection = Redis::connection("$redisConnectionName-subscription");
 
         register_shutdown_function(function () use ($request, $connection) {

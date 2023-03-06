@@ -12,17 +12,38 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: main
+          # Fetch entire history of repository to ensure relase date can be
+          # extracted from commit of the given tag.
+          fetch-depth: 0
+          # Checkout target branch of this release. Ensures that the CHANGELOG
+          # is not out of date.
+          ref: ${{ github.event.release.target_commitish }}
+
+      - name: Extract release date from git tag
+        id: release_date
+        run: |
+          # Get UNIX timestamp from git-tag
+          TIMESTAMP_OF_RELEASE_COMMIT=$(git log -1 --date=unix --format=%ad '${{ github.event.release.tag_name }}');
+
+          # Convert timestamp to UTC date in Y-m-d format
+          FORMATED_DATE=$(date -u -d @$TIMESTAMP_OF_RELEASE_COMMIT +%Y-%m-%d)
+
+          # Make date available to other steps
+          echo "date=$(echo $FORMATED_DATE)" >> $GITHUB_OUTPUT;
 
       - name: Update Changelog
         uses: stefanzweifel/changelog-updater-action@v1
         with:
-          latest-version: ${{ github.event.release.name }}
+          # Pass extracted release date, release notes and version to the Action.
+          release-date: ${{ steps.release_date.outputs.date }}
           release-notes: ${{ github.event.release.body }}
+          latest-version: ${{ github.event.release.tag_name }}
+          compare-url-target-revision: ${{ github.event.release.target_commitish }}
 
       - name: Commit updated CHANGELOG
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          branch: main
+          # Push updated CHANGELOG to release target branch.
+          branch: ${{ github.event.release.target_commitish }}
           commit_message: Update CHANGELOG
           file_pattern: CHANGELOG.md
