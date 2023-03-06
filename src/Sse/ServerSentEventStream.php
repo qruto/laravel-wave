@@ -39,7 +39,6 @@ class ServerSentEventStream implements Responsable
         ini_set('default_socket_timeout', -1);
         set_time_limit(0);
 
-        /** @var string */
         $socket = Broadcast::socket($request);
 
         return $this->responseFactory->stream(function () use ($request, $socket) {
