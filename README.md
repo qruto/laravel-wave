@@ -1,8 +1,20 @@
 <p align="center">
     <picture>
-        <source width="350" media="(prefers-color-scheme: dark)" srcset="/art/logo-dark.png">
-        <source width="350" media="(prefers-color-scheme: light)" srcset="/art/logo-light.png">
-        <img alt="Laravel Wave Logo" src="/art/logo-light.png" width="350">
+        <source 
+            width="350" 
+            media="(prefers-color-scheme: dark)"
+            srcset="https://github.com/qruto/laravel-wave/raw/HEAD/art/logo-dark.png"
+        >
+        <source
+            width="350"
+            media="(prefers-color-scheme: light)"
+            srcset="https://github.com/qruto/laravel-wave/raw/HEAD/art/logo-light.png"
+        >
+        <img
+            alt="Laravel Wave Logo"
+            src="https://github.com/qruto/laravel-wave/raw/HEAD/art/logo-light.png"
+            width="350"
+        >
     </picture>
 </p>
 
@@ -19,9 +31,19 @@
 
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="/art/connection-demo-dark.png">
-        <source media="(prefers-color-scheme: light)" srcset="/art/connection-demo-light.png">
-        <img alt="Laravel Wave Demo" src="/art/connection-demo-light.png" width="400">
+        <source 
+            media="(prefers-color-scheme: dark)"
+            srcset="https://github.com/qruto/laravel-wave/raw/HEAD/art/connection-demo-dark.png"
+        >
+        <source 
+            media="(prefers-color-scheme: light)" 
+            srcset="https://github.com/qruto/laravel-wave/raw/HEAD/art/connection-demo-light.png"
+        >
+        <img
+            alt="Laravel Wave Demo"
+            src="https://github.com/qruto/laravel-wave/raw/HEAD/art/connection-demo-light.png"
+            width="400"
+        >
     </picture>
 </p>
 
@@ -43,7 +65,7 @@ I have spent a lot of effort playing with SSE, Laravel broadcasting system and R
 
 I would be very grateful for mentions or just a sincere "thank you".
 
-💳 [Sponsoring directly to savings jar](https://send.monobank.ua/jar/3eG4Vafvzq) with **card** or **Apple Pay**/**Google Pay**.
+💳 [Sponsoring directly to savings jar](https://send.monobank.ua/jar/3eG4Vafvzq) with card or Apple Pay/Google Pay.
 
 ## Installation
 
