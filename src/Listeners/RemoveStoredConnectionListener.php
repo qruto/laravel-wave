@@ -15,7 +15,7 @@ class RemoveStoredConnectionListener
 
     public function handle(SseConnectionClosedEvent $event)
     {
-        if ($event->user === null) {
+        if (!$event->user instanceof \Illuminate\Contracts\Auth\Authenticatable) {
             return;
         }
 

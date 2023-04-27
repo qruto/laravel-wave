@@ -17,7 +17,7 @@ class RedisSubscriber implements ServerSentEventSubscriber
         $connection = Redis::connection("$redisConnectionName-subscription");
 
         register_shutdown_function(function () use ($request, $connection) {
-            if (connection_aborted()) {
+            if (connection_aborted() !== 0) {
                 event(new SseConnectionClosedEvent($request->user(), $request->header('X-Socket-Id')));
             }
 
