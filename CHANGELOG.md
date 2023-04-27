@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-wave` will be documented in this file.
 
+## 0.6.1 - 2023-04-27
+
+Fixed route caching with double naming conflict https://github.com/qruto/laravel-wave/issues/15
+
 ## 0.6.0 - 2023-03-07
 
 Laravel 10 support
