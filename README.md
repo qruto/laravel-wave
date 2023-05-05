@@ -90,7 +90,7 @@ After installation, the server is ready to send broadcast events. Let's setup th
 
 📄 [Broadcasting Documentation](https://laravel.com/docs/9.x/broadcasting)
 
-### With Laravel Echo
+### 1. With Laravel Echo
 
 Import Laravel Echo with `WaveConnector` and pass it to the broadcaster option:
 
@@ -134,9 +134,9 @@ Replace it by the snippet above:
 
 Now you can use Echo as usual.
 
-[Receiving Broadcasts](https://laravel.com/docs/9.x/broadcasting#receiving-broadcasts)
+📞 [Receiving Broadcasts](https://laravel.com/docs/9.x/broadcasting#receiving-broadcasts)
 
-### Wave Models
+### 2. With Live Eloquent Models
 
 With native conventions of [Model Events Broadcasting](https://laravel.com/docs/8.x/broadcasting#model-broadcasting)
 and [Broadcast Notifications](https://laravel.com/docs/8.x/notifications#broadcast-notifications) you can use
@@ -166,11 +166,11 @@ By default Wave prefixes model name with `App.Models` namespace. You can overrid
 window.Wave = new Wave({ namespace: 'App.Path.Models' });
 ```
 
-## Persistent Connection / Fighting with Timeouts
+## Persistent Connection (optional)
 
 Depend on web server configuration you may notice that the connection drops at a certain interval. Wave automatically reconnecting after request timeout. Don't worry to lost events during reconnection, Laravel Wave stores events history in one minute by default. You can change `resume_lifetime` value in the config file.
 
-> ❇️ Interval between events should be less than web server request timeout and no other low-level timeout options set, to save connection persisted.
+> ⚠️ Interval between events should be less than web server request timeout and no other low-level timeout options set, to save connection persisted.
 
 Wave try to send ping event during SSE connection request if the last event occurred earlier than the number of seconds set in `ping.frequency` config value.
 If application does not expect SSE connections frequently, specify the environment on which a ping event will be sent each Wave request.
@@ -220,7 +220,7 @@ location = /wave {
 
 **\*** copy `fastcgi_pass` unix socket path from `location ~ \.php$`.
 
-### Low Level PHP FPM Timeout
+### Disable PHP FPM Timeout
 
 For example, [Laravel Forge](https://forge.laravel.com) configures PHP FPM pool with `request_terminate_timeout = 60` which forces to terminate all requests after 60 seconds.
 
