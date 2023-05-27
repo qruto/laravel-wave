@@ -1,5 +1,7 @@
 # Changelog
 
+## [Unreleased](https://github.com/qruto/laravel-wave-js/compare/v0.7.0...main)
+
 All notable changes to `laravel-wave` will be documented in this file.
 
 ## 0.6.1 - 2023-04-27
