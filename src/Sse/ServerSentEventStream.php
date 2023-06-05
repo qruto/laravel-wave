@@ -85,7 +85,7 @@ class ServerSentEventStream implements Responsable
 
             (new ServerSentEvent(
                 sprintf('%s.%s', $channel, $event),
-                json_encode(['data' => $data], JSON_THROW_ON_ERROR),
+                json_encode($data, JSON_THROW_ON_ERROR),
                 sprintf('%s.%s', $channel, $eventId)
             ))();
         };

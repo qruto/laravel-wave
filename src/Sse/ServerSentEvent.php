@@ -54,7 +54,7 @@ class ServerSentEvent implements Stringable
             $event .= $this->propertyString('id');
         }
 
-        return $event.PHP_EOL.PHP_EOL;
+        return $event.PHP_EOL;
     }
 
     public function __invoke()
