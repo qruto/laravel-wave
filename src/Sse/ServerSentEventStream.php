@@ -2,6 +2,8 @@
 
 namespace Qruto\LaravelWave\Sse;
 
+use Closure;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
@@ -33,6 +35,7 @@ class ServerSentEventStream implements Responsable
         protected ResponseFactory $responseFactory,
         protected PresenceChannelUsersRedisRepository $store,
         protected BroadcastEventHistory $eventsHistory,
+        protected ConfigRepository $config
     ) {
         $this->channelPrefix = config('database.redis.options.prefix', '');
     }
@@ -45,7 +48,12 @@ class ServerSentEventStream implements Responsable
         $socket = Broadcast::socket($request);
 
         return $this->responseFactory->stream(function () use ($request, $socket) {
-            (new ServerSentEvent('connected', $socket, $request->hasHeader('Last-Event-ID') ? $request->header('Last-Event-ID') : 'wave'))();
+            (new ServerSentEvent(
+                'connected',
+                $socket,
+                $request->hasHeader('Last-Event-ID') ? $request->header('Last-Event-ID') : 'wave',
+                $this->config->get('wave.retry', null),
+            ))();
 
             $handler = $this->eventHandler($request, $socket);
 
@@ -61,7 +69,7 @@ class ServerSentEventStream implements Responsable
         }, Response::HTTP_OK, self::HEADERS + ['X-Socket-Id' => $socket]);
     }
 
-    protected function eventHandler(Request $request, string $socket)
+    protected function eventHandler(Request $request, string $socket): Closure
     {
         return function ($message, $channel) use ($request, $socket) {
             $channel = $this->removePrefixFromChannel($channel);

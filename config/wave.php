@@ -16,6 +16,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Reconnection Time
+    |--------------------------------------------------------------------------
+    | Here you may specify the number of milliseconds that you wish to wait before
+    | reconnecting to the server after a lost connection. By default, the
+    | client will attempt to reconnect immediately.
+    | See documentation for more details.
+    | https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format
+    */
+    'retry' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Ping
     |--------------------------------------------------------------------------
     |
