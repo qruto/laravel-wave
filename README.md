@@ -73,16 +73,23 @@ Works well at home. Should be battle tested for **1.0**, feedbacks appreciated!
 
 ## Support
 
-I have spent a lot of effort playing with SSE, Laravel broadcasting system and Redis to prepare **Laravel Wave** and make it available for everyone. Since of February 24, unfortunately I haven't any commercial work, permanent living place or the ability to plan anything for the long term. However, I have a greater desire to continue creating useful solutions for people around the world. It makes me feel better these days.
+In light of recent events in Ukraine, my life has taken an unexpected turn.
+Since February 24th, I've lost my commercial work, my permanent residence,
+and my ability to plan for the future.
+
+During these challenging times, I derive strength and purpose from creating 
+open source projects, such as Wave.
 
 [![support me](https://raw.githubusercontent.com/slavarazum/slavarazum/main/support-banner.png)](https://github.com/sponsors/qruto)
 
-[GitHub Sponsorships profile](https://github.com/sponsors/qruto) is ready! There you can find current work, future plans, goals and dreams... Your stars make me happier each day ✨ Sponsorship will enable us to live more peacefully and continue to work on useful solutions for you.
+I welcome you to visit my [GitHub Sponsorships profile](https://github.com/sponsors/qruto). 
+There, you can discover more about my current work, future ambitions, and aspirations. 
+Every ⭐ you give brings joy to my day, and your sponsorship can make 
+a profound difference in my ability to continue creating.
 
-I would be very grateful for mentions or just a sincere "thank you".
+I'm truly grateful for your support, whether it's a shout-out or a heartfelt "thank you".
 
-💳 [Sponsoring directly to savings jar](https://send.monobank.ua/jar/3eG4Vafvzq) with card or Apple Pay/Google Pay.
-
+💳 [Help directly](https://revolut.me/slavarazum).
 
 ## Installation
 
