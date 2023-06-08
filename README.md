@@ -49,11 +49,27 @@
 
 # Introduction
 
-Laravel has brilliant [broadcasting system](https://laravel.com/docs/master/broadcasting) for sending events from server to client. Imagine that real-time broadcasting is possible through native HTTP without any WebSockets setup.
+Unlock the power of Laravel's [broadcasting system](https://laravel.com/docs/master/broadcasting)
+with **Wave**. Imagine that real-time server broadcasting is possible over native HTTP without any WebSockets setup.
 
-🗼 Meet the [**Server-sent Events**](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)! Which works with default `redis` broadcasting driver and supports [Laravel Echo](https://github.com/laravel/echo). SSE is specially tuned to send events from the server to client through the HTTP protocol.
+Meet the [**Server-sent Events**](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) 🗼 Works seamlessly with Laravel's default `redis` broadcasting driver and supports [Laravel Echo](https://github.com/laravel/echo).
 
-[Demo with stream of tweets](https://wave.qruto.dev) 🐤
+> Server-Sent Events (**SSE**) is specially tuned for real-time server-to-client communication.
+
+Experience it live with our [demo streaming tweets](https://wave.qruto.dev) 🐤.
+
+Works well at home. Should be battle tested for **1.0**, feedbacks appreciated!
+
+## 🌟 Key Features
+
+- **⚡ Native Redis Driver Support**: Wave seamlessly integrates with Laravel's default `redis` broadcasting driver, ensuring efficient real-time data transfer.
+
+- **🔄 Resume From Last**: Connection drops? No problem! Wave intelligently resumes the event stream from the last event, ensuring no crucial data is lost in transit.
+
+- **🟢 Live Models**: With a simple interface that respects Laravel's native conventions for [Model Events Broadcasting](https://laravel.com/docs/master/broadcasting#model-broadcasting)
+  and [Broadcast Notifications](https://laravel.com/docs/master/notifications#broadcast-notifications), Wave turbocharges your application with real-time updates.
+
+- **🎛️️ Full Requests Control**: Wave hands you the reins over connection and authentication requests, granting you the freedom to shape your broadcasting setup to your exact requirements.
 
 ## Support
 
@@ -67,18 +83,17 @@ I would be very grateful for mentions or just a sincere "thank you".
 
 💳 [Sponsoring directly to savings jar](https://send.monobank.ua/jar/3eG4Vafvzq) with card or Apple Pay/Google Pay.
 
+
 ## Installation
 
-First release 🎉 Works well at home, but should be battle tested before **1.0**. Feedbacks appreciated!
-
-You can install packages to server and client sides via composer with npm:
+Install **Wave** on both server and client sides using Composer and npm:
 
 ```bash
 composer require qruto/laravel-wave
 npm install laravel-wave
 ```
 
-Change broadcast driver in your `.env` file:
+Then, set your `.env` file to use the `redis` broadcasting driver:
 
 ```ini
 BROADCAST_DRIVER=redis
@@ -86,9 +101,8 @@ BROADCAST_DRIVER=redis
 
 ## Usage
 
-After installation, the server is ready to send broadcast events. Let's setup the client part.
-
-📄 [Broadcasting Documentation](https://laravel.com/docs/9.x/broadcasting)
+After installing **Wave**, your server is ready to broadcast events.
+You can use it with **Echo** as usual or try `Wave` model to work with predefined Eloquent events.
 
 ### 1. With Laravel Echo
 
@@ -102,7 +116,7 @@ import { WaveConnector } from 'laravel-wave';
 window.Echo = new Echo({ broadcaster: WaveConnector });
 ```
 
-In a fresh application, you can find Echo connection sources in **resources/js/bootstrap.js** file.
+For fresh installations, locate Echo connection configuration in **resources/js/bootstrap.js** file.
 
 Replace it by the snippet above:
 <details>
@@ -132,15 +146,15 @@ Replace it by the snippet above:
 
 </details>
 
-Now you can use Echo as usual.
+Use Echo as you typically would.
 
-📞 [Receiving Broadcasts](https://laravel.com/docs/9.x/broadcasting#receiving-broadcasts)
+📞 Full documentation of [Receiving Broadcasts](https://laravel.com/docs/master/broadcasting#receiving-broadcasts)
 
 ### 2. With Live Eloquent Models
 
-With native conventions of [Model Events Broadcasting](https://laravel.com/docs/8.x/broadcasting#model-broadcasting)
-and [Broadcast Notifications](https://laravel.com/docs/8.x/notifications#broadcast-notifications) you can use
-Wave models to receive predefined events.
+With native conventions of [Model Events Broadcasting](https://laravel.com/docs/master/broadcasting#model-broadcasting)
+and [Broadcast Notifications](https://laravel.com/docs/master/notifications#broadcast-notifications) you can use
+**Wave** models to receive model events and notifications.
 
 ```javascript
 import Wave from 'laravel-wave';
@@ -158,31 +172,59 @@ wave.model('User', '1')
     .updated('Team', (team) => console.log('team updated', team));
 ```
 
-Let's start by passing model name and key to the `model` method of the Wave instance.
+Start by calling the `model` method on the `Wave` instance with the model name and key.
 
-By default Wave prefixes model name with `App.Models` namespace. You can override it with `namespace` option:
+By default, Wave prefixes model names with `App.Models` namespace. You can customize this with the `namespace` option:
 
 ```javascript
 window.Wave = new Wave({ namespace: 'App.Path.Models' });
 ```
 
-## Persistent Connection (optional)
+### Available Options
 
-Depend on web server configuration you may notice that the connection drops at a certain interval. Wave automatically reconnecting after request timeout. Don't worry to lost events during reconnection, Laravel Wave stores events history in one minute by default. You can change `resume_lifetime` value in the config file.
+These options can be passed to the `Wave` or `Echo` instance:
 
-> ⚠️ Interval between events should be less than web server request timeout and no other low-level timeout options set, to save connection persisted.
+| Name          | Type                                                                           | Default                 | Description                                                                    |
+|---------------|--------------------------------------------------------------------------------|-------------------------|--------------------------------------------------------------------------------|
+| endpoint      | _string_                                                                       | `/wave`                 | Primary SSE connection route.                                                  |
+| namespace     | _string_                                                                       | `App.Events`            | Namespace of events to listen for.                                             |
+| auth.headers  | _object_                                                                       | `{}`                    | Additional authentication headers.                                             |
+| authEndpoint  | _string?_                                                                      | `/broadcasting/auth`    | Authentication endpoint.                                                       |
+| csrfToken     | _string?_                                                                      | `undefined` or `string` | CSRF token, defaults from `XSRF-TOKEN` cookie.                                 |
+| bearerToken   | _string?_                                                                      | `undefined`             | Bearer tokenfor authentication.                                                |
+| request       | _[Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request)?_ | `undefined`             | Custom settings for connection and authentication requests.                    |
+| pauseInactive | _boolean_                                                                      | `false`                 | If `true`, closes connection when the page is hidden and reopens when visible. |
 
-Wave try to send ping event during SSE connection request if the last event occurred earlier than the number of seconds set in `ping.frequency` config value.
-If application does not expect SSE connections frequently, specify the environment on which a ping event will be sent each Wave request.
-Default is `local`.
+📄 [Check out full Laravel Broadcasting documentation](https://laravel.com/docs/9.x/broadcasting)
+
+## Advanced Setup
+
+### Persistent Connection
+
+Depending on your web server configuration, you might observe that the connection drops at certain intervals.
+Wave is designed to automatically reconnect after a request timeout.
+During reconnection, you won't lose any events as Laravel Wave
+stores event history for one minute by default.
+The `resume_lifetime` value in the config file
+allows you to adjust this duration.
+
+> ⚠️ Ensure that the interval between events is shorter than your web server's request timeout 
+> and that no other low-level timeout options are set to keep the connection persistent
+
+Wave tries to send a ping event on each Server-Sent Events (SSE) connection request
+if the last event occurred earlier than the `ping.frequency` config value.
+
+If your application doesn't expect many SSE connections,
+specify the list of environments in which a ping event will be sent
+with each Wave request. By default, this is set to `local`.
 
 ### Manual Ping Control
 
-If you want to control ping event by your own, disable automatic sending in the `ping.enable` config value.
+For more control over the ping event, disable automatic sending by adjusting the `ping.enable` config value.
 
-Laravel Wave provides simple `sse:ping` command which can send a single ping or working with interval.
+**Wave** offers the `sse:ping` command for manually sending a single ping or operating at an interval.
 
-[Tasks scheduler](https://laravel.com/docs/9.x/scheduling#introduction) can help send ping event every minute:
+Use the Laravel [Tasks scheduler](https://laravel.com/docs/master/scheduling#introduction) to send a ping event every minute:
 
 ```php
 protected function schedule(Schedule $schedule)
@@ -191,21 +233,21 @@ protected function schedule(Schedule $schedule)
 }
 ```
 
-When you need shorter interval between ping events, run command with `--interval` option which receives number of seconds:
+If you require shorter intervals between ping events, use the --interval option to set the number of seconds:
 
 ```bash
 php artisan sse:ping --interval=30
 ```
 
-For example, basic `fastcgi_read_timeout` value is `60s` for Nginx + PHP FastCGI server setup. Which means that events in the connection must occur more often than 60 seconds to save it persistent.
+For example, basic `fastcgi_read_timeout` value is `60s` for Nginx + PHP FastCGI server setup.
+This means that to keep the connection persistent, events must occur more often than every **60 seconds**.
 
-### Web Server
+### Web Server Configuration
 
-Looks like web servers weren't expect persisted HTTP connections and set traps at several stages 😟
+Web servers usually don't expect persistent HTTP connections and may have limitations at various stages 😟.
 
-Using Nginx + PHP FPM setup, usually connection limited to `1m` by [FastCGI](https://www.php.net/manual/install.fpm.php).
-
-Add next location directive after the end of `location ~ \.php$` body:
+For a Nginx + PHP FPM setup, the connection is typically limited to `1m` by [FastCGI](https://www.php.net/manual/install.fpm.php).
+Modify the location directive after the end of `location ~ \.php$` as follows:
 
 ```nginx
 location = /wave {
@@ -218,31 +260,31 @@ location = /wave {
 }
 ```
 
-**\*** copy `fastcgi_pass` unix socket path from `location ~ \.php$`.
+**Note:** Copy the `fastcgi_pass` Unix socket path from `location ~ \.php$`.
 
-### Disable PHP FPM Timeout
+### Disabling PHP FPM Timeout
 
-For example, [Laravel Forge](https://forge.laravel.com) configures PHP FPM pool with `request_terminate_timeout = 60` which forces to terminate all requests after 60 seconds.
+Some platforms, such as [Laravel Forge](https://forge.laravel.com), configure the PHP FPM pool with `request_terminate_timeout = 60`, terminating all requests after 60 seconds.
 
-You can disable it in `/etc/php/8.1/fpm/pool.d/www.conf` config file:
+You can disable this in the `/etc/php/8.1/fpm/pool.d/www.conf` config file:
 
 ```ini
 request_terminate_timeout = 0
 ```
 
-or configure another pool for SSE connection:
+Alternatively, you can configure a separate pool for the SSE connection:
 
 _Writing instruction..._
 
 ## Configuration
 
-You can publish the config file with:
+You can publish the configuration file with:
 
 ```bash
 php artisan vendor:publish --tag="wave-config"
 ```
 
-This is the contents of the published config file:
+Here are the contents of the published configuration file:
 
 ```php
 return [
@@ -252,28 +294,44 @@ return [
     | Resume Lifetime
     |--------------------------------------------------------------------------
     |
-    | Here you may specify the number of seconds that you wish an event stream
-    | to be persisted to resume it after reconnect. The connection is
-    | immediately re-established every closed response.
+    | Define how long (in seconds) you wish an event stream to persist so it
+    | can be resumed after a reconnect. The connection automatically
+    | re-establishes with every closed response.
     |
     */
     'resume_lifetime' => 60,
 
     /*
     |--------------------------------------------------------------------------
+    | Reconnection Time
+    |--------------------------------------------------------------------------
+    |
+    | This value determines how long (in milliseconds) to wait before
+    | attempting a reconnect to the server after a connection has been lost.
+    | By default, the client attempts to reconnect immediately. For more
+    | information, please refer to the Mozilla developer's guide on event
+    | stream format.
+    | https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format
+    |
+    */
+    'retry' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Ping
     |--------------------------------------------------------------------------
     |
-    | Automatically sends a ping event during SSE connection request if the
-    | last event occurred before the `frequency` value set in seconds.
-    | It's necessary to keep the connection persisted.
+    | A ping event is automatically sent on every SSE connection request if the
+    | last event occurred before the set `frequency` value (in seconds). This
+    | ensures the connection remains persistent.
     |
-    | By setting `eager_env` option a ping event will be sent each request.
-    | It suits for development purposes or in case if the application
-    | is not expecting events frequently. Accepts `array` or `null`.
+    | By setting the `eager_env` option, a ping event will be sent with each
+    | request. This is useful for development or for applications that do not
+    | frequently expect events. The `eager_env` option can be set as an `array` or `null`.
     |
-    | For manual ping event control with `sse:ping` command
-    | you can disable this option.
+    | For manual control of the ping event with the `sse:ping` command, you can
+    | disable this option.
+    |
     */
     'ping' => [
         'enable' => true,
@@ -286,8 +344,8 @@ return [
     | Routes Path
     |--------------------------------------------------------------------------
     |
-    | This path will be used to register necessary routes for Wave connection,
-    | presence channel users storing and simple whisper events.
+    | This path is used to register the necessary routes for establishing the
+    | Wave connection, storing presence channel users, and handling simple whisper events.
     |
     */
     'path' => 'wave',
@@ -297,9 +355,9 @@ return [
      | Route Middleware
      |--------------------------------------------------------------------------
      |
-     | Here you may specify which middleware Wave will assign to the routes
-     | that it registers. When necessary, you may modify these middleware;
-     | however, this default value is usually sufficient.
+     | Define which middleware Wave should assign to the routes that it registers.
+     | You may modify these middleware as needed. However, the default value is
+     | typically sufficient.
      |
      */
     'middleware' => [
@@ -311,8 +369,8 @@ return [
      | Auth & Guard
      |--------------------------------------------------------------------------
      |
-     | Default authentication middleware and guard type for authenticate
-     | users for presence channels and whisper events
+     | Define the default authentication middleware and guard type for
+     | authenticating users for presence channels and whisper events.
      |
      */
     'auth_middleware' => 'auth',
@@ -322,7 +380,7 @@ return [
 ];
 ```
 
-If you want to change base path from `wave` to another, don't forget to pass it in `Echo` or `Wave` instance:
+If you wish to change the base path from `wave` to something else, ensure to pass it to the `Echo` or `Wave` instance:
 
 ```javascript
 window.Echo = new Echo({
@@ -337,10 +395,10 @@ window.Wave = new Wave({ endpoint: 'custom-path' });
 
 ## Future Plans
 
-- 📍 local broadcasting driver
-- ◻️ Laravel Octane support
-- 📥 📤 two ways live models syncing
-- 📡 Something awesome with opened live abilities...
+📍 Local broadcasting driver
+◻️ Laravel Octane support
+📥 📤 two ways live models syncing
+📡 Something awesome with opened live abilities...
 
 ## Testing
 

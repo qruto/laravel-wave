@@ -7,9 +7,9 @@ return [
     | Resume Lifetime
     |--------------------------------------------------------------------------
     |
-    | Here you may specify the number of seconds that you wish an event stream
-    | to be persisted to resume it after reconnect. The connection is
-    | immediately re-established every closed response.
+    | Define how long (in seconds) you wish an event stream to persist so it
+    | can be resumed after a reconnect. The connection automatically
+    | re-establishes with every closed response.
     |
     */
     'resume_lifetime' => 60,
@@ -18,11 +18,14 @@ return [
     |--------------------------------------------------------------------------
     | Reconnection Time
     |--------------------------------------------------------------------------
-    | Here you may specify the number of milliseconds that you wish to wait before
-    | reconnecting to the server after a lost connection. By default, the
-    | client will attempt to reconnect immediately.
-    | See documentation for more details.
+    |
+    | This value determines how long (in milliseconds) to wait before
+    | attempting a reconnect to the server after a connection has been lost.
+    | By default, the client attempts to reconnect immediately. For more
+    | information, please refer to the Mozilla developer's guide on event
+    | stream format.
     | https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format
+    |
     */
     'retry' => null,
 
@@ -31,16 +34,17 @@ return [
     | Ping
     |--------------------------------------------------------------------------
     |
-    | Automatically sends a ping event during SSE connection request if the last event
-    | occurred earlier than the number of seconds set in `frequency` option.
-    | It's necessary to keep the connection persisted.
+    | A ping event is automatically sent on every SSE connection request if the
+    | last event occurred before the set `frequency` value (in seconds). This
+    | ensures the connection remains persistent.
     |
-    | By setting `eager_env` option a ping event will be sent each request.
-    | It suits for development purposes or in case if the application
-    | is not expecting events frequently. Accepts `array` or `null`.
+    | By setting the `eager_env` option, a ping event will be sent with each
+    | request. This is useful for development or for applications that do not
+    | frequently expect events. The `eager_env` option can be set as an `array` or `null`.
     |
-    | For manual ping event control with `sse:ping` command
-    | you can disable this option.
+    | For manual control of the ping event with the `sse:ping` command, you can
+    | disable this option.
+    |
     */
     'ping' => [
         'enable' => true,
@@ -53,8 +57,8 @@ return [
     | Routes Path
     |--------------------------------------------------------------------------
     |
-    | This path will be used to register necessary routes for Wave connection,
-    | presence channel users storing and simple whisper events.
+    | This path is used to register the necessary routes for establishing the
+    | Wave connection, storing presence channel users, and handling simple whisper events.
     |
     */
     'path' => 'wave',
@@ -64,9 +68,9 @@ return [
      | Route Middleware
      |--------------------------------------------------------------------------
      |
-     | Here you may specify which middleware Wave will assign to the routes
-     | that it registers. When necessary, you may modify these middleware;
-     | however, this default value is usually sufficient.
+     | Define which middleware Wave should assign to the routes that it registers.
+     | You may modify these middleware as needed. However, the default value is
+     | typically sufficient.
      |
      */
     'middleware' => [
@@ -78,8 +82,8 @@ return [
      | Auth & Guard
      |--------------------------------------------------------------------------
      |
-     | Default authentication middleware and guard type for authenticate
-     | users for presence channels and whisper events
+     | Define the default authentication middleware and guard type for
+     | authenticating users for presence channels and whisper events.
      |
      */
     'auth_middleware' => 'auth',
