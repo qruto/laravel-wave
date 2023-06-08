@@ -180,7 +180,11 @@ By default, Wave prefixes model names with `App.Models` namespace. You can custo
 window.Wave = new Wave({ namespace: 'App.Path.Models' });
 ```
 
-### Available Options
+📄 [Check out full Laravel Broadcasting documentation](https://laravel.com/docs/9.x/broadcasting)
+
+## Configuration
+
+### Client Options
 
 These options can be passed to the `Wave` or `Echo` instance:
 
@@ -195,90 +199,26 @@ These options can be passed to the `Wave` or `Echo` instance:
 | request       | _[Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request)?_ | `undefined`             | Custom settings for connection and authentication requests.                    |
 | pauseInactive | _boolean_                                                                      | `false`                 | If `true`, closes connection when the page is hidden and reopens when visible. |
 
-📄 [Check out full Laravel Broadcasting documentation](https://laravel.com/docs/9.x/broadcasting)
+```javascript
+new Echo({
+    broadcaster: WaveConnector,
+    endpoint: '/sse-endpoint',
+    bearerToken: 'bearer-token',
+    //...
+});
 
-## Advanced Setup
+// or
 
-### Persistent Connection
-
-Depending on your web server configuration, you might observe that the connection drops at certain intervals.
-Wave is designed to automatically reconnect after a request timeout.
-During reconnection, you won't lose any events as Laravel Wave
-stores event history for one minute by default.
-The `resume_lifetime` value in the config file
-allows you to adjust this duration.
-
-> ⚠️ Ensure that the interval between events is shorter than your web server's request timeout 
-> and that no other low-level timeout options are set to keep the connection persistent
-
-Wave tries to send a ping event on each Server-Sent Events (SSE) connection request
-if the last event occurred earlier than the `ping.frequency` config value.
-
-If your application doesn't expect many SSE connections,
-specify the list of environments in which a ping event will be sent
-with each Wave request. By default, this is set to `local`.
-
-### Manual Ping Control
-
-For more control over the ping event, disable automatic sending by adjusting the `ping.enable` config value.
-
-**Wave** offers the `sse:ping` command for manually sending a single ping or operating at an interval.
-
-Use the Laravel [Tasks scheduler](https://laravel.com/docs/master/scheduling#introduction) to send a ping event every minute:
-
-```php
-protected function schedule(Schedule $schedule)
-{
-    $schedule->command('sse:ping')->everyMinute();
-}
+new Wave({
+    authEndpoint: '/custom-broadcasting/auth',
+    csrfToken: 'csrf-token',
+})
 ```
 
-If you require shorter intervals between ping events, use the --interval option to set the number of seconds:
 
-```bash
-php artisan sse:ping --interval=30
-```
+### Server Options
 
-For example, basic `fastcgi_read_timeout` value is `60s` for Nginx + PHP FastCGI server setup.
-This means that to keep the connection persistent, events must occur more often than every **60 seconds**.
-
-### Web Server Configuration
-
-Web servers usually don't expect persistent HTTP connections and may have limitations at various stages 😟.
-
-For a Nginx + PHP FPM setup, the connection is typically limited to `1m` by [FastCGI](https://www.php.net/manual/install.fpm.php).
-Modify the location directive after the end of `location ~ \.php$` as follows:
-
-```nginx
-location = /wave {
-    rewrite ^/wave$ /index.php?$query_string break;
-    fastcgi_split_path_info ^(.+\.php)(/.+)$;
-    fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
-    fastcgi_index index.php;
-    include fastcgi_params;
-    fastcgi_read_timeout 2m;
-}
-```
-
-**Note:** Copy the `fastcgi_pass` Unix socket path from `location ~ \.php$`.
-
-### Disabling PHP FPM Timeout
-
-Some platforms, such as [Laravel Forge](https://forge.laravel.com), configure the PHP FPM pool with `request_terminate_timeout = 60`, terminating all requests after 60 seconds.
-
-You can disable this in the `/etc/php/8.1/fpm/pool.d/www.conf` config file:
-
-```ini
-request_terminate_timeout = 0
-```
-
-Alternatively, you can configure a separate pool for the SSE connection:
-
-_Writing instruction..._
-
-## Configuration
-
-You can publish the configuration file with:
+You can publish the Laravel configuration file with:
 
 ```bash
 php artisan vendor:publish --tag="wave-config"
@@ -380,18 +320,84 @@ return [
 ];
 ```
 
-If you wish to change the base path from `wave` to something else, ensure to pass it to the `Echo` or `Wave` instance:
+## Advanced Setup
 
-```javascript
-window.Echo = new Echo({
-   broadcaster: WaveConnector,
-   endpoint: 'custom-path',
-});
+### Persistent Connection
 
-// or
+Depending on your web server configuration, you might observe that the connection drops at certain intervals.
+Wave is designed to automatically reconnect after a request timeout.
+During reconnection, you won't lose any events as Laravel Wave
+stores event history for one minute by default.
+The `resume_lifetime` value in the config file
+allows you to adjust this duration.
 
-window.Wave = new Wave({ endpoint: 'custom-path' });
+> ⚠️ Ensure that the interval between events is shorter than your web server's request timeout 
+> and that no other low-level timeout options are set to keep the connection persistent
+
+Wave tries to send a ping event on each Server-Sent Events (SSE) connection request
+if the last event occurred earlier than the `ping.frequency` config value.
+
+If your application doesn't expect many SSE connections,
+specify the list of environments in which a ping event will be sent
+with each Wave request. By default, this is set to `local`.
+
+### Manual Ping Control
+
+For more control over the ping event, disable automatic sending by adjusting the `ping.enable` config value.
+
+**Wave** offers the `sse:ping` command for manually sending a single ping or operating at an interval.
+
+Use the Laravel [Tasks scheduler](https://laravel.com/docs/master/scheduling#introduction) to send a ping event every minute:
+
+```php
+protected function schedule(Schedule $schedule)
+{
+    $schedule->command('sse:ping')->everyMinute();
+}
 ```
+
+If you require shorter intervals between ping events, use the --interval option to set the number of seconds:
+
+```bash
+php artisan sse:ping --interval=30
+```
+
+For example, basic `fastcgi_read_timeout` value is `60s` for Nginx + PHP FastCGI server setup.
+This means that to keep the connection persistent, events must occur more often than every **60 seconds**.
+
+### Web Server Configuration
+
+Web servers usually don't expect persistent HTTP connections and may have limitations at various stages 😟.
+
+For a Nginx + PHP FPM setup, the connection is typically limited to `1m` by [FastCGI](https://www.php.net/manual/install.fpm.php).
+Modify the location directive after the end of `location ~ \.php$` as follows:
+
+```nginx
+location = /wave {
+    rewrite ^/wave$ /index.php?$query_string break;
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+    fastcgi_index index.php;
+    include fastcgi_params;
+    fastcgi_read_timeout 2m;
+}
+```
+
+**Note:** Copy the `fastcgi_pass` Unix socket path from `location ~ \.php$`.
+
+### Disabling PHP FPM Timeout
+
+Some platforms, such as [Laravel Forge](https://forge.laravel.com), configure the PHP FPM pool with `request_terminate_timeout = 60`, terminating all requests after 60 seconds.
+
+You can disable this in the `/etc/php/8.1/fpm/pool.d/www.conf` config file:
+
+```ini
+request_terminate_timeout = 0
+```
+
+Alternatively, you can configure a separate pool for the SSE connection:
+
+_Writing instruction..._
 
 ## Future Plans
 
