@@ -11,6 +11,8 @@ return [
     | can be resumed after a reconnect. The connection automatically
     | re-establishes with every closed response.
     |
+    | * Requires a cache driver to be configured.
+    |
     */
     'resume_lifetime' => 60,
 
