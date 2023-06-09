@@ -71,7 +71,7 @@ function waveConnection(Authenticatable $user = null, string $lastEventId = null
             $callback = $callback ?: fn () => true;
 
             return collect($this->getSentEvents()[$event])->filter(
-                fn ($arguments) => $callback($arguments['data'])
+                fn ($arguments) => $callback($arguments)
             );
         }
 
@@ -148,7 +148,7 @@ function waveConnection(Authenticatable $user = null, string $lastEventId = null
         public function getSentEvents()
         {
             if (! $this->sentEvents) {
-                $rawEvents = array_filter(explode("\n\n\n", $this->response->streamedContent()));
+                $rawEvents = array_filter(explode("\n\n", $this->response->streamedContent()));
                 $this->sentEvents = Collection::make($rawEvents)->map(function ($event) {
                     $rows = explode("\n", $event);
                     $data = Str::after($rows[1], 'data: ');
