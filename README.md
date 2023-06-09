@@ -195,16 +195,17 @@ window.Wave = new Wave({ namespace: 'App.Path.Models' });
 
 These options can be passed to the `Wave` or `Echo` instance:
 
-| Name          | Type                                                                           | Default                 | Description                                                                    |
-|---------------|--------------------------------------------------------------------------------|-------------------------|--------------------------------------------------------------------------------|
-| endpoint      | _string_                                                                       | `/wave`                 | Primary SSE connection route.                                                  |
-| namespace     | _string_                                                                       | `App.Events`            | Namespace of events to listen for.                                             |
-| auth.headers  | _object_                                                                       | `{}`                    | Additional authentication headers.                                             |
-| authEndpoint  | _string?_                                                                      | `/broadcasting/auth`    | Authentication endpoint.                                                       |
-| csrfToken     | _string?_                                                                      | `undefined` or `string` | CSRF token, defaults from `XSRF-TOKEN` cookie.                                 |
-| bearerToken   | _string?_                                                                      | `undefined`             | Bearer tokenfor authentication.                                                |
-| request       | _[Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request)?_ | `undefined`             | Custom settings for connection and authentication requests.                    |
-| pauseInactive | _boolean_                                                                      | `false`                 | If `true`, closes connection when the page is hidden and reopens when visible. |
+| Name          | Type                                                                           | Default                 | Description                                                                                                                          |
+|---------------|--------------------------------------------------------------------------------|-------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| endpoint      | _string_                                                                       | `/wave`                 | Primary SSE connection route.                                                                                                        |
+| namespace     | _string_                                                                       | `App.Events`            | Namespace of events to listen for.                                                                                                   |
+| auth.headers  | _object_                                                                       | `{}`                    | Additional authentication headers.                                                                                                   |
+| authEndpoint  | _string?_                                                                      | `/broadcasting/auth`    | Authentication endpoint.                                                                                                             |
+| csrfToken     | _string?_                                                                      | `undefined` or `string` | CSRF token, defaults from `XSRF-TOKEN` cookie.                                                                                       |
+| bearerToken   | _string?_                                                                      | `undefined`             | Bearer tokenfor authentication.                                                                                                      |
+| request       | _[Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request)?_ | `undefined`             | Custom settings for connection and authentication requests.                                                                          |
+| pauseInactive | _boolean_                                                                      | `false`                 | If `true`, closes connection when the page is hidden and reopens when visible.                                                       |
+| debug         | _boolean_                                                                      | `false`                 | Toggles debug mode. If set to `true`, provides detailed event logs in the console, helping with event diagnosis and troubleshooting. |
 
 ```javascript
 new Echo({
