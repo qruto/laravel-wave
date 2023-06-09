@@ -66,7 +66,7 @@ Works well at home. Should be battle tested for **1.0**, feedbacks appreciated!
 
 - **🔄 Resume From Last**: Connection drops? No problem! Wave intelligently resumes the event stream from the last event, ensuring no crucial data is lost in transit.
 
-- 🍃 **Resource-Friendly Broadcasting with `closeInactive`**: Syncs data flow with user activity using the browser's Page Visibility API for optimized server resource usage. This feature is switched off by default.
+- 🍃 **Resource-Friendly Broadcasting with `pauseInactive`**: This feature maximizes resource efficiency by closing the data stream when inactive (such as when the user minimizes the browser) and automatically reopens it upon resumption of visibility. Turned off by default.
 
 - **🎛️️ Full Requests Control**: Wave hands you the reins over connection and authentication requests, granting you the freedom to shape your broadcasting setup to your exact requirements.
 
