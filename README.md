@@ -155,7 +155,7 @@ Replace it by the snippet above:
 
 Use Echo as you typically would.
 
-📞 Full documentation of [Receiving Broadcasts](https://laravel.com/docs/master/broadcasting#receiving-broadcasts)
+📞 [Receiving Broadcasts](https://laravel.com/docs/master/broadcasting#receiving-broadcasts) documentation
 
 ### 2. With Live Eloquent Models
 
@@ -187,7 +187,7 @@ By default, Wave prefixes model names with `App.Models` namespace. You can custo
 window.Wave = new Wave({ namespace: 'App.Path.Models' });
 ```
 
-📄 [Check out full Laravel Broadcasting documentation](https://laravel.com/docs/9.x/broadcasting)
+📄 [Check out full Laravel Broadcasting documentation](https://laravel.com/docs/master/broadcasting)
 
 ## Configuration
 
