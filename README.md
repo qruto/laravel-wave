@@ -62,14 +62,16 @@ Works well at home. Should be battle tested for **1.0**, feedbacks appreciated!
 
 ## 🌟 Key Features
 
-- **⚡ Native Redis Driver Support**: Wave seamlessly integrates with Laravel's default `redis` broadcasting driver, ensuring efficient real-time data transfer.
+- **⚡ Works with native Redis Driver**: Wave seamlessly integrates with Laravel's default `redis` broadcasting driver, ensuring efficient real-time data transfer.
 
 - **🔄 Resume From Last**: Connection drops? No problem! Wave intelligently resumes the event stream from the last event, ensuring no crucial data is lost in transit.
 
-- **🟢 Live Models**: With a simple interface that respects Laravel's native conventions for [Model Events Broadcasting](https://laravel.com/docs/master/broadcasting#model-broadcasting)
-  and [Broadcast Notifications](https://laravel.com/docs/master/notifications#broadcast-notifications), Wave turbocharges your application with real-time updates.
+- 🍃 **Resource-Friendly Broadcasting with `closeInactive`**: Syncs data flow with user activity using the browser's Page Visibility API for optimized server resource usage. This feature is switched off by default.
 
 - **🎛️️ Full Requests Control**: Wave hands you the reins over connection and authentication requests, granting you the freedom to shape your broadcasting setup to your exact requirements.
+
+- **🟢 Live Models**: With a simple interface that respects Laravel's native conventions for [Model Events Broadcasting](https://laravel.com/docs/master/broadcasting#model-broadcasting)
+  and [Broadcast Notifications](https://laravel.com/docs/master/notifications#broadcast-notifications), Wave turbocharges your application with real-time updates.
 
 ## Support
 
