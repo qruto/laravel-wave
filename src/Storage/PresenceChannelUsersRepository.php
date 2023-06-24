@@ -7,11 +7,11 @@ use Illuminate\Support\Collection;
 
 interface PresenceChannelUsersRepository
 {
-    public function join(string $channel, Authenticatable $user, string $connectionId): bool;
+    public function join(string $channel, Authenticatable $user, array $userInfo, string $connectionId): bool;
 
     public function leave(string $channel, Authenticatable $user, string $connectionId): bool;
 
-    public function getUsers(string $channel, $user);
+    public function getUsers(string $channel);
 
-    public function getChannels(Authenticatable $user): Collection;
+    public function removeConnection(string $connectionId): array;
 }
