@@ -5,56 +5,48 @@ namespace Qruto\LaravelWave\Storage;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 class BroadcastEventHistoryCached implements BroadcastEventHistory
 {
     protected int $lifetime;
 
+    /** @var Collection<BroadcastingEvent> */
+    protected static Collection $events;
+
     public function __construct(protected Repository $cache, ConfigRepository $config)
     {
         $this->lifetime = $config->get('wave.resume_lifetime', 60);
+        self::$events = cache()->get('broadcasted_events', collect());
     }
 
-    public function getEventsFrom(string $id, string $channelPrefix): Collection
+    public function getEventsFrom(string $id): Collection
     {
-        $events = $this->getCached();
+        $key = self::$events->search(
+            fn (BroadcastingEvent $item) => $id === $item->id
+        );
 
-        $key = $events->search(function ($item) use ($id, $channelPrefix) {
-            $channel = Str::after($item['channel'], $channelPrefix);
-
-            return $id === ($channel.'.'.$item['event']['data']['broadcast_event_id']);
-        });
-
-        return $events->slice($key === false ? 0 : $key + 1);
+        return $key === false ? collect() : self::$events->slice($key + 1)->values();
     }
 
     public function lastEventTimestamp(): int
     {
-        $lastEvent = $this->getCached()->last();
+        /** @var BroadcastingEvent $lastEvent */
+        $lastEvent = self::$events->last();
 
-        return $lastEvent ? $lastEvent['timestamp'] : 0;
+        return $lastEvent ? $lastEvent->timestamp : 0;
     }
 
-    public function pushEvent(string $channel, $event)
+    public function pushEvent(BroadcastingEvent $event)
     {
-        $events = $this->getCached();
+        self::$events->push($event);
 
-        $events->push([
-            'channel' => $channel,
-            'event' => $event,
-            'timestamp' => time(),
-        ]);
-
-        $events = $events->filter(fn ($event) => time() - $event['timestamp'] < $this->lifetime)->values();
+        $events = self::$events->filter(
+            fn (BroadcastingEvent $event) => now()->timestamp - $event->timestamp < $this->lifetime
+        )->values();
 
         cache()->put('broadcasted_events', $events, $this->lifetime);
+        self::$events = $events;
 
-        return $events->last()['timestamp'];
-    }
-
-    protected function getCached()
-    {
-        return cache()->get('broadcasted_events', collect());
+        return self::$events->last()->timestamp;
     }
 }

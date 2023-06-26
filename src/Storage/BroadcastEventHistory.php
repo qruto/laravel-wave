@@ -6,9 +6,9 @@ use Illuminate\Support\Collection;
 
 interface BroadcastEventHistory
 {
-    public function getEventsFrom(string $id, string $channelPrefix): Collection;
+    public function getEventsFrom(string $id): Collection;
 
-    public function pushEvent(string $channel, $event);
+    public function pushEvent(BroadcastingEvent $event);
 
     public function lastEventTimestamp(): int;
 }
