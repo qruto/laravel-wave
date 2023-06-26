@@ -95,7 +95,7 @@ it('will do nothing if a non-existent user tries to leave a presence channel', f
 
 it('can return all users for a specific channel', function () use ($channel) {
     $userKeys = [
-        "presence_channel:$channel:user:" . $this->user->id,
+        "presence_channel:$channel:user:".$this->user->id,
         "presence_channel:$channel:user:2",
     ];
 
@@ -111,7 +111,7 @@ it('can return all users for a specific channel', function () use ($channel) {
 
     expect($result)->toBe([
         ['email' => $this->user->email],
-        ['email' => 'rick@unity.io']
+        ['email' => 'rick@unity.io'],
     ]);
 });
 
@@ -124,7 +124,7 @@ it('can handle when there are no users in a specific channel', function () use (
 });
 
 it('can handle when a user does not have user_info', function () use ($channel) {
-    $userKey = "presence_channel:$channel:user:" . $this->user->id;
+    $userKey = "presence_channel:$channel:user:".$this->user->id;
 
     Redis::shouldReceive('keys')->once()->andReturn([$userKey]);
     Redis::shouldReceive('hget')->once()

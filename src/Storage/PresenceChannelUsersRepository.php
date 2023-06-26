@@ -3,7 +3,6 @@
 namespace Qruto\LaravelWave\Storage;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Collection;
 
 interface PresenceChannelUsersRepository
 {

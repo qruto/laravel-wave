@@ -21,6 +21,7 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
         $this->db = Redis::connection(config('broadcasting.connections.redis.connection'));
         $this->prefix = config('database.redis.options.prefix');
     }
+
     protected function userKey(Authenticatable $user): string
     {
         return method_exists($user, 'getAuthIdentifierForBroadcasting')
@@ -55,7 +56,7 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
             /** @var \Illuminate\Support\Collection $userConnections */
             $connections = $this->unserialize($this->db->hget($key, 'connections'));
 
-            if (!in_array($connectionId, $connections)) {
+            if (! in_array($connectionId, $connections)) {
                 $connections[] = $connectionId;
             }
 
