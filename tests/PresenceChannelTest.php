@@ -24,12 +24,14 @@ it('send join event on join request', function () {
 it('stores user in redis presence channel pool', function () {
     $connection = waveConnection();
 
-    $key = 'presence_channel:presence-presence-channel:user:'.auth()->user()->getAuthIdentifier();
+    $key = 'presence_channel:presence-presence-channel:user:'.auth()->user()->getAuthIdentifierForBroadcasting();
 
     joinRequest('presence-channel', $this->user, $connection->id());
 
-    expect((bool) Redis::exists($key))->toBeTrue();
-    expect(unserialize(Redis::get($key))->first())->toBe($connection->id());
+    expect((bool) Redis::exists($key))
+        ->toBeTrue()
+        ->and(json_decode(Redis::hget($key, 'connections'), true)[0])
+        ->toBe($connection->id());
 });
 
 test('join request respond with actual count of channel users', function () {
@@ -42,8 +44,8 @@ test('join request respond with actual count of channel users', function () {
     $response = joinRequest('presence-channel', $rick, $connectionRick->id());
 
     $response->assertJson([
-        $this->user->toArray(),
-        $rick->toArray(),
+        ['id' => $this->user->id, 'name' => $this->user->name],
+        ['id' => $rick->id, 'name' => $rick->name],
     ]);
 });
 
@@ -57,11 +59,11 @@ test('leave request respond with actual count of channel users', function () {
     $response = leaveRequest('presence-channel', $rick, $connectionRick->id());
 
     $response->assertJson([
-        $this->user->toArray(),
+        ['id' => $this->user->id, 'name' => $this->user->name],
     ]);
 });
 
-it('receives join channel event', function () {
+it('receives join channel event', closure: function () {
     /** @var \Illuminate\Contracts\Auth\Authenticatable */
     $rick = User::factory()->create(['name' => 'Rick']);
 
@@ -74,7 +76,7 @@ it('receives join channel event', function () {
     joinRequest('presence-channel', $morty, $connectionMorty->id());
 
     actingAs($rick);
-    $connectionRick->assertEventReceived('presence-presence-channel.join', fn ($event) => $event['data']['user']['id'] === $morty->id);
+    $connectionRick->assertEventReceived('presence-presence-channel.join', fn ($event) => $event['data']['id'] === $morty->id);
 });
 
 test('leave channel event received', function () {
@@ -91,7 +93,7 @@ test('leave channel event received', function () {
     leaveRequest('presence-channel', $morty, $connectionMorty->id());
 
     actingAs($rick);
-    $connectionRick->assertEventReceived('presence-presence-channel.leave', fn ($event) => $event['data']['user']['id'] === $morty->id);
+    $connectionRick->assertEventReceived('presence-presence-channel.leave', fn ($event) => $event['data']['id'] === $morty->id);
 });
 
 it('doesn\'t receive events without access', function () {
@@ -103,17 +105,17 @@ it('doesn\'t receive events without access', function () {
 });
 
 test('user leave all channels on connection close', function () {
-    Broadcast::channel('presence-channel-2', fn () => true);
-
     /** @var \Illuminate\Contracts\Auth\Authenticatable */
     $rick = User::factory()->create(['name' => 'Rick']);
 
     /** @var \Illuminate\Contracts\Auth\Authenticatable */
     $morty = User::factory()->create(['name' => 'Morty']);
 
-    $connectionRick = waveConnection($rick);
+    Broadcast::channel('presence-channel-2', fn () => ['id' => request()->user()->id, 'name' => request()->user()->name]);
 
+    $connectionRick = waveConnection($rick);
     $connectionMorty = waveConnection($morty);
+
     joinRequest('presence-channel', $morty, $connectionMorty->id());
     joinRequest('presence-channel-2', $morty, $connectionMorty->id());
 
@@ -132,14 +134,12 @@ it('successfully stores several connections', function () {
 
     $key = 'presence_channel:presence-presence-channel:user:'.auth()->user()->getAuthIdentifier();
 
-    $storedUserConnections = unserialize(Redis::get($key));
+    $storedUserConnections = json_decode(Redis::hget($key, 'connections'), true);
 
-    expect($storedUserConnections->values())->toEqual(
-        collect([
-            $connectionOne->id(),
-            $connectionTwo->id(),
-        ])
-    );
+    expect($storedUserConnections)->toBe([
+        $connectionOne->id(),
+        $connectionTwo->id(),
+    ]);
 });
 
 it('successfully removes one of several connections', function () {
@@ -153,13 +153,11 @@ it('successfully removes one of several connections', function () {
 
     $key = 'presence_channel:presence-presence-channel:user:'.auth()->user()->getAuthIdentifier();
 
-    $storedUserConnections = unserialize(Redis::get($key));
+    $storedUserConnections = json_decode(Redis::hget($key, 'connections'), true);
 
-    expect($storedUserConnections->values())->toEqual(
-        collect([
-            $connectionTwo->id(),
-        ])
-    );
+    expect($storedUserConnections)->toBe([
+        $connectionTwo->id(),
+    ]);
 });
 
 function joinRequest($channelName, Authenticatable $user, string $connectionId)

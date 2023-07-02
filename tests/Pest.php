@@ -22,10 +22,10 @@ uses()->beforeEach(function () {
     $redisMock->flushdb();
     $redisMock->flushEventsQueue();
 
-    Broadcast::channel('private-channel', fn () => true);
-    Broadcast::channel('presence-channel', fn () => true);
-
     $this->user = User::factory()->create();
+
+    Broadcast::channel('private-channel', fn () => true);
+    Broadcast::channel('presence-channel', fn () => ['id' => request()->user()->id, 'name' => request()->user()->name]);
 
     $this->actingAs($this->user);
 })->in(__DIR__);
@@ -78,7 +78,7 @@ function waveConnection(Authenticatable $user = null, string $lastEventId = null
         public function assertConnected()
         {
             assertTrue(
-                $this->received('connected')->count() > 0,
+                $this->received('general.connected')->count() > 0,
                 "Connection hasn't been established"
             );
         }

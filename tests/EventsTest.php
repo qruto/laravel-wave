@@ -6,6 +6,7 @@ use Qruto\LaravelWave\Tests\Events\SomePrivateEvent;
 use Qruto\LaravelWave\Tests\Support\User;
 
 it('successfully receives events for guest user', function () {
+    // HERE: Bug with guest user
     auth()->logout();
 
     $connection = waveConnection();

@@ -1,22 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Cache;
 use Qruto\LaravelWave\Storage\BroadcastEventHistory;
 use Qruto\LaravelWave\Storage\BroadcastingEvent;
-use Hamcrest\Core\IsEqual;
 
 beforeEach(function () {
     $this->history = app(BroadcastEventHistory::class);
 });
 
 it('successfully pushes event to Redis history', function () {
-    Cache::shouldReceive('get')->once()->andReturn(collect());
-
     $event = BroadcastingEvent::fake();
 
-    Cache::shouldReceive('put')->once()->with('broadcasted_events', IsEqual::equalTo(collect([$event])), 60);
-
-    expect($this->history->pushEvent($event))->toBe($event->timestamp);
+    expect($this->history->pushEvent($event))
+        ->toBe($event->timestamp)
+        ->and(cache()->get('broadcasted_events'))
+        ->toEqual(collect([$event]));
 });
 
 it('removes outdated events from Redis history', function () {
