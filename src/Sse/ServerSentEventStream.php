@@ -3,21 +3,25 @@
 namespace Qruto\LaravelWave\Sse;
 
 use Closure;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Support\Str;
+use function in_array;
+use Qruto\LaravelWave\BroadcastingUserIdentifier;
 use Qruto\LaravelWave\ServerSentEventSubscriber;
 use Qruto\LaravelWave\Storage\BroadcastEventHistory;
+use Qruto\LaravelWave\Storage\BroadcastingEvent;
 use Qruto\LaravelWave\Storage\PresenceChannelUsersRedisRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class ServerSentEventStream implements Responsable
 {
+    use BroadcastingUserIdentifier;
+
     /**
      * @var array<string, string>
      */
@@ -28,8 +32,6 @@ class ServerSentEventStream implements Responsable
         'X-Accel-Buffering' => 'no',
     ];
 
-    protected string $channelPrefix = '';
-
     public function __construct(
         protected ServerSentEventSubscriber $eventSubscriber,
         protected ResponseFactory $responseFactory,
@@ -37,65 +39,61 @@ class ServerSentEventStream implements Responsable
         protected BroadcastEventHistory $eventsHistory,
         protected ConfigRepository $config
     ) {
-        $this->channelPrefix = config('database.redis.options.prefix', '');
     }
 
     public function toResponse($request)
     {
-        ini_set('default_socket_timeout', -1);
-        set_time_limit(0);
+        $this->disableTimeouts();
 
-        $socket = Broadcast::socket($request);
+        $lastSocket = Broadcast::socket($request);
 
-        return $this->responseFactory->stream(function () use ($request, $socket) {
-            (new ServerSentEvent(
-                'connected',
-                $socket,
-                $request->hasHeader('Last-Event-ID') ? $request->header('Last-Event-ID') : 'wave',
-                $this->config->get('wave.retry', null),
-            ))();
+        $newSocket = $this->generateConnectionId();
 
-            $handler = $this->eventHandler($request, $socket);
+        $request->headers->set('X-Socket-ID', $newSocket);
 
+        return $this->responseFactory->stream(function () use ($request, $lastSocket, $newSocket) {
             if ($request->hasHeader('Last-Event-ID')) {
-                $missedEvents = $this->eventsHistory->getEventsFrom($request->header('Last-Event-ID'), $this->channelPrefix);
+                $missedEvents = $this->eventsHistory->getEventsFrom($request->header('Last-Event-ID'));
 
-                $missedEvents->each(static function ($event) use ($handler) {
-                    $handler($event['event'], $event['channel']);
-                });
+                ray()->table([
+                    'missedEvents' => $missedEvents,
+                    'lastEventId' => $request->header('Last-Event-ID'),
+                ], 'Missed Events')->blue();
+
+                $missedEvents
+                    ->filter(fn (BroadcastingEvent $event) => $event->event !== 'connected')
+                    ->each($this->eventHandler($request, $lastSocket));
             }
 
-            $this->eventSubscriber->start($handler, $request);
-        }, Response::HTTP_OK, self::HEADERS + ['X-Socket-Id' => $socket]);
+            $event = EventFactory::create('general', 'connected', $newSocket, $newSocket);
+
+            // TODO: change general channel name
+            $this->eventsHistory->pushEvent($event);
+
+            $event->send();
+
+            $this->eventSubscriber->start(function (string $message, string $channel) use ($request, $newSocket) {
+                $this->eventHandler($request, $newSocket)(EventFactory::fromRedisMessage($message, $channel));
+            }, $request, $newSocket);
+        }, Response::HTTP_OK, self::HEADERS + ['X-Socket-Id' => $newSocket]);
     }
 
-    protected function eventHandler(Request $request, string $socket): Closure
+    protected function eventHandler(Request $request, ?string $socket): Closure
     {
-        return function ($message, $channel) use ($request, $socket) {
-            $channel = $this->removePrefixFromChannel($channel);
-
-            if ($this->needsAuth($channel)) {
+        return function (BroadcastingEvent $event) use ($request, $socket) {
+            if ($this->needsAuth($event->channel)) {
                 try {
-                    $this->authChannel($channel, $request);
+                    $this->authChannel($event->channel, $request);
                 } catch (AccessDeniedHttpException) {
                     return;
                 }
             }
 
-            ['event' => $event, 'data' => $data] = is_array($message) ? $message : json_decode($message, true, 512, JSON_THROW_ON_ERROR);
-
-            $eventSocketId = Arr::pull($data, 'socket');
-            $eventId = Arr::pull($data, 'broadcast_event_id');
-
-            if ($eventSocketId === $socket) {
+            if ($this->shouldNotSend($event, $socket, $request->user())) {
                 return;
             }
 
-            (new ServerSentEvent(
-                sprintf('%s.%s', $channel, $event),
-                json_encode($data, JSON_THROW_ON_ERROR),
-                sprintf('%s.%s', $channel, $eventId)
-            ))();
+            $event->send();
         };
     }
 
@@ -111,8 +109,23 @@ class ServerSentEventStream implements Responsable
         return str_starts_with($channel, 'private-') || str_starts_with($channel, 'presence-');
     }
 
-    protected function removePrefixFromChannel(string $pattern): string
+    protected function shouldNotSend(BroadcastingEvent $event, ?string $socket, Authenticatable|null $user): bool
     {
-        return Str::after($pattern, $this->channelPrefix);
+        if ($socket && $event->socket === $socket) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function disableTimeouts(): void
+    {
+        ini_set('default_socket_timeout', -1);
+        set_time_limit(0);
+    }
+
+    private function generateConnectionId(): string
+    {
+        return sprintf('%d.%d', random_int(1, 1_000_000_000), random_int(1, 1_000_000_000));
     }
 }

@@ -2,15 +2,11 @@
 
 namespace Qruto\LaravelWave\Events;
 
-use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class SseConnectionClosedEvent
 {
-    use Dispatchable;
-    use InteractsWithSockets;
     use SerializesModels;
 
     /**

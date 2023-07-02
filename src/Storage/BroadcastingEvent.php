@@ -11,6 +11,7 @@ class BroadcastingEvent
 
     public function __construct(
         public string $channel,
+        //TODO: rename to name
         public string $event,
         public string $id,
         public string|array $data,
@@ -24,7 +25,7 @@ class BroadcastingEvent
         (new ServerSentEvent(
             sprintf('%s.%s', $this->channel, $this->event),
             is_array($this->data) ? json_encode($this->data, JSON_THROW_ON_ERROR) : $this->data,
-            sprintf('%s.%s.%s', $this->channel, $this->event, $this->id),
+            $this->id,
             config('wave.retry', null),
         ))();
     }

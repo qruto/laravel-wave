@@ -19,8 +19,11 @@ class PresenceChannelJoinEvent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(public array $user, protected string $channel)
-    {
+    public function __construct(
+        public $userKey,
+        public array $userInfo,
+        protected string $channel
+    ) {
     }
 
     /**
@@ -45,6 +48,6 @@ class PresenceChannelJoinEvent implements ShouldBroadcast
      */
     public function broadcastWith(): array
     {
-        return $this->user;
+        return $this->userInfo;
     }
 }
