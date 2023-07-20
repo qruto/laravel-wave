@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased](https://github.com/qruto/laravel-wave-js/compare/0.7.0...main)
+## [Unreleased](https://github.com/qruto/laravel-wave-js/compare/0.7.1...main)
 
 All notable changes to `laravel-wave` will be documented in this file.
 
@@ -25,6 +25,12 @@ Required php version dropped to 8.0 ⬇️
 First release  🎉 Works well in the home environment, but should be battle tested before **1.0**.
 
 Checkout ➡️ [README](https://github.com/qruto/laravel-wave/blob/main/README.md).
+
+## [0.7.1](https://github.com/qruto/laravel-wave-js/compare/0.7.0...0.7.1) - 2023-07-20
+
+Various bug fixes.
+
+Improved presence channel users synchronization.
 
 ## [0.7.0](https://github.com/qruto/laravel-wave-js/compare/v0.7.0...0.7.0) - 2023-06-09
 
