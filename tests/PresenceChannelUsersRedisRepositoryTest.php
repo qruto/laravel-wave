@@ -18,7 +18,7 @@ function connectionsKey(string $channel, string $userKey): string
     return "presence_channel:$channel:user:$userKey";
 }
 
-function expectSavedData(string $channel, string $userKey, array $connections, ?array $userInfo = null)
+function expectSavedData(string $channel, string $userKey, array $connections, array $userInfo = null)
 {
     $data = [
         'connections' => json_encode($connections),

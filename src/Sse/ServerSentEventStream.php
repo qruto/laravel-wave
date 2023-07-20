@@ -103,7 +103,7 @@ class ServerSentEventStream implements Responsable
         return str_starts_with($channel, 'private-') || str_starts_with($channel, 'presence-');
     }
 
-    protected function shouldNotSend(BroadcastingEvent $event, ?string $socket, Authenticatable|null $user): bool
+    protected function shouldNotSend(BroadcastingEvent $event, ?string $socket, ?Authenticatable $user): bool
     {
         if (! $socket) {
             return false;

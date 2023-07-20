@@ -41,7 +41,7 @@ function waveConnection(Authenticatable $user = null, string $lastEventId = null
         /** @var \Illuminate\Support\Collection */
         private $sentEvents;
 
-        public function __construct(public Authenticatable|null $user = null, public string|null $lastEventId)
+        public function __construct(public ?Authenticatable $user, public ?string $lastEventId)
         {
             $test = test();
 

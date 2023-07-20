@@ -14,7 +14,7 @@ class SseConnectionClosedEvent
      *
      * @return void
      */
-    public function __construct(public Authenticatable|null $user, public string $connectionId)
+    public function __construct(public ?Authenticatable $user, public string $connectionId)
     {
     }
 }
