@@ -166,7 +166,7 @@ and [Broadcast Notifications](https://laravel.com/docs/master/notifications#broa
 **Wave** models to receive model events and notifications.
 
 ```javascript
-import Wave from 'laravel-wave';
+import { Wave } from 'laravel-wave';
 
 window.Wave = new Wave();
 
