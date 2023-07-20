@@ -10,43 +10,47 @@ class BroadcastEventHistoryCached implements BroadcastEventHistory
 {
     protected int $lifetime;
 
-    /** @var Collection<BroadcastingEvent> */
-    protected static Collection $events;
-
     public function __construct(protected Repository $cache, ConfigRepository $config)
     {
         $this->lifetime = $config->get('wave.resume_lifetime', 60);
-        self::$events = cache()->get('broadcasted_events', collect());
     }
 
     public function getEventsFrom(string $id): Collection
     {
-        $key = self::$events->search(
+        $events = $this->getEvents();
+
+        $key = $events->search(
             fn (BroadcastingEvent $item) => $id === $item->id
         );
 
-        return $key === false ? collect() : self::$events->slice($key + 1)->values();
+        return $key === false ? collect() : $events->slice($key + 1)->values();
     }
 
     public function lastEventTimestamp(): int
     {
         /** @var BroadcastingEvent $lastEvent */
-        $lastEvent = self::$events->last();
+        $lastEvent = $this->getEvents()->last();
 
         return $lastEvent ? $lastEvent->timestamp : 0;
     }
 
     public function pushEvent(BroadcastingEvent $event)
     {
-        self::$events->push($event);
+        $events = $this->getEvents();
 
-        $events = self::$events->filter(
-            fn (BroadcastingEvent $event) => now()->timestamp - $event->timestamp < $this->lifetime
-        )->values();
+        return cache()->lock('broadcasted_events:lock', 10)->block(5, function () use ($event, $events) {
+            $events = $events->push($event)->filter(
+                fn (BroadcastingEvent $event) => now()->getTimestamp() - $event->timestamp < $this->lifetime
+            )->values();
 
-        cache()->put('broadcasted_events', $events, $this->lifetime);
-        self::$events = $events;
+            cache()->put('broadcasted_events', $events, $this->lifetime);
 
-        return self::$events->last()->timestamp;
+            return $events->last()->timestamp;
+        });
+    }
+
+    protected function getEvents(): Collection
+    {
+        return cache()->lock('broadcasted_events:lock', 10)->block(5, fn () => cache()->get('broadcasted_events', collect()));
     }
 }

@@ -84,4 +84,17 @@ class RedisConnectionMock extends RedisMock implements Connection, Factory
     {
         return $this;
     }
+
+    public function watch($key)
+    {
+        return $this;
+    }
+
+    // transaction method mock
+    public function transaction($callback)
+    {
+        $callback($this);
+
+        return true;
+    }
 }

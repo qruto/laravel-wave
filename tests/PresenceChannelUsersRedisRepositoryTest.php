@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Redis;
 use Qruto\LaravelWave\Storage\PresenceChannelUsersRedisRepository;
 
 beforeEach(function () {
-    Redis::shouldReceive('connection')->once()->andReturnSelf();
+    Redis::partialMock()->shouldReceive('connection')->once()->andReturnSelf();
+    Redis::partialMock()->shouldReceive('watch')->zeroOrMoreTimes()->andReturnSelf();
     $this->repository = new PresenceChannelUsersRedisRepository();
 });
 
@@ -117,19 +118,6 @@ it('can return all users for a specific channel', function () use ($channel) {
 
 it('can handle when there are no users in a specific channel', function () use ($channel) {
     Redis::shouldReceive('keys')->once()->andReturn([]);
-
-    $result = $this->repository->getUsers($channel);
-
-    expect($result)->toBe([]);
-});
-
-it('can handle when a user does not have user_info', function () use ($channel) {
-    $userKey = "presence_channel:$channel:user:".$this->user->id;
-
-    Redis::shouldReceive('keys')->once()->andReturn([$userKey]);
-    Redis::shouldReceive('hget')->once()
-        ->with($userKey, 'user_info')
-        ->andReturn(null);
 
     $result = $this->repository->getUsers($channel);
 

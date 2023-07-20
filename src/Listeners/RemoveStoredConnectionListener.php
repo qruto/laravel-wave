@@ -19,10 +19,10 @@ class RemoveStoredConnectionListener
             return;
         }
 
-        $this->store->getChannels($event->user)->each(function ($channel) use ($event) {
-            if ($this->store->leave($channel, $event->user, $event->connectionId)) {
-                event(new PresenceChannelLeaveEvent($event->user, Str::after($channel, 'presence-')));
-            }
-        });
+        $fullyExitedChannels = $this->store->removeConnection($event->connectionId);
+
+        foreach ($fullyExitedChannels as $exitInfo) {
+            broadcast(new PresenceChannelLeaveEvent($exitInfo['user_info'], Str::after($exitInfo['channel'], 'presence-')))->toOthers();
+        }
     }
 }
