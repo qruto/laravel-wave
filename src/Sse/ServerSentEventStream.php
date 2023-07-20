@@ -9,7 +9,6 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
-use function in_array;
 use Qruto\LaravelWave\BroadcastingUserIdentifier;
 use Qruto\LaravelWave\ServerSentEventSubscriber;
 use Qruto\LaravelWave\Storage\BroadcastEventHistory;
@@ -72,7 +71,9 @@ class ServerSentEventStream implements Responsable
 
             $event->send();
 
+
             $this->eventSubscriber->start(function (string $message, string $channel) use ($request, $newSocket) {
+                ray(EventFactory::fromRedisMessage($message, $channel));
                 $this->eventHandler($request, $newSocket)(EventFactory::fromRedisMessage($message, $channel));
             }, $request, $newSocket);
         }, Response::HTTP_OK, self::HEADERS + ['X-Socket-Id' => $newSocket]);
@@ -111,11 +112,11 @@ class ServerSentEventStream implements Responsable
 
     protected function shouldNotSend(BroadcastingEvent $event, ?string $socket, Authenticatable|null $user): bool
     {
-        if ($socket && $event->socket === $socket) {
-            return true;
+        if (!$socket) {
+            return false;
         }
 
-        return false;
+        return $event->socket === $socket;
     }
 
     private function disableTimeouts(): void

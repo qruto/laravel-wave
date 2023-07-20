@@ -50,7 +50,7 @@ it('not received others connection events', function () {
             'random-id3',
             'socket.id3',
             null,
-        )
+        ),
     ]));
     PublicEvent::dispatch();
     $connection = waveConnection();

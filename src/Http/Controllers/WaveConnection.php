@@ -5,7 +5,6 @@ namespace Qruto\LaravelWave\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Qruto\LaravelWave\Events\SsePingEvent;
-use Qruto\LaravelWave\Http\Middleware\GenerateSseSocketId;
 use Qruto\LaravelWave\Sse\ServerSentEventStream;
 use Qruto\LaravelWave\Storage\BroadcastEventHistory;
 
@@ -13,7 +12,6 @@ class WaveConnection extends Controller
 {
     public function __construct(protected BroadcastEventHistory $eventHistory)
     {
-        $this->middleware(GenerateSseSocketId::class);
     }
 
     public function __invoke(Request $request, ServerSentEventStream $responseFactory)
@@ -35,6 +33,6 @@ class WaveConnection extends Controller
             return true;
         }
 
-        return now()->timestamp - $this->eventHistory->lastEventTimestamp() > config('wave.ping.frequency', 30);
+        return now()->getTimestamp() - $this->eventHistory->lastEventTimestamp() > config('wave.ping.frequency', 30);
     }
 }
