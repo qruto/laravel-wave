@@ -88,7 +88,7 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
             if ((bool) $this->db->exists($key)) {
                 $connections = $this->unserialize($this->db->hget($key, 'connections'));
 
-                $connections = array_values(array_filter($connections, fn($connection) => $connection !== $connectionId));
+                $connections = array_values(array_filter($connections, fn ($connection) => $connection !== $connectionId));
 
                 if ($connections === []) {
                     if ($this->db->transaction(fn ($transaction) => $transaction->del($key))) {
@@ -96,10 +96,8 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
 
                         break;
                     }
-                } else {
-                    if ($this->db->transaction(fn ($transaction) => $transaction->hset($key, 'connections', $this->serialize($connections)))) {
-                        break;
-                    }
+                } elseif ($this->db->transaction(fn ($transaction) => $transaction->hset($key, 'connections', $this->serialize($connections)))) {
+                    break;
                 }
             } else {
                 break;
@@ -135,21 +133,21 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
             foreach ($keys as $key) {
                 $key = Str::after($key, $this->prefix);
 
-                    $connections = $this->unserialize($this->db->hget($key, 'connections'));
+                $connections = $this->unserialize($this->db->hget($key, 'connections'));
 
-                    $connections = array_values(array_filter($connections, fn($connection) => $connection !== $connectionId));
+                $connections = array_values(array_filter($connections, fn ($connection) => $connection !== $connectionId));
 
-                    if ($connections === []) {
-                        $userInfo = $this->unserialize($this->db->hget($key, 'user_info'));
-                        $this->db->del($key);
+                if ($connections === []) {
+                    $userInfo = $this->unserialize($this->db->hget($key, 'user_info'));
+                    $this->db->del($key);
 
-                        $fullyExitedChannels[] = [
-                            'channel' => $this->extractChannelNameFromKey($key),
-                            'user_info' => $userInfo,
-                        ];
-                    } else {
-                        $this->db->hset($key, 'connections', $this->serialize($connections));
-                    }
+                    $fullyExitedChannels[] = [
+                        'channel' => $this->extractChannelNameFromKey($key),
+                        'user_info' => $userInfo,
+                    ];
+                } else {
+                    $this->db->hset($key, 'connections', $this->serialize($connections));
+                }
             }
 
             return $fullyExitedChannels;

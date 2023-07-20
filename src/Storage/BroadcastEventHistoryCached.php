@@ -28,10 +28,10 @@ class BroadcastEventHistoryCached implements BroadcastEventHistory
 
     public function lastEventTimestamp(): int
     {
-        /** @var BroadcastingEvent $lastEvent */
+        /** @var BroadcastingEvent|null $lastEvent */
         $lastEvent = $this->getEvents()->last();
 
-        return $lastEvent ? $lastEvent->timestamp : 0;
+        return $lastEvent instanceof BroadcastingEvent ? $lastEvent->timestamp : 0;
     }
 
     public function pushEvent(BroadcastingEvent $event)

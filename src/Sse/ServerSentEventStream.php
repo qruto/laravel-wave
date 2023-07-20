@@ -54,11 +54,6 @@ class ServerSentEventStream implements Responsable
             if ($request->hasHeader('Last-Event-ID')) {
                 $missedEvents = $this->eventsHistory->getEventsFrom($request->header('Last-Event-ID'));
 
-                ray()->table([
-                    'missedEvents' => $missedEvents,
-                    'lastEventId' => $request->header('Last-Event-ID'),
-                ], 'Missed Events')->blue();
-
                 $missedEvents
                     ->filter(fn (BroadcastingEvent $event) => $event->event !== 'connected')
                     ->each($this->eventHandler($request, $lastSocket));
@@ -71,9 +66,7 @@ class ServerSentEventStream implements Responsable
 
             $event->send();
 
-
             $this->eventSubscriber->start(function (string $message, string $channel) use ($request, $newSocket) {
-                ray(EventFactory::fromRedisMessage($message, $channel));
                 $this->eventHandler($request, $newSocket)(EventFactory::fromRedisMessage($message, $channel));
             }, $request, $newSocket);
         }, Response::HTTP_OK, self::HEADERS + ['X-Socket-Id' => $newSocket]);
@@ -112,7 +105,7 @@ class ServerSentEventStream implements Responsable
 
     protected function shouldNotSend(BroadcastingEvent $event, ?string $socket, Authenticatable|null $user): bool
     {
-        if (!$socket) {
+        if (! $socket) {
             return false;
         }
 

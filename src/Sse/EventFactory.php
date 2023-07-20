@@ -8,7 +8,7 @@ use Qruto\LaravelWave\Storage\BroadcastingEvent;
 
 class EventFactory
 {
-    public static function fromRedisMessage(string $message, string $channel)
+    public static function fromRedisMessage(string|array $message, string $channel)
     {
         ['event' => $event, 'data' => $data] = is_array($message) ?
                 $message : json_decode($message, true, 512, JSON_THROW_ON_ERROR);
