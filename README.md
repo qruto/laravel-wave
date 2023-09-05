@@ -108,6 +108,8 @@ Then, set your `.env` file to use the `redis` broadcasting driver:
 BROADCAST_DRIVER=redis
 ```
 
+> Ensure that you have `output_buffering = On` in your php.ini
+
 ## Usage
 
 After installing **Wave**, your server is ready to broadcast events.
