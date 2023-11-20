@@ -47,7 +47,7 @@ it('can add a new user to a presence channel', function () use ($connectionId, $
     ))->toBe(true);
 });
 
-it('successfully saves second user connection', function () use ($connectionId, $channel) {
+it('successfully saves second user connection', function () {
     Redis::shouldReceive('hexists')->once()->withArgs([
         'laravel_database_channels:community:users',
         $this->user->getAuthIdentifierForBroadcasting(),
@@ -184,10 +184,10 @@ it('can remove a connection from all channels', function () use ($connectionId) 
     $removedConnections = $this->repository->removeConnection($this->user, $connectionId);
 
     expect($removedConnections)->toEqual([
-//        [
-//            'channel' => 'channel1',
-//            'user_info' => ['email' => 'test1@example.com'],
-//        ],
+        //        [
+        //            'channel' => 'channel1',
+        //            'user_info' => ['email' => 'test1@example.com'],
+        //        ],
         [
             'channel' => 'channel2',
             'user_info' => ['email' => 'test2@example.com'],

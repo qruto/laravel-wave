@@ -8,7 +8,6 @@ use Illuminate\Contracts\Redis\Connection;
 use Illuminate\Redis\Connections\PhpRedisConnection;
 use Illuminate\Redis\Connections\PredisConnection;
 use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Str;
 use Qruto\LaravelWave\BroadcastingUserIdentifier;
 
 class PresenceChannelUsersRedisRepository implements PresenceChannelUsersRepository
@@ -149,6 +148,7 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
     private function extractChannelNameFromKey(string $key): string
     {
         $keyParts = explode(':', $key);
+
         // It is assumed that the channel name is always the second part of the key.
         // Adjust this according to your key structure.
         return $keyParts[1];
