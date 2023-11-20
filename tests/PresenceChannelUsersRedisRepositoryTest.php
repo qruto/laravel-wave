@@ -1,43 +1,43 @@
 <?php
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Redis;
 use Qruto\LaravelWave\Storage\PresenceChannelUsersRedisRepository;
 
 beforeEach(function () {
     Redis::partialMock()->shouldReceive('connection')->once()->andReturnSelf();
-    Redis::partialMock()->shouldReceive('watch')->zeroOrMoreTimes()->andReturnSelf();
     $this->repository = new PresenceChannelUsersRedisRepository();
 });
 
 $connectionId = 'random-connection-id';
 $channel = 'community';
 
-// generate key for user function
-function connectionsKey(string $channel, string $userKey): string
+function channelMemberKey(string $channel, string ...$suffixes): string
 {
-    return "presence_channel:$channel:user:$userKey";
+    return implode(':', \array_merge(["laravel_database_channels:$channel"], $suffixes));
 }
 
-function expectSavedData(string $channel, string $userKey, array $connections, array $userInfo = null)
+function userChannelsKey(Authenticatable $user): string
 {
-    $data = [
-        'connections' => json_encode($connections),
-    ];
-
-    if ($userInfo) {
-        $data['user_info'] = json_encode($userInfo);
-    }
-
-    Redis::shouldReceive('hmset')->once()->with(
-        connectionsKey($channel, $userKey),
-        $data,
-    );
+    return implode(':', ['laravel_database_channels', $user->getAuthIdentifier(), 'user_channels']);
 }
 
 it('can add a new user to a presence channel', function () use ($connectionId, $channel) {
-    Redis::shouldReceive('exists')->once()->andReturn(false);
+    Redis::shouldReceive('sadd')->once()->withArgs([
+        'laravel_database_channels:community:1:user_sockets',
+        $connectionId,
+    ])->andReturn(null);
 
-    expectSavedData($channel, $this->user->id, [$connectionId], ['email' => $this->user->email]);
+    Redis::shouldReceive('hset')->once()->withArgs([
+        'laravel_database_channels:community:users',
+        $this->user->getAuthIdentifierForBroadcasting(),
+        json_encode(['email' => $this->user->email]),
+    ])->andReturn(null);
+
+    Redis::shouldReceive('sadd')->once()->withArgs([
+        userChannelsKey($this->user),
+        $channel,
+    ])->andReturn(null);
 
     expect($this->repository->join(
         $channel,
@@ -48,13 +48,10 @@ it('can add a new user to a presence channel', function () use ($connectionId, $
 });
 
 it('successfully saves second user connection', function () use ($connectionId, $channel) {
-    Redis::shouldReceive('exists')->once()->andReturn(true);
-
-    Redis::shouldReceive('hget')->once()
-        ->with(connectionsKey($channel, $this->user->id), 'connections')
-        ->andReturn(json_encode([$connectionId]));
-
-    expectSavedData($channel, $this->user->id, [$connectionId, 'another-connection-id']);
+    Redis::shouldReceive('hexists')->once()->withArgs([
+        'laravel_database_channels:community:users',
+        $this->user->getAuthIdentifierForBroadcasting(),
+    ])->andReturn(true);
 
     expect($this->repository->join(
         'community',
@@ -65,48 +62,57 @@ it('successfully saves second user connection', function () use ($connectionId, 
 });
 
 it('can remove a user connection from a presence channel', function () use ($connectionId, $channel) {
-    Redis::shouldReceive('exists')->once()->andReturn(true);
-    Redis::shouldReceive('hget')->once()->andReturn(json_encode([$connectionId, 'another-connection-id']));
+    Redis::shouldReceive('srem')->once()->withArgs([
+        'laravel_database_channels:community:1:user_sockets',
+        $connectionId,
+    ])->andReturn(null);
 
-    Redis::shouldReceive('hset')->once()->with(
-        connectionsKey($channel, $this->user->id),
-        'connections',
-        json_encode(['another-connection-id'])
-    );
+    Redis::shouldReceive('scard')->once()->withArgs([
+        channelMemberKey($channel, '1', 'user_sockets'),
+    ])->andReturn(2);
+
+    Redis::shouldReceive('srem')->never();
+    Redis::shouldReceive('hdel')->never();
 
     expect($this->repository->leave($channel, $this->user, $connectionId))->toBe(false);
 });
 
-it('can remove a user from a presence channel when last connection is removed', function () use ($connectionId, $channel) {
-    Redis::shouldReceive('exists')->once()->andReturn(true);
-    Redis::shouldReceive('hget')->once()->andReturn(json_encode([$connectionId]));
+it('removes a user from a presence channel list when last connection is removed', function () use ($connectionId, $channel) {
+    Redis::shouldReceive('srem')->once()->withArgs([
+        'laravel_database_channels:community:1:user_sockets',
+        $connectionId,
+    ])->andReturn(1);
 
-    Redis::shouldReceive('del')->once()->with(
-        connectionsKey($channel, $this->user->id)
-    );
+    Redis::shouldReceive('scard')->once()->withArgs([
+        channelMemberKey($channel, '1', 'user_sockets'),
+    ])->andReturn(1);
+
+    Redis::shouldReceive('srem')->once()->withArgs([
+        userChannelsKey($this->user),
+        $channel,
+    ])->andReturn(1);
+
+    Redis::shouldReceive('hdel')->withArgs([
+        'laravel_database_channels:community:users',
+        $this->user->getAuthIdentifierForBroadcasting(),
+    ])->andReturn(null);
 
     expect($this->repository->leave($channel, $this->user, $connectionId))->toBe(true);
 });
 
 it('will do nothing if a non-existent user tries to leave a presence channel', function () use ($connectionId, $channel) {
-    Redis::shouldReceive('exists')->once()->andReturn(false);
-
     expect($this->repository->leave($channel, $this->user, $connectionId))->toBe(false);
 });
 
 it('can return all users for a specific channel', function () use ($channel) {
-    $userKeys = [
-        "presence_channel:$channel:user:".$this->user->id,
-        "presence_channel:$channel:user:2",
-    ];
-
-    Redis::shouldReceive('keys')->once()->andReturn($userKeys);
-    Redis::shouldReceive('hget')->once()
-        ->with($userKeys[0], 'user_info')
-        ->andReturn(json_encode(['email' => $this->user->email]));
-    Redis::shouldReceive('hget')->once()
-        ->with($userKeys[1], 'user_info')
-        ->andReturn(json_encode(['email' => 'rick@unity.io']));
+    // get hgetall keys for all users in the channel
+    Redis::shouldReceive('hgetall')
+        ->once()
+        ->with(channelMemberKey($channel, 'users'))
+        ->andReturn([
+            '1' => json_encode(['email' => $this->user->email]),
+            '2' => json_encode(['email' => 'rick@unity.io']),
+        ]);
 
     $result = $this->repository->getUsers($channel);
 
@@ -117,7 +123,7 @@ it('can return all users for a specific channel', function () use ($channel) {
 });
 
 it('can handle when there are no users in a specific channel', function () use ($channel) {
-    Redis::shouldReceive('keys')->once()->andReturn([]);
+    Redis::shouldReceive('hgetall')->once()->andReturn([]);
 
     $result = $this->repository->getUsers($channel);
 
@@ -125,37 +131,66 @@ it('can handle when there are no users in a specific channel', function () use (
 });
 
 it('can remove a connection from all channels', function () use ($connectionId) {
-    Redis::shouldReceive('keys')->andReturn([
-        'presence_channel:channel1:user:1',
-        'presence_channel:channel1:user:2',
-        'presence_channel:channel2:user:1',
-        'presence_channel:channel2:user:3',
+    Redis::shouldReceive('smembers')
+        ->once()
+        ->with(userChannelsKey($this->user))
+        ->andReturn(['channel1', 'channel2']);
+
+    Redis::shouldReceive('hget')->once()->withArgs([
+        channelMemberKey('channel1', 'users'),
+        $this->user->getAuthIdentifierForBroadcasting(),
+    ])->andReturn(json_encode(['email' => 'test1@example.com']));
+
+    Redis::shouldReceive('hget')->once()->withArgs([
+        channelMemberKey('channel2', 'users'),
+        $this->user->getAuthIdentifierForBroadcasting(),
+    ])->andReturn(json_encode(['email' => 'test2@example.com']));
+
+    Redis::shouldReceive('scard')->once()->withArgs([
+        channelMemberKey('channel1', $this->user->id, 'user_sockets'),
+    ])->andReturn(2);
+
+    Redis::shouldReceive('srem')->once()->withArgs([
+        channelMemberKey('channel1', $this->user->id, 'user_sockets'),
+        $connectionId,
+    ])->andReturn(1);
+
+    Redis::shouldReceive('srem')->never()->withArgs([
+        userChannelsKey($this->user),
+        'channel1',
     ]);
 
-    Redis::shouldReceive('hget')->with('presence_channel:channel1:user:1', 'connections')->andReturn(json_encode([$connectionId]));
-    Redis::shouldReceive('hget')->with('presence_channel:channel1:user:2', 'connections')->andReturn(json_encode(['another-connection-id']));
-    Redis::shouldReceive('hget')->with('presence_channel:channel2:user:1', 'connections')->andReturn(json_encode([$connectionId]));
-    Redis::shouldReceive('hget')->with('presence_channel:channel2:user:3', 'connections')->andReturn(json_encode(['another-connection-id']));
+    // channel2
 
-    Redis::shouldReceive('hget')->with('presence_channel:channel1:user:1', 'user_info')->andReturn(json_encode(['email' => 'test1@example.com']));
-    Redis::shouldReceive('hget')->with('presence_channel:channel2:user:1', 'user_info')->andReturn(json_encode(['email' => 'test1@example.com']));
+    Redis::shouldReceive('scard')->once()->withArgs([
+        channelMemberKey('channel2', $this->user->id, 'user_sockets'),
+    ])->andReturn(1);
 
-    Redis::shouldReceive('hset')->with('presence_channel:channel1:user:2', 'connections', json_encode(['another-connection-id']));
-    Redis::shouldReceive('hset')->with('presence_channel:channel2:user:3', 'connections', json_encode(['another-connection-id']));
+    Redis::shouldReceive('srem')->once()->withArgs([
+        channelMemberKey('channel2', $this->user->id, 'user_sockets'),
+        $connectionId,
+    ])->andReturn(1);
 
-    Redis::shouldReceive('del')->with('presence_channel:channel1:user:1');
-    Redis::shouldReceive('del')->with('presence_channel:channel2:user:1');
+    Redis::shouldReceive('srem')->once()->withArgs([
+        userChannelsKey($this->user),
+        'channel2',
+    ]);
 
-    $removedConnections = $this->repository->removeConnection($connectionId);
+    Redis::shouldReceive('hdel')->once()->withArgs([
+        channelMemberKey('channel2', 'users'),
+        $this->user->getAuthIdentifierForBroadcasting(),
+    ])->andReturn(1);
+
+    $removedConnections = $this->repository->removeConnection($this->user, $connectionId);
 
     expect($removedConnections)->toEqual([
-        [
-            'channel' => 'channel1',
-            'user_info' => ['email' => 'test1@example.com'],
-        ],
+//        [
+//            'channel' => 'channel1',
+//            'user_info' => ['email' => 'test1@example.com'],
+//        ],
         [
             'channel' => 'channel2',
-            'user_info' => ['email' => 'test1@example.com'],
+            'user_info' => ['email' => 'test2@example.com'],
         ],
     ]);
 });

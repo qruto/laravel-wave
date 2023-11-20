@@ -12,5 +12,5 @@ interface PresenceChannelUsersRepository
 
     public function getUsers(string $channel);
 
-    public function removeConnection(string $connectionId): array;
+    public function removeConnection(Authenticatable $user, string $connectionId): array;
 }
