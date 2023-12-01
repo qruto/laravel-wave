@@ -4,11 +4,12 @@ namespace Qruto\LaravelWave;
 
 use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Support\Facades\Event;
+use Qruto\LaravelWave\Commands\PresenceChannelEventHandler;
 use Qruto\LaravelWave\Commands\SsePingCommand;
 use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
 use Qruto\LaravelWave\Listeners\RemoveStoredConnectionListener;
 use Qruto\LaravelWave\Storage\BroadcastEventHistory;
-use Qruto\LaravelWave\Storage\BroadcastEventHistoryCached;
+use Qruto\LaravelWave\Storage\BroadcastEventHistoryRedisStream;
 use Qruto\LaravelWave\Storage\PresenceChannelUsersRedisRepository;
 use Qruto\LaravelWave\Storage\PresenceChannelUsersRepository;
 use Spatie\LaravelPackageTools\Package;
@@ -36,7 +37,8 @@ class LaravelWaveServiceProvider extends PackageServiceProvider
 
         config()->set("database.redis.$redisConnectionName-subscription", config("database.redis.$redisConnectionName"));
 
-        $this->app->bind(BroadcastEventHistory::class, BroadcastEventHistoryCached::class);
+        $this->app->bind(BroadcastEventHistory::class, BroadcastEventHistoryRedisStream::class);
+        $this->app->bind(PresenceChannelEvent::class, PresenceChannelEventHandler::class);
 
         $this->app->extend(BroadcastManager::class, fn ($service, $app) => new BroadcastManagerExtended($app));
 
