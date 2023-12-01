@@ -19,7 +19,7 @@ class PresenceChannelLeaveEvent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(public array $user, protected string $channel)
+    public function __construct(public string $userId, public array $userInfo, protected string $channel)
     {
     }
 
@@ -37,14 +37,14 @@ class PresenceChannelLeaveEvent implements ShouldBroadcast
     {
         return 'leave';
     }
-
-    /**
-     * Get the data to broadcast.
-     *
-     * @return array<string, mixed>
-     */
-    public function broadcastWith(): array
-    {
-        return $this->user;
-    }
+//
+//    /**
+//     * Get the data to broadcast.
+//     *
+//     * @return array<string, mixed>
+//     */
+//    public function broadcastWith(): array
+//    {
+//        return $this->userInfo;
+//    }
 }

@@ -2,6 +2,7 @@
 
 namespace Qruto\LaravelWave\Listeners;
 
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Str;
 use Qruto\LaravelWave\Events\PresenceChannelLeaveEvent;
 use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
@@ -21,8 +22,15 @@ class RemoveStoredConnectionListener
 
         $fullyExitedChannels = $this->store->removeConnection($event->user, $event->connectionId);
 
+//        ray(
+//            'exited channels',
+//            Broadcast::socket(),
+//            $event->user->name,
+//            $fullyExitedChannels,
+//        )->color(request()->user()->id === 1 ? 'blue' : 'green')->label(Broadcast::socket());
+
         foreach ($fullyExitedChannels as $exitInfo) {
-            broadcast(new PresenceChannelLeaveEvent($exitInfo['user_info'], Str::after($exitInfo['channel'], 'presence-')))->toOthers();
+            broadcast(new PresenceChannelLeaveEvent($event->user->getAuthIdentifierForBroadcasting(), $exitInfo['user_info'], Str::after($exitInfo['channel'], 'presence-')))->toOthers();
         }
     }
 }

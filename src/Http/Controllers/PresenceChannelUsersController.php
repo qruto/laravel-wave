@@ -38,7 +38,7 @@ class PresenceChannelUsersController extends Controller
     public function destroy(Request $request)
     {
         if ($this->repository->leave($request->channel_name, $request->user(), Broadcast::socket($request))) {
-            broadcast(new PresenceChannelLeaveEvent($this->userInfo, Str::after($request->channel_name, 'presence-')))->toOthers();
+            broadcast(new PresenceChannelLeaveEvent($request->user()->getAuthIdentifierForBroadcasting(), $this->userInfo, Str::after($request->channel_name, 'presence-')))->toOthers();
         }
 
         return response()->json($this->repository->getUsers($request->channel_name));
