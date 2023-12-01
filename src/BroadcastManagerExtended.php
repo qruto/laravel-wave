@@ -27,7 +27,9 @@ class BroadcastManagerExtended extends BroadcastManager
             public function broadcast(array $channels, $event, array $payload = [])
             {
                 foreach (EventFactory::fromBroadcastEvent($channels, $event, $payload) as $item) {
-                    $this->history->pushEvent($item);
+                    $id = $this->history->pushEvent($item);
+
+                    $payload['broadcast_event_id'] = $id;
                 }
 
                 parent::broadcast($channels, $event, $payload);

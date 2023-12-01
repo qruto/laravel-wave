@@ -19,8 +19,8 @@ class EventFactory
         return new BroadcastingEvent(
             static::removeRedisPrefixFromChannel($channel),
             $event,
-            $id,
             $data,
+            $id,
             $socket,
         );
     }
@@ -34,24 +34,22 @@ class EventFactory
         return new BroadcastingEvent(
             $channel,
             $event,
-            static::generateId(),
             $data,
+            null,
             $socket,
         );
     }
 
     public static function fromBroadcastEvent(array $channels, $event, array &$payload = [])
     {
-        $payload['broadcast_event_id'] = static::generateId();
-
         $events = [];
 
         foreach ($channels as $channel) {
             $events[] = new BroadcastingEvent(
                 $channel,
                 $event,
-                $payload['broadcast_event_id'],
                 $payload,
+                null,
                 $payload['socket'],
             );
         }
@@ -61,7 +59,7 @@ class EventFactory
 
     protected static function generateId(): string
     {
-        return (string) Str::uuid();
+        return (string) Str::ulid();
     }
 
     protected static function removeRedisPrefixFromChannel(string $pattern): string
