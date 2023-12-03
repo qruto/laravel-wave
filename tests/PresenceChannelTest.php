@@ -4,12 +4,13 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Redis;
-use function Pest\Laravel\actingAs;
 use Qruto\LaravelWave\Events\PresenceChannelJoinEvent;
 use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
 use Qruto\LaravelWave\Tests\Events\SomePresenceEvent;
 use Qruto\LaravelWave\Tests\Events\SomePrivateEvent;
 use Qruto\LaravelWave\Tests\Support\User;
+
+use function Pest\Laravel\actingAs;
 
 it('send join event on join request', function () {
     Event::fake([PresenceChannelJoinEvent::class]);

@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Event;
-use function Pest\Laravel\post;
 use Qruto\LaravelWave\Events\ClientEvent;
 use Qruto\LaravelWave\Tests\Support\User;
+
+use function Pest\Laravel\post;
 
 it('successfully send whisper event', function () {
     Event::fake([ClientEvent::class]);

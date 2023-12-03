@@ -10,9 +10,9 @@ use Illuminate\Queue\SerializesModels;
 
 class SomePresenceEvent implements ShouldBroadcast
 {
+    use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
-    use Dispatchable;
 
     public $someData = [
         'name' => 'presence',
