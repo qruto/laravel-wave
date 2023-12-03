@@ -2,13 +2,11 @@
 
 namespace Qruto\LaravelWave\Storage;
 
-use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Redis\Connection;
 use Illuminate\Redis\Connections\PhpRedisConnection;
 use Illuminate\Redis\Connections\PredisConnection;
 use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Str;
 use Qruto\LaravelWave\BroadcastingUserIdentifier;
 
 class PresenceChannelUsersRedisRepository implements PresenceChannelUsersRepository
@@ -48,86 +46,52 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
 
     public function join(string $channel, Authenticatable $user, array $userInfo, string $connectionId): bool
     {
-        return $this->lock($this->channelMemberKey($channel, 'users'), function () use (
-            $channel,
-            $user,
-            $userInfo,
-            $connectionId
-        ) {
-            $userKey = $this->userKey($user);
-            $usersHashKey = $this->channelMemberKey($channel, 'users');
+        $userKey = $this->userKey($user);
+        $usersHashKey = $this->channelMemberKey($channel, 'users');
+        $socketsSetKey = $this->channelMemberKey($channel, $userKey, 'user_sockets');
+        $userChannelsKey = $this->userChannelsKey($user);
 
-            $firstJoin = false;
+        $luaScript = <<<'LUA'
+            local firstJoin = redis.call('hexists', KEYS[1], ARGV[1]) == 0
+            redis.call('sadd', KEYS[2], ARGV[3])
+            redis.call('hset', KEYS[1], ARGV[1], ARGV[2])
+            redis.call('sadd', KEYS[3], ARGV[4])
+            return firstJoin and 1 or 0
+        LUA;
 
-            // TODO: race condition here ?
-            if (! $this->db->hexists($usersHashKey, $this->userKey($user))) {
-                $firstJoin = true;
-            }
-
-            $this->db->transaction(function ($transaction) use (
-                $user,
-                $channel,
-                $userKey,
-                $userInfo,
-                $usersHashKey,
-                $connectionId,
-            ) {
-                $transaction->sadd(
-                    $this->channelMemberKey($channel, $userKey, 'user_sockets'),
-                    $connectionId
-                );
-
-                $transaction->hset(
-                    $usersHashKey,
-                    $this->userKey($user),
-                    $this->serialize($userInfo)
-                );
-
-                $transaction->sadd(
-                    $this->userChannelsKey($user),
-                    $channel
-                );
-            });
-
-            return $firstJoin;
-        });
+        return $this->db->eval(
+            $luaScript,
+            3,
+            $usersHashKey, $socketsSetKey, $userChannelsKey,
+            $userKey, $this->serialize($userInfo), $connectionId, $channel
+        );
     }
 
     public function leave(string $channel, Authenticatable $user, string $connectionId): bool
     {
-        return $this->lock($this->channelMemberKey($channel, 'users'), function () use (
-            $channel,
-            $user,
-            $connectionId
-        ) {
-            $userKey = $this->userKey($user);
-            $usersHashKey = $this->channelMemberKey($channel, 'users');
-            $socketsSetKey = $this->channelMemberKey($channel, $userKey, 'user_sockets');
+        $userKey = $this->userKey($user);
+        $socketsSetKey = $this->channelMemberKey($channel, $userKey, 'user_sockets');
+        $usersHashKey = $this->channelMemberKey($channel, 'users');
+        $userChannelsKey = $this->userChannelsKey($user);
 
-            $lastLeave = false;
+        $luaScript = <<<'LUA'
+            if redis.call('sismember', KEYS[1], ARGV[1]) == 1 then
+                redis.call('srem', KEYS[1], ARGV[1])
+                if redis.call('scard', KEYS[1]) == 0 then
+                    redis.call('srem', KEYS[3], ARGV[3])
+                    redis.call('hdel', KEYS[2], ARGV[2])
+                    return 1
+                end
+            end
+            return 0
+        LUA;
 
-            if ($this->db->sIsMember($socketsSetKey, $connectionId) && $this->db->scard($socketsSetKey) === 1) {
-                $lastLeave = true;
-            }
-
-            $this->db->transaction(function ($transaction) use (
-                $user,
-                $channel,
-                $connectionId,
-                $usersHashKey,
-                $socketsSetKey,
-                $lastLeave,
-            ) {
-                $transaction->srem($socketsSetKey, $connectionId);
-
-                if ($lastLeave) {
-                    $transaction->srem($this->userChannelsKey($user), $channel);
-                    $transaction->hdel($usersHashKey, $this->userKey($user));
-                }
-            });
-
-            return $lastLeave;
-        });
+        return $this->db->eval(
+            $luaScript,
+            3,
+            $socketsSetKey, $usersHashKey, $userChannelsKey,
+            $connectionId, $userKey, $channel
+        );
     }
 
     public function getUsers(string $channel): array
@@ -140,29 +104,21 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
 
     public function removeConnection(Authenticatable $user, string $connectionId): array
     {
-        return $this->lock($this->userChannelsKey($user), function () use ($user, $connectionId) {
-            $fullyExitedChannels = [];
-            collect($this->db->smembers($this->userChannelsKey($user)))
-                ->each(function ($channel) use ($user, $connectionId, &$fullyExitedChannels) {
-                    $userInfo = $this->unserialize($this->db->hget(
-                        $this->channelMemberKey($channel, 'users'),
-                        $this->userKey($user)
-                    ));
+        return collect($this->db->smembers($this->userChannelsKey($user)))
+            ->map(function ($channel) use ($user, $connectionId) {
+                $userInfo = $this->unserialize($this->db->hget(
+                    $this->channelMemberKey($channel, 'users'),
+                    $this->userKey($user)
+                ));
 
-                    if ($this->leave($channel, $user, $connectionId)) {
-                        $fullyExitedChannels[] = [
-                            'channel' => $channel,
-                            'user_info' => $userInfo,
-                        ];
-                    }
-                });
+                if ($this->leave($channel, $user, $connectionId)) {
+                    return [
+                        'channel' => $channel,
+                        'user_info' => $userInfo,
+                    ];
+                }
 
-            return $fullyExitedChannels;
-        });
-    }
-
-    private function lock(string $key, Closure $callback)
-    {
-        return cache()->lock($key.':lock', 100)->block(115, $callback);
+                return null;
+            })->filter()->values()->toArray();
     }
 }

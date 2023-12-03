@@ -10,6 +10,7 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
 use Qruto\LaravelWave\BroadcastingUserIdentifier;
+use Qruto\LaravelWave\PresenceChannelEvent;
 use Qruto\LaravelWave\ServerSentEventSubscriber;
 use Qruto\LaravelWave\Storage\BroadcastEventHistory;
 use Qruto\LaravelWave\Storage\BroadcastingEvent;
@@ -36,6 +37,7 @@ class ServerSentEventStream implements Responsable
         protected ResponseFactory $responseFactory,
         protected PresenceChannelUsersRedisRepository $store,
         protected BroadcastEventHistory $eventsHistory,
+        protected PresenceChannelEvent $presenceChannelEvent,
         protected ConfigRepository $config
     ) {
     }
@@ -55,16 +57,21 @@ class ServerSentEventStream implements Responsable
                 $missedEvents = $this->eventsHistory->getEventsFrom($request->header('Last-Event-ID'));
 
                 $missedEvents
-                    ->filter(fn (BroadcastingEvent $event) => $event->event !== 'connected')
+                    // TODO: except system channel
+                    ->filter(fn (BroadcastingEvent $event) => $event->channel !== 'general')
                     ->each($this->eventHandler($request, $lastSocket));
+
             }
 
-            $event = EventFactory::create('general', 'connected', $newSocket, $newSocket);
-
             // TODO: change general channel name
-            $this->eventsHistory->pushEvent($event);
+            tap(
+                EventFactory::create('general', 'connected', $newSocket, $newSocket),
+                function (BroadcastingEvent $event) {
+                    $this->eventsHistory->pushEvent($event);
 
-            $event->send();
+                    $event->send();
+                }
+            );
 
             $this->eventSubscriber->start(function (string $message, string $channel) use ($request, $newSocket) {
                 $this->eventHandler($request, $newSocket)(EventFactory::fromRedisMessage($message, $channel));
@@ -87,6 +94,10 @@ class ServerSentEventStream implements Responsable
                 return;
             }
 
+            if ($request->user() && $this->presenceChannelEvent->isLeaveEvent($event, $request->user())) {
+                $this->presenceChannelEvent->formatLeaveEventForSending($event);
+            }
+
             $event->send();
         };
     }
@@ -107,6 +118,10 @@ class ServerSentEventStream implements Responsable
     {
         if (! $socket) {
             return false;
+        }
+
+        if ($user !== null && $this->presenceChannelEvent->isSelfLeaveEvent($event, $user)) {
+            return true;
         }
 
         return $event->socket === $socket;

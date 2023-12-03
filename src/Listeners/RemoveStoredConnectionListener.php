@@ -22,13 +22,6 @@ class RemoveStoredConnectionListener
 
         $fullyExitedChannels = $this->store->removeConnection($event->user, $event->connectionId);
 
-//        ray(
-//            'exited channels',
-//            Broadcast::socket(),
-//            $event->user->name,
-//            $fullyExitedChannels,
-//        )->color(request()->user()->id === 1 ? 'blue' : 'green')->label(Broadcast::socket());
-
         foreach ($fullyExitedChannels as $exitInfo) {
             broadcast(new PresenceChannelLeaveEvent($event->user->getAuthIdentifierForBroadcasting(), $exitInfo['user_info'], Str::after($exitInfo['channel'], 'presence-')))->toOthers();
         }
