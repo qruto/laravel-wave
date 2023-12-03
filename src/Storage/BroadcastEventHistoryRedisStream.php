@@ -2,7 +2,6 @@
 
 namespace Qruto\LaravelWave\Storage;
 
-use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Redis\Connection;
 use Illuminate\Redis\Connections\PhpRedisConnection;
@@ -26,7 +25,7 @@ class BroadcastEventHistoryRedisStream implements BroadcastEventHistory
     public function getEventsFrom(string $id): Collection
     {
         [$timestamp, $sequence] = explode('-', $id);
-        $sequence = (int)$sequence + 1;
+        $sequence = (int) $sequence + 1;
 
         return collect($this->db->xRange('broadcasted_events', $timestamp.'-'.$sequence, '+'))
             ->map(function ($event, $id) {

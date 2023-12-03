@@ -14,7 +14,7 @@ class BroadcastingEvent
         public ?string $id,
         public ?string $socket,
     ) {
-//        $this->timestamp = now()->getTimestamp();
+        //        $this->timestamp = now()->getTimestamp();
     }
 
     public function send(): void

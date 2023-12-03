@@ -2,7 +2,6 @@
 
 namespace Qruto\LaravelWave\Listeners;
 
-use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Str;
 use Qruto\LaravelWave\Events\PresenceChannelLeaveEvent;
 use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
