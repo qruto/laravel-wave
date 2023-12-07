@@ -26,12 +26,12 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
 
     protected function channelMemberKey(string $channel, string ...$suffixes): string
     {
-        return implode(':', \array_merge([$this->prefix.'channels', $channel], $suffixes));
+        return implode(':', \array_merge(['broadcasting_channels', $channel], $suffixes));
     }
 
     protected function userChannelsKey(Authenticatable $user): string
     {
-        return implode(':', [$this->prefix.'channels', $this->userKey($user), 'user_channels']);
+        return implode(':', ['broadcasting_channels', $this->userKey($user), 'user_channels']);
     }
 
     protected function serialize(array $value): string

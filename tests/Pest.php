@@ -16,13 +16,6 @@ use function PHPUnit\Framework\assertTrue;
 uses(TestCase::class)->in(__DIR__);
 
 uses()->beforeEach(function () {
-    $redisMock = new RedisConnectionMock();
-
-    $this->instance('redis', $redisMock);
-
-    $redisMock->flushdb();
-    $redisMock->flushEventsQueue();
-
     $this->user = User::factory()->create();
 
     Broadcast::channel('private-channel', fn () => true);
