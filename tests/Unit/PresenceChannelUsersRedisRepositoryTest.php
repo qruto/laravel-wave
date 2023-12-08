@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Redis;
 use Qruto\LaravelWave\Storage\PresenceChannelUsersRedisRepository;
 use Qruto\LaravelWave\Tests\InteractsWithRedis;
@@ -20,16 +19,6 @@ afterEach(function () {
 
 $connectionId = 'random-connection-id';
 $channel = 'presence-community';
-
-function channelMemberKey(string $channel, string ...$suffixes): string
-{
-    return implode(':', array_merge(["broadcasting_channels:$channel"], $suffixes));
-}
-
-function userChannelsKey(Authenticatable $user): string
-{
-    return implode(':', ['broadcasting_channels', $user->getAuthIdentifier(), 'user_channels']);
-}
 
 it('can add a new user to a presence channel', function () use ($connectionId, $channel) {
     $userKey = $this->user->getAuthIdentifierForBroadcasting();
@@ -73,7 +62,7 @@ it('successfully saves second user connection', function () use ($connectionId, 
 });
 
 it('can remove a user connection from a presence channel', function () use ($connectionId, $channel) {
-    $this->repository->join($channel, $this->user, ['email' => $this->user->email],'first-connection-id');
+    $this->repository->join($channel, $this->user, ['email' => $this->user->email], 'first-connection-id');
     $this->repository->join($channel, $this->user, ['email' => $this->user->email], $connectionId);
 
     expect($this->repository->leave($channel, $this->user, $connectionId))->toBeFalse();
@@ -116,7 +105,7 @@ it('can remove a connection from all channels', function () use ($connectionId) 
 
     $removedConnections = $this->repository->removeConnection($this->user, $connectionId);
 
-    expect($removedConnections)->toEqual([
+    expect($removedConnections)->toEqualCanonicalizing([
         [
             'channel' => 'channel1',
             'user_info' => ['email' => $this->user->email],

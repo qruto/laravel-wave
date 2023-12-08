@@ -37,14 +37,4 @@ class PresenceChannelLeaveEvent implements ShouldBroadcast
     {
         return 'leave';
     }
-    //
-    //    /**
-    //     * Get the data to broadcast.
-    //     *
-    //     * @return array<string, mixed>
-    //     */
-    //    public function broadcastWith(): array
-    //    {
-    //        return $this->userInfo;
-    //    }
 }

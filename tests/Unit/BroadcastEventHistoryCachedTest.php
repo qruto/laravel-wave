@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Carbon;
 use Qruto\LaravelWave\Storage\BroadcastEventHistory;
 use Qruto\LaravelWave\Storage\BroadcastingEvent;
 
@@ -10,10 +11,22 @@ beforeEach(function () {
 it('successfully pushes event to Redis history', function () {
     $event = BroadcastingEvent::fake();
 
-    expect($this->history->pushEvent($event))
-        ->toBe($event->timestamp)
-        ->and(cache()->get('broadcasted_events'))
-        ->toEqual(collect([$event]));
+    $this->freezeTime(function (Carbon $time) use ($event) {
+        expect($this->history->pushEvent($event))
+            ->toBe($time->getPreciseTimestamp(3).'-0')
+            ->and(\Illuminate\Support\Facades\Redis::xRange('broadcasted_events', '0', '+'))
+            ->toEqual([
+                $time->getPreciseTimestamp(3).'-0' => [
+                    'id' => '',
+                    'name' => $event->name,
+                    'channel' => $event->channel,
+                    'data' => json_encode($event->data),
+                    'socket' => $event->socket,
+                ],
+            ]);
+    });
+    //        ->and(cache()->get('broadcasted_events'))
+    //        ->toEqual(collect([$event]));
 });
 
 it('removes outdated events from Redis history', function () {
@@ -29,7 +42,22 @@ it('removes outdated events from Redis history', function () {
     $this->history->pushEvent($event2);
     $this->history->pushEvent($event3);
 
-    expect(cache()->get('broadcasted_events'))->toEqual(collect([$event2, $event3]));
+    expect(\Illuminate\Support\Facades\Redis::xRange('broadcasted_events', '0', '+'))->toEqual([
+        $event2->id => [
+            'id' => '',
+            'name' => $event2->name,
+            'channel' => $event2->channel,
+            'data' => json_encode($event2->data),
+            'socket' => $event2->socket,
+        ],
+        $event3->id => [
+            'id' => '',
+            'name' => $event3->name,
+            'channel' => $event3->channel,
+            'data' => json_encode($event3->data),
+            'socket' => $event3->socket,
+        ],
+    ]);
 });
 
 it('gets events from the given id', function () {
@@ -58,7 +86,7 @@ it('returns the timestamp of the last event', function () {
     $this->history->pushEvent($event2);
     $this->history->pushEvent($event3);
 
-    expect($this->history->lastEventTimestamp())->toBe($event3->timestamp);
+    expect($this->history->lastEventTimestamp())->toEqual(explode('-', $event3->id)[0]);
 });
 
 it('returns 0 when there are no events', function () {

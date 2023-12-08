@@ -1,23 +1,21 @@
 <?php
 
-namespace Qruto\LaravelWave\Tests\Events;
+namespace Qruto\LaravelWave\Tests\Support\Events;
 
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SomePresenceEvent implements ShouldBroadcast
+class PublicEvent implements ShouldBroadcast, ShouldBroadcastNow
 {
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
 
-    public $someData = [
-        'name' => 'presence',
-        'data' => 2,
-    ];
+    public $name = 'public';
 
     /**
      * Create a new event instance.
@@ -36,6 +34,6 @@ class SomePresenceEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('presence-channel');
+        return new Channel('public');
     }
 }

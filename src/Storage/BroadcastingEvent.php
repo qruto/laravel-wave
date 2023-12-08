@@ -14,7 +14,6 @@ class BroadcastingEvent
         public ?string $id,
         public ?string $socket,
     ) {
-        //        $this->timestamp = now()->getTimestamp();
     }
 
     public function send(): void
@@ -32,7 +31,7 @@ class BroadcastingEvent
         return new self(
             channel: $attributes['channel'] ?? fake()->word,
             name: $attributes['event'] ?? fake()->word,
-            id: $attributes['id'] ?? fake()->uuid,
+            id: null,
             data: $attributes['data'] ?? ['message' => fake()->sentence],
             socket: $attributes['socket'] ?? fake()->randomNumber(6, true).'.'.fake()->randomNumber(6, true),
         );

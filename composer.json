@@ -33,7 +33,7 @@
     },
     "require-dev": {
         "laravel/pint": "^1.13",
-        "m6web/redis-mock": "^5.4",
+        "m6web/redis-mock": "v5.6",
         "nunomaduro/collision": "^7.10",
         "nunomaduro/larastan": "^2.6",
         "orchestra/testbench": "^7.22.1|^8.0",

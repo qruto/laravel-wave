@@ -37,13 +37,15 @@ class BroadcastEventHistoryRedisStream implements BroadcastEventHistory
 
     public function lastEventTimestamp(): int
     {
-        $keys = array_keys($this->db->xRevRange('broadcasted_events', '+', '-', 1));
+        $keys = array_keys($this->db->xRevRange('broadcasted_events', '-', '+', 1));
 
-        return explode('-', reset($keys))[0] ?? 0;
+        return empty($keys) ? 0 : explode('-', reset($keys))[0];
     }
 
     public function pushEvent(BroadcastingEvent $event)
     {
+        $this->removeOldEvents();
+
         $eventData = \get_object_vars($event);
         $eventData['data'] = json_encode($eventData['data']);
         $id = $this->db->xAdd('broadcasted_events', '*', $eventData);
@@ -51,5 +53,16 @@ class BroadcastEventHistoryRedisStream implements BroadcastEventHistory
         $event->id = $id;
 
         return $id;
+    }
+
+    public function removeOldEvents()
+    {
+        // Calculate the threshold timestamp. Events older than this should be removed.
+        $thresholdTimestamp = now()->subSeconds($this->lifetime)->getPreciseTimestamp(3);
+
+        // Fetch all events up to the threshold
+        $oldEvents = $this->db->xRange('broadcasted_events', '-', $thresholdTimestamp.'-0');
+
+        $this->db->xDel('broadcasted_events', \array_keys($oldEvents));
     }
 }

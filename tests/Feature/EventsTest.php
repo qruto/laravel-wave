@@ -1,12 +1,11 @@
 <?php
 
-use Qruto\LaravelWave\Tests\Events\PublicEvent;
-use Qruto\LaravelWave\Tests\Events\SomePresenceEvent;
-use Qruto\LaravelWave\Tests\Events\SomePrivateEvent;
+use Qruto\LaravelWave\Tests\Support\Events\PublicEvent;
+use Qruto\LaravelWave\Tests\Support\Events\SomePresenceEvent;
+use Qruto\LaravelWave\Tests\Support\Events\SomePrivateEvent;
 use Qruto\LaravelWave\Tests\Support\User;
 
 it('successfully receives events for guest user', function () {
-    // HERE: Bug with guest user
     auth()->logout();
 
     $connection = waveConnection();

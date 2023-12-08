@@ -1,6 +1,6 @@
 <?php
 
-namespace Qruto\LaravelWave\Tests\Events;
+namespace Qruto\LaravelWave\Tests\Support\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;

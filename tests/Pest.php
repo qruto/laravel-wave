@@ -9,6 +9,7 @@ use Qruto\LaravelWave\Tests\RedisConnectionMock;
 use Qruto\LaravelWave\Tests\Support\User;
 use Qruto\LaravelWave\Tests\TestCase;
 
+use function Pest\Laravel\actingAs;
 use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertTrue;
@@ -16,15 +17,33 @@ use function PHPUnit\Framework\assertTrue;
 uses(TestCase::class)->in(__DIR__);
 
 uses()->beforeEach(function () {
+    $redisMock = new RedisConnectionMock();
+    $this->instance('redis', $redisMock);
+    $redisMock->flushdb();
+    $redisMock->flushEventsQueue();
+
     $this->user = User::factory()->create();
 
     Broadcast::channel('private-channel', fn () => true);
-    Broadcast::channel('presence-channel', fn () => ['id' => request()->user()->id, 'name' => request()->user()->name]);
+    Broadcast::channel('presence-channel', fn () => [
+        'id' => request()->user()->id,
+        'name' => request()->user()->name,
+    ]);
 
     $this->actingAs($this->user);
 })->in(__DIR__);
 
-function waveConnection(Authenticatable $user = null, string $lastEventId = null)
+function channelMemberKey(string $channel, string ...$suffixes): string
+{
+    return implode(':', array_merge(["broadcasting_channels:$channel"], $suffixes));
+}
+
+function userChannelsKey(Authenticatable $user): string
+{
+    return implode(':', ['broadcasting_channels', $user->getAuthIdentifier(), 'user_channels']);
+}
+
+function waveConnection(?Authenticatable $user = null, ?string $lastEventId = null): object
 {
     return new class($user, $lastEventId)
     {
@@ -141,6 +160,12 @@ function waveConnection(Authenticatable $user = null, string $lastEventId = null
 
         public function getSentEvents()
         {
+            $user = auth()->user();
+
+            if ($this->user) {
+                actingAs($this->user);
+            }
+
             if (! $this->sentEvents) {
                 $rawEvents = array_filter(explode("\n\n", $this->response->streamedContent()));
                 $this->sentEvents = Collection::make($rawEvents)->map(function ($event) {
@@ -157,6 +182,10 @@ function waveConnection(Authenticatable $user = null, string $lastEventId = null
                         'data' => $data,
                     ];
                 })->mapToGroups(fn ($item) => [$item['event'] => ['data' => $item['data'], 'id' => $item['id']]]);
+            }
+
+            if ($user) {
+                actingAs($user);
             }
 
             return $this->sentEvents;
