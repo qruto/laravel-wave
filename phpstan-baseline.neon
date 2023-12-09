@@ -1,11 +1,16 @@
 parameters:
-    ignoreErrors:
-        -
-            message: "#^While loop condition is always true\\.$#"
-            count: 1
-            path: src/Commands/SsePingCommand.php
+	ignoreErrors:
+		-
+			message: "#^While loop condition is always true\\.$#"
+			count: 1
+			path: src/Commands/SsePingCommand.php
 
-        -
-            message: "#^Property Qruto\\\\LaravelWave\\\\Storage\\\\PresenceChannelUsersRedisRepository\\:\\:\\$db.+does not accept Illuminate\\\\Redis\\\\Connections\\\\Connection\\.$#"
-            count: 1
-            path: src/Storage/PresenceChannelUsersRedisRepository.php
+		-
+			message: "#^Property Qruto\\\\LaravelWave\\\\Storage\\\\BroadcastEventHistoryRedisStream\\:\\:\\$db \\(Illuminate\\\\Redis\\\\Connections\\\\PhpRedisConnection\\|Illuminate\\\\Redis\\\\Connections\\\\PredisConnection\\) does not accept Illuminate\\\\Redis\\\\Connections\\\\Connection\\.$#"
+			count: 1
+			path: src/Storage/BroadcastEventHistoryRedisStream.php
+
+		-
+			message: "#^Property Qruto\\\\LaravelWave\\\\Storage\\\\PresenceChannelUsersRedisRepository\\:\\:\\$db \\(Illuminate\\\\Redis\\\\Connections\\\\PhpRedisConnection\\|Illuminate\\\\Redis\\\\Connections\\\\PredisConnection\\) does not accept Illuminate\\\\Redis\\\\Connections\\\\Connection\\.$#"
+			count: 1
+			path: src/Storage/PresenceChannelUsersRedisRepository.php

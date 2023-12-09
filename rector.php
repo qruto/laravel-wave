@@ -21,11 +21,11 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::CODE_QUALITY,
         SetList::DEAD_CODE,
         SetList::EARLY_RETURN,
-        //        SetList::CODING_STYLE,
-        //        SetList::NAMING,
-        //        SetList::ACTION_INJECTION_TO_CONSTRUCTOR_INJECTION,
-        //        SetList::PRIVATIZATION,
-        //        SetList::TYPE_DECLARATION,
+//        SetList::CODING_STYLE,
+//        SetList::NAMING,
+//        SetList::ACTION_INJECTION_TO_CONSTRUCTOR_INJECTION,
+//        SetList::PRIVATIZATION,
+//        SetList::TYPE_DECLARATION,
     ]);
 
     $rectorConfig->phpstanConfig(__DIR__.'/phpstan.neon.dist');

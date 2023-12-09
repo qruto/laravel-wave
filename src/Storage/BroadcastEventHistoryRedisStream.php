@@ -14,7 +14,7 @@ class BroadcastEventHistoryRedisStream implements BroadcastEventHistory
     protected int $lifetime;
 
     /** @var PhpRedisConnection|PredisConnection */
-    private Connection $db;
+    private \Illuminate\Redis\Connections\Connection $db;
 
     public function __construct(ConfigRepository $config)
     {

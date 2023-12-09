@@ -14,14 +14,11 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
     use BroadcastingUserIdentifier;
 
     /** @var PhpRedisConnection|PredisConnection */
-    private Connection $db;
-
-    private string $prefix;
+    private \Illuminate\Redis\Connections\Connection $db;
 
     public function __construct()
     {
         $this->db = Redis::connection(config('broadcasting.connections.redis.connection'));
-        $this->prefix = config('database.redis.options.prefix');
     }
 
     protected function channelMemberKey(string $channel, string ...$suffixes): string
