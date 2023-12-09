@@ -13,7 +13,7 @@ class PresenceChannelUsersRedisRepository implements PresenceChannelUsersReposit
     use BroadcastingUserIdentifier;
 
     /** @var PhpRedisConnection|PredisConnection */
-    private \Illuminate\Redis\Connections\Connection $db;
+    private $db;
 
     public function __construct()
     {
