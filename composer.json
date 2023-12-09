@@ -86,7 +86,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Qruto\\LaravelWave\\LaravelWaveServiceProvider"
+              "Qruto\\LaravelWave\\WaveServiceProvider"
             ]
         }
     },

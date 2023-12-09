@@ -29,7 +29,7 @@ class BroadcastEventHistoryRedisStream implements BroadcastEventHistory
 
         return collect($this->db->xRange('broadcasted_events', $timestamp.'-'.$sequence, '+'))
             ->map(function ($event, $id) {
-                $event['data'] = json_decode($event['data'], true);
+                $event['data'] = json_decode($event['data'], true, 512, JSON_THROW_ON_ERROR);
 
                 return new BroadcastingEvent(...['id' => $id] + $event);
             })->values();
@@ -39,7 +39,7 @@ class BroadcastEventHistoryRedisStream implements BroadcastEventHistory
     {
         $keys = array_keys($this->db->xRevRange('broadcasted_events', '-', '+', 1));
 
-        return empty($keys) ? 0 : explode('-', reset($keys))[0];
+        return $keys === [] ? 0 : explode('-', reset($keys))[0];
     }
 
     public function pushEvent(BroadcastingEvent $event)
@@ -47,7 +47,7 @@ class BroadcastEventHistoryRedisStream implements BroadcastEventHistory
         $this->removeOldEvents();
 
         $eventData = \get_object_vars($event);
-        $eventData['data'] = json_encode($eventData['data']);
+        $eventData['data'] = json_encode($eventData['data'], JSON_THROW_ON_ERROR);
         $id = $this->db->xAdd('broadcasted_events', '*', $eventData);
 
         $event->id = $id;

@@ -15,7 +15,7 @@ use Qruto\LaravelWave\Storage\PresenceChannelUsersRepository;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class LaravelWaveServiceProvider extends PackageServiceProvider
+class WaveServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {

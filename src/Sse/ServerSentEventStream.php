@@ -120,7 +120,7 @@ class ServerSentEventStream implements Responsable
             return false;
         }
 
-        if ($user !== null && $this->presenceChannelEvent->isSelfLeaveEvent($event, $user)) {
+        if ($user instanceof \Illuminate\Contracts\Auth\Authenticatable && $this->presenceChannelEvent->isSelfLeaveEvent($event, $user)) {
             return true;
         }
 
