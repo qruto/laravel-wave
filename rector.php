@@ -22,15 +22,15 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::CODE_QUALITY,
         SetList::DEAD_CODE,
         SetList::EARLY_RETURN,
-//        SetList::CODING_STYLE,
-//        SetList::ACTION_INJECTION_TO_CONSTRUCTOR_INJECTION,
-//        SetList::PRIVATIZATION,
-//        SetList::TYPE_DECLARATION,
+        //        SetList::CODING_STYLE,
+        //        SetList::ACTION_INJECTION_TO_CONSTRUCTOR_INJECTION,
+        //        SetList::PRIVATIZATION,
+        //        SetList::TYPE_DECLARATION,
     ]);
 
     $rectorConfig->skip([
         RemoveUnusedPromotedPropertyRector::class => [
-            __DIR__ . '/src/Sse/ServerSentEvent.php',
+            __DIR__.'/src/Sse/ServerSentEvent.php',
         ],
     ]);
 
