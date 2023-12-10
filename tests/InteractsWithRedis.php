@@ -1,6 +1,6 @@
 <?php
 
-namespace Qruto\LaravelWave\Tests;
+namespace Qruto\Wave\Tests;
 
 trait InteractsWithRedis
 {

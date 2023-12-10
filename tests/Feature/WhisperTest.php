@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Event;
-use Qruto\LaravelWave\Events\ClientEvent;
-use Qruto\LaravelWave\Tests\Support\User;
+use Qruto\Wave\Events\ClientEvent;
+use Qruto\Wave\Tests\Support\User;
 
 use function Pest\Laravel\post;
 

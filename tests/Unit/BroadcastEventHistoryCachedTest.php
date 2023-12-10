@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Carbon;
-use Qruto\LaravelWave\Storage\BroadcastEventHistory;
-use Qruto\LaravelWave\Storage\BroadcastingEvent;
+use Qruto\Wave\Storage\BroadcastEventHistory;
+use Qruto\Wave\Storage\BroadcastingEvent;
 
 beforeEach(function () {
     $this->history = app(BroadcastEventHistory::class);

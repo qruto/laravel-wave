@@ -1,9 +1,9 @@
 <?php
 
-namespace Qruto\LaravelWave\Tests\Support\Factories;
+namespace Qruto\Wave\Tests\Support\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Qruto\LaravelWave\Tests\Support\User;
+use Qruto\Wave\Tests\Support\User;
 
 class UserFactory extends Factory
 {

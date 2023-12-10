@@ -1,6 +1,6 @@
 <?php
 
-namespace Qruto\LaravelWave\Sse;
+namespace Qruto\Wave\Sse;
 
 use Stringable;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace Qruto\LaravelWave;
+namespace Qruto\Wave;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Qruto\LaravelWave\Storage\BroadcastingEvent;
+use Qruto\Wave\Storage\BroadcastingEvent;
 
 interface PresenceChannelEvent
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Qruto\LaravelWave\Storage;
+namespace Qruto\Wave\Storage;
 
-use Qruto\LaravelWave\Sse\ServerSentEvent;
+use Qruto\Wave\Sse\ServerSentEvent;
 
 //TODO: make readonly after update minimum required PHP version
 class BroadcastingEvent

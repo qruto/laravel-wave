@@ -1,11 +1,11 @@
 <?php
 
-namespace Qruto\LaravelWave;
+namespace Qruto\Wave;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
-use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
+use Qruto\Wave\Events\SseConnectionClosedEvent;
 
 class RedisSubscriber implements ServerSentEventSubscriber
 {

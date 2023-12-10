@@ -1,6 +1,6 @@
 <?php
 
-namespace Qruto\LaravelWave\Tests\Support;
+namespace Qruto\Wave\Tests\Support;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;

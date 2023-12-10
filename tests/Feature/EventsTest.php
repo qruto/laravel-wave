@@ -1,9 +1,9 @@
 <?php
 
-use Qruto\LaravelWave\Tests\Support\Events\PublicEvent;
-use Qruto\LaravelWave\Tests\Support\Events\SomePresenceEvent;
-use Qruto\LaravelWave\Tests\Support\Events\SomePrivateEvent;
-use Qruto\LaravelWave\Tests\Support\User;
+use Qruto\Wave\Tests\Support\Events\PublicEvent;
+use Qruto\Wave\Tests\Support\Events\SomePresenceEvent;
+use Qruto\Wave\Tests\Support\Events\SomePrivateEvent;
+use Qruto\Wave\Tests\Support\User;
 
 it('successfully receives events for guest user', function () {
     auth()->logout();

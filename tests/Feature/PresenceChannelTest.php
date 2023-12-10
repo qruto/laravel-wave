@@ -4,11 +4,11 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Redis;
-use Qruto\LaravelWave\Events\PresenceChannelJoinEvent;
-use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
-use Qruto\LaravelWave\Tests\Support\Events\SomePresenceEvent;
-use Qruto\LaravelWave\Tests\Support\Events\SomePrivateEvent;
-use Qruto\LaravelWave\Tests\Support\User;
+use Qruto\Wave\Events\PresenceChannelJoinEvent;
+use Qruto\Wave\Events\SseConnectionClosedEvent;
+use Qruto\Wave\Tests\Support\Events\SomePresenceEvent;
+use Qruto\Wave\Tests\Support\Events\SomePrivateEvent;
+use Qruto\Wave\Tests\Support\User;
 
 use function Pest\Laravel\actingAs;
 

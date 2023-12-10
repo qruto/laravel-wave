@@ -1,10 +1,10 @@
 <?php
 
-namespace Qruto\LaravelWave\Sse;
+namespace Qruto\Wave\Sse;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Qruto\LaravelWave\Storage\BroadcastingEvent;
+use Qruto\Wave\Storage\BroadcastingEvent;
 
 class EventFactory
 {

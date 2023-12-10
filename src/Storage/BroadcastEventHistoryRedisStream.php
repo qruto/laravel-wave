@@ -1,6 +1,6 @@
 <?php
 
-namespace Qruto\LaravelWave\Storage;
+namespace Qruto\Wave\Storage;
 
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Redis\Connections\PhpRedisConnection;

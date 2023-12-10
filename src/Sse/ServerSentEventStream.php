@@ -1,6 +1,6 @@
 <?php
 
-namespace Qruto\LaravelWave\Sse;
+namespace Qruto\Wave\Sse;
 
 use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -9,12 +9,12 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
-use Qruto\LaravelWave\BroadcastingUserIdentifier;
-use Qruto\LaravelWave\PresenceChannelEvent;
-use Qruto\LaravelWave\ServerSentEventSubscriber;
-use Qruto\LaravelWave\Storage\BroadcastEventHistory;
-use Qruto\LaravelWave\Storage\BroadcastingEvent;
-use Qruto\LaravelWave\Storage\PresenceChannelUsersRedisRepository;
+use Qruto\Wave\BroadcastingUserIdentifier;
+use Qruto\Wave\PresenceChannelEvent;
+use Qruto\Wave\ServerSentEventSubscriber;
+use Qruto\Wave\Storage\BroadcastEventHistory;
+use Qruto\Wave\Storage\BroadcastingEvent;
+use Qruto\Wave\Storage\PresenceChannelUsersRedisRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 

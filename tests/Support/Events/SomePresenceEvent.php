@@ -1,6 +1,6 @@
 <?php
 
-namespace Qruto\LaravelWave\Tests\Support\Events;
+namespace Qruto\Wave\Tests\Support\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Qruto\LaravelWave\Commands;
+namespace Qruto\Wave\Commands;
 
 use Illuminate\Console\Command;
-use Qruto\LaravelWave\Events\SsePingEvent;
+use Qruto\Wave\Events\SsePingEvent;
 
 class SsePingCommand extends Command
 {

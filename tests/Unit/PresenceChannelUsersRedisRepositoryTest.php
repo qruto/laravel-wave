@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Redis;
-use Qruto\LaravelWave\Storage\PresenceChannelUsersRedisRepository;
-use Qruto\LaravelWave\Tests\InteractsWithRedis;
-use Qruto\LaravelWave\Tests\Support\User;
+use Qruto\Wave\Storage\PresenceChannelUsersRedisRepository;
+use Qruto\Wave\Tests\InteractsWithRedis;
+use Qruto\Wave\Tests\Support\User;
 
 uses(InteractsWithRedis::class);
 

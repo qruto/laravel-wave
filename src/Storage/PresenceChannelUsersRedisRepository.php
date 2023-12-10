@@ -1,12 +1,12 @@
 <?php
 
-namespace Qruto\LaravelWave\Storage;
+namespace Qruto\Wave\Storage;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Redis\Connections\PhpRedisConnection;
 use Illuminate\Redis\Connections\PredisConnection;
 use Illuminate\Support\Facades\Redis;
-use Qruto\LaravelWave\BroadcastingUserIdentifier;
+use Qruto\Wave\BroadcastingUserIdentifier;
 
 class PresenceChannelUsersRedisRepository implements PresenceChannelUsersRepository
 {

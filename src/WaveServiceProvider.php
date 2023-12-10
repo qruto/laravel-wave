@@ -1,17 +1,17 @@
 <?php
 
-namespace Qruto\LaravelWave;
+namespace Qruto\Wave;
 
 use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Support\Facades\Event;
-use Qruto\LaravelWave\Commands\PresenceChannelEventHandler;
-use Qruto\LaravelWave\Commands\SsePingCommand;
-use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
-use Qruto\LaravelWave\Listeners\RemoveStoredConnectionListener;
-use Qruto\LaravelWave\Storage\BroadcastEventHistory;
-use Qruto\LaravelWave\Storage\BroadcastEventHistoryRedisStream;
-use Qruto\LaravelWave\Storage\PresenceChannelUsersRedisRepository;
-use Qruto\LaravelWave\Storage\PresenceChannelUsersRepository;
+use Qruto\Wave\Commands\PresenceChannelEventHandler;
+use Qruto\Wave\Commands\SsePingCommand;
+use Qruto\Wave\Events\SseConnectionClosedEvent;
+use Qruto\Wave\Listeners\RemoveStoredConnectionListener;
+use Qruto\Wave\Storage\BroadcastEventHistory;
+use Qruto\Wave\Storage\BroadcastEventHistoryRedisStream;
+use Qruto\Wave\Storage\PresenceChannelUsersRedisRepository;
+use Qruto\Wave\Storage\PresenceChannelUsersRepository;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 

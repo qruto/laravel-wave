@@ -1,12 +1,12 @@
 <?php
 
-namespace Qruto\LaravelWave;
+namespace Qruto\Wave;
 
 use Illuminate\Broadcasting\Broadcasters\RedisBroadcaster;
 use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Contracts\Redis\Factory as Redis;
-use Qruto\LaravelWave\Sse\EventFactory;
-use Qruto\LaravelWave\Storage\BroadcastEventHistory;
+use Qruto\Wave\Sse\EventFactory;
+use Qruto\Wave\Storage\BroadcastEventHistory;
 
 class BroadcastManagerExtended extends BroadcastManager
 {

@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Qruto\LaravelWave\Http\Controllers\PresenceChannelUsersController;
-use Qruto\LaravelWave\Http\Controllers\SendWhisper;
-use Qruto\LaravelWave\Http\Controllers\WaveConnection;
+use Qruto\Wave\Http\Controllers\PresenceChannelUsersController;
+use Qruto\Wave\Http\Controllers\SendWhisper;
+use Qruto\Wave\Http\Controllers\WaveConnection;
 
 Route::group([
     'prefix' => config('wave.path', 'wave'),

@@ -1,12 +1,12 @@
 <?php
 
-namespace Qruto\LaravelWave\Http\Controllers;
+namespace Qruto\Wave\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Qruto\LaravelWave\Events\SsePingEvent;
-use Qruto\LaravelWave\Sse\ServerSentEventStream;
-use Qruto\LaravelWave\Storage\BroadcastEventHistory;
+use Qruto\Wave\Events\SsePingEvent;
+use Qruto\Wave\Sse\ServerSentEventStream;
+use Qruto\Wave\Storage\BroadcastEventHistory;
 
 class WaveConnection extends Controller
 {

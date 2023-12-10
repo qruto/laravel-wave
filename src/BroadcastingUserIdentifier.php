@@ -1,6 +1,6 @@
 <?php
 
-namespace Qruto\LaravelWave;
+namespace Qruto\Wave;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 

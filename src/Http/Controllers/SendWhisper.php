@@ -1,9 +1,9 @@
 <?php
 
-namespace Qruto\LaravelWave\Http\Controllers;
+namespace Qruto\Wave\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Qruto\LaravelWave\Events\ClientEvent;
+use Qruto\Wave\Events\ClientEvent;
 
 class SendWhisper
 {

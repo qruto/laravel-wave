@@ -1,6 +1,6 @@
 <?php
 
-namespace Qruto\LaravelWave\Events;
+namespace Qruto\Wave\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;

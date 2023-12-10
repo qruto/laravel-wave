@@ -1,11 +1,11 @@
 <?php
 
-namespace Qruto\LaravelWave\Listeners;
+namespace Qruto\Wave\Listeners;
 
 use Illuminate\Support\Str;
-use Qruto\LaravelWave\Events\PresenceChannelLeaveEvent;
-use Qruto\LaravelWave\Events\SseConnectionClosedEvent;
-use Qruto\LaravelWave\Storage\PresenceChannelUsersRepository;
+use Qruto\Wave\Events\PresenceChannelLeaveEvent;
+use Qruto\Wave\Events\SseConnectionClosedEvent;
+use Qruto\Wave\Storage\PresenceChannelUsersRepository;
 
 class RemoveStoredConnectionListener
 {

@@ -1,8 +1,8 @@
 <?php
 
-use Qruto\LaravelWave\Storage\BroadcastingEvent;
-use Qruto\LaravelWave\Tests\Support\Events\PublicEvent;
-use Qruto\LaravelWave\Tests\Support\Events\SomePrivateEvent;
+use Qruto\Wave\Storage\BroadcastingEvent;
+use Qruto\Wave\Tests\Support\Events\PublicEvent;
+use Qruto\Wave\Tests\Support\Events\SomePrivateEvent;
 
 it('not received event, fired before connect', function () {
     PublicEvent::dispatch();

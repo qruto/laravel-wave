@@ -5,9 +5,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\ReflectsClosures;
-use Qruto\LaravelWave\Tests\RedisConnectionMock;
-use Qruto\LaravelWave\Tests\Support\User;
-use Qruto\LaravelWave\Tests\TestCase;
+use Qruto\Wave\Tests\RedisConnectionMock;
+use Qruto\Wave\Tests\Support\User;
+use Qruto\Wave\Tests\TestCase;
 
 use function Pest\Laravel\actingAs;
 use function PHPUnit\Framework\assertCount;

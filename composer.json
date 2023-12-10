@@ -48,12 +48,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Qruto\\LaravelWave\\": "src"
+            "Qruto\\Wave\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Qruto\\LaravelWave\\Tests\\": "tests"
+            "Qruto\\Wave\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -86,7 +86,7 @@
     "extra": {
         "laravel": {
             "providers": [
-              "Qruto\\LaravelWave\\WaveServiceProvider"
+              "Qruto\\Wave\\WaveServiceProvider"
             ]
         }
     },

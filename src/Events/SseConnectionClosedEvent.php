@@ -1,6 +1,6 @@
 <?php
 
-namespace Qruto\LaravelWave\Events;
+namespace Qruto\Wave\Events;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Queue\SerializesModels;

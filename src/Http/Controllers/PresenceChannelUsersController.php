@@ -1,15 +1,15 @@
 <?php
 
-namespace Qruto\LaravelWave\Http\Controllers;
+namespace Qruto\Wave\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Str;
-use Qruto\LaravelWave\BroadcastingUserIdentifier;
-use Qruto\LaravelWave\Events\PresenceChannelJoinEvent;
-use Qruto\LaravelWave\Events\PresenceChannelLeaveEvent;
-use Qruto\LaravelWave\Storage\PresenceChannelUsersRepository;
+use Qruto\Wave\BroadcastingUserIdentifier;
+use Qruto\Wave\Events\PresenceChannelJoinEvent;
+use Qruto\Wave\Events\PresenceChannelLeaveEvent;
+use Qruto\Wave\Storage\PresenceChannelUsersRepository;
 
 class PresenceChannelUsersController extends Controller
 {
