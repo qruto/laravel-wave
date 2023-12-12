@@ -62,7 +62,7 @@ function waveConnection(?Authenticatable $user = null, ?string $lastEventId = nu
                 $test = $test->actingAs($user);
             }
 
-            $this->response = $test->get(route('wave.connection'), $this->lastEventId ? ['Last-Event-ID' => $this->lastEventId] : []);
+            $this->response = $test->get(route('wave.connection'), $this->lastEventId ? ['Last-Event-Id' => $this->lastEventId] : []);
         }
 
         public function id()

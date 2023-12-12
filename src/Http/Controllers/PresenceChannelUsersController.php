@@ -22,8 +22,17 @@ class PresenceChannelUsersController extends Controller
         $this->middleware((function ($request, $next) {
             $this->userInfo = json_decode(Broadcast::auth($request), true, 512, JSON_THROW_ON_ERROR)['channel_data']['user_info'];
 
+            if ($request->has('socket_id')) {
+                $request->headers->set('X-Socket-Id', $request->socket_id);
+            }
+
             return $next($request);
         }));
+    }
+
+    public function index()
+    {
+        return response()->json($this->repository->getUsers(request()->channel_name));
     }
 
     public function store(Request $request)
@@ -32,7 +41,10 @@ class PresenceChannelUsersController extends Controller
             broadcast(new PresenceChannelJoinEvent($this->userKey($request->user()), $this->userInfo, Str::after($request->channel_name, 'presence-')))->toOthers();
         }
 
-        return response()->json($this->repository->getUsers($request->channel_name));
+        return response()->json([
+            '_token' => csrf_token(),
+            'users' => $this->repository->getUsers($request->channel_name),
+        ]);
     }
 
     public function destroy(Request $request)

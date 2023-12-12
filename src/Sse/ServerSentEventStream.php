@@ -50,11 +50,11 @@ class ServerSentEventStream implements Responsable
 
         $newSocket = $this->generateConnectionId();
 
-        $request->headers->set('X-Socket-ID', $newSocket);
+        $request->headers->set('X-Socket-Id', $newSocket);
 
         return $this->responseFactory->stream(function () use ($request, $lastSocket, $newSocket) {
-            if ($request->hasHeader('Last-Event-ID')) {
-                $missedEvents = $this->eventsHistory->getEventsFrom($request->header('Last-Event-ID'));
+            if ($request->hasHeader('Last-Event-Id')) {
+                $missedEvents = $this->eventsHistory->getEventsFrom($request->header('Last-Event-Id'));
 
                 $missedEvents
                     // TODO: except system channel
