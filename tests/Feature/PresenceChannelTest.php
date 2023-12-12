@@ -48,8 +48,11 @@ test('join request respond with actual count of channel users', function () {
     $response = joinRequest('presence-channel', $rick, $connectionRick->id());
 
     $response->assertJson([
-        ['id' => $this->user->id, 'name' => $this->user->name],
-        ['id' => $rick->id, 'name' => $rick->name],
+        '_token' => csrf_token(),
+        'users' => [
+            ['id' => $this->user->id, 'name' => $this->user->name],
+            ['id' => $rick->id, 'name' => $rick->name],
+        ],
     ]);
 });
 
