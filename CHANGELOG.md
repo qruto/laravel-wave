@@ -1,30 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/qruto/laravel-wave-js/compare/0.7.1...main)
-
 All notable changes to `laravel-wave` will be documented in this file.
 
-## 0.6.1 - 2023-04-27
-
-Fixed route caching with double naming conflict https://github.com/qruto/laravel-wave/issues/15
-
-## 0.6.0 - 2023-03-07
-
-Laravel 10 support
-
-## 0.5.2 - 2022-08-16
-
-Required php version dropped to 8.0 ⬇️
-
-## 0.5.1 - 2022-08-04
-
-🤖 Automated ping events triggered by Wave connection requests.
-
-## 0.5.0 - 2022-08-01
-
-First release  🎉 Works well in the home environment, but should be battle tested before **1.0**.
-
-Checkout ➡️ [README](https://github.com/qruto/laravel-wave/blob/main/README.md).
+## [Unreleased](https://github.com/qruto/laravel-wave-js/compare/0.7.1...main)
 
 ## [0.7.1](https://github.com/qruto/laravel-wave-js/compare/0.7.0...0.7.1) - 2023-07-20
 
@@ -34,7 +12,7 @@ Improved presence channel users synchronization.
 
 ## [0.7.0](https://github.com/qruto/laravel-wave-js/compare/v0.7.0...0.7.0) - 2023-06-09
 
-#### 🎛️ Take a full control.
+### 🎛️ Take a full control.
 
 Migrated from the [legacy `EventSource`](https://github.com/whatwg/html/issues/2177#issuecomment-267270198) to state-of-the-art  [@microsoft/fetch-event-source](https://github.com/Azure/fetch-event-source) based on [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) 💪.
 
@@ -59,3 +37,25 @@ Check out all [Available Options → ⚙️](https://github.com/qruto/laravel-wa
 
 - **Enhanced Error Handling**: Our `.error(...)` callbacks are now fully operational.
 - **Persistent Leave Presence Channel Request**: With the new `keepalive` option, your leave presence channel requests will be sent even if a user closes their browser.
+
+## 0.6.1 - 2023-04-27
+
+Fixed route caching with double naming conflict https://github.com/qruto/laravel-wave/issues/15
+
+## 0.6.0 - 2023-03-07
+
+Laravel 10 support
+
+## 0.5.2 - 2022-08-16
+
+Required php version dropped to 8.0 ⬇️
+
+## 0.5.1 - 2022-08-04
+
+🤖 Automated ping events triggered by Wave connection requests.
+
+## 0.5.0 - 2022-08-01
+
+First release  🎉 Works well in the home environment, but should be battle tested before **1.0**.
+
+Checkout ➡️ [README](https://github.com/qruto/laravel-wave/blob/main/README.md).
