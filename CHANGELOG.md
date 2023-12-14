@@ -2,15 +2,15 @@
 
 All notable changes to `laravel-wave` will be documented in this file.
 
-## [Unreleased](https://github.com/qruto/laravel-wave-js/compare/0.7.1...main)
+## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.8.0...main)
 
-## [0.7.1](https://github.com/qruto/laravel-wave-js/compare/0.7.0...0.7.1) - 2023-07-20
+## [0.7.1](https://github.com/qruto/laravel-wave/compare/0.7.0...0.7.1) - 2023-07-20
 
 Various bug fixes.
 
 Improved presence channel users synchronization.
 
-## [0.7.0](https://github.com/qruto/laravel-wave-js/compare/v0.7.0...0.7.0) - 2023-06-09
+## [0.7.0](https://github.com/qruto/laravel-wave/compare/0.6.1...0.7.0) - 2023-06-09
 
 ### 🎛️ Take a full control.
 
@@ -38,23 +38,23 @@ Check out all [Available Options → ⚙️](https://github.com/qruto/laravel-wa
 - **Enhanced Error Handling**: Our `.error(...)` callbacks are now fully operational.
 - **Persistent Leave Presence Channel Request**: With the new `keepalive` option, your leave presence channel requests will be sent even if a user closes their browser.
 
-## 0.6.1 - 2023-04-27
+## [0.6.1](https://github.com/qruto/laravel-wave/compare/0.6.0...0.6.1) - 2023-04-27
 
 Fixed route caching with double naming conflict https://github.com/qruto/laravel-wave/issues/15
 
-## 0.6.0 - 2023-03-07
+## [0.6.0](https://github.com/qruto/laravel-wave/compare/0.5.2...0.6.0) - 2023-03-07
 
 Laravel 10 support
 
-## 0.5.2 - 2022-08-16
+## [0.5.2](https://github.com/qruto/laravel-wave/compare/0.5.1...0.5.2) - 2022-08-16
 
 Required php version dropped to 8.0 ⬇️
 
-## 0.5.1 - 2022-08-04
+## [0.5.1](https://github.com/qruto/laravel-wave/compare/0.5.0...0.5.1) - 2022-08-04
 
 🤖 Automated ping events triggered by Wave connection requests.
 
-## 0.5.0 - 2022-08-01
+## [0.5.0](https://github.com/qruto/laravel-wave/compare/3cacf22...0.5.0) - 2022-08-01
 
 First release  🎉 Works well in the home environment, but should be battle tested before **1.0**.
 
