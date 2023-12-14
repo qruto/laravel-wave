@@ -4,6 +4,14 @@ All notable changes to `laravel-wave` will be documented in this file.
 
 ## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.8.0...main)
 
+## [0.8.0](https://github.com/qruto/laravel-wave/compare/0.7.1...0.8.0) - 2023-12-14
+
+- **Compatibility Testing with Laravel Octane**: Conducted thorough testing with [Laravel Octane](https://laravel.com/docs/10.x/octane), ensuring seamless integration and robust performance under the high-throughput, long-lived application scenarios that Octane facilitates.
+- **Enhanced Efficiency for Presence Channels**: Re-engineered the data structure, significantly boosting the efficiency of data storage and retrieval processes for presence channels.
+- **Migration to Redis Streams**: Transitioned the event history storage mechanism to [Redis Streams](https://redis.io/docs/data-types/streams). This change leverages Redis's advanced capabilities for more robust and scalable event stream resume.
+- **Atomic Operations with Lua Scripts**: Integrated Lua scripts for atomic operations in Redis. This enhancement not only accelerates performance but also fortifies data integrity and effectively addresses potential race conditions.
+- **Streamlined Naming Conventions**: Simplified the namespace and service provider's name for greater ease of use and clarity. The service provider has been renamed from `LaravelWave` to `Wave`.
+
 ## [0.7.1](https://github.com/qruto/laravel-wave/compare/0.7.0...0.7.1) - 2023-07-20
 
 Various bug fixes.
@@ -53,11 +61,3 @@ Required php version dropped to 8.0 ⬇️
 First release  🎉 Works well in the home environment, but should be battle tested before **1.0**.
 
 Checkout ➡️ [README](https://github.com/qruto/laravel-wave/blob/main/README.md).
-
-## [0.8.0](https://github.com/qruto/laravel-wave/compare/0.8.0...0.8.0) - 2023-12-14
-
-- **Compatibility Testing with Laravel Octane**: Conducted thorough testing with [Laravel Octane](https://laravel.com/docs/10.x/octane), ensuring seamless integration and robust performance under the high-throughput, long-lived application scenarios that Octane facilitates.
-- **Enhanced Efficiency for Presence Channels**: Re-engineered the data structure, significantly boosting the efficiency of data storage and retrieval processes for presence channels.
-- **Migration to Redis Streams**: Transitioned the event history storage mechanism to [Redis Streams](https://redis.io/docs/data-types/streams). This change leverages Redis's advanced capabilities for more robust and scalable event stream resume.
-- **Atomic Operations with Lua Scripts**: Integrated Lua scripts for atomic operations in Redis. This enhancement not only accelerates performance but also fortifies data integrity and effectively addresses potential race conditions.
-- **Streamlined Naming Conventions**: Simplified the namespace and service provider's name for greater ease of use and clarity. The service provider has been renamed from `LaravelWave` to `Wave`.
