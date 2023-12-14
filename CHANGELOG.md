@@ -19,17 +19,11 @@ Migrated from the [legacy `EventSource`](https://github.com/whatwg/html/issues/2
 ### What's new
 
 - **Support for Custom Authentication Headers**: As of [Echo 1.14.0](https://github.com/laravel/echo/releases/tag/v1.14.0), you can personalize your auth headers. Thanks to @ezequidias for the inspiration in https://github.com/qruto/laravel-wave/discussions/20
-- 
 - **Debug Mode**: Idea from https://github.com/qruto/laravel-wave-js/discussions/14
-- 
 - **[`retry`](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#retry) Field Support**: We've added support for the `retry` field for setup reconnection time after connection close.
-- 
 - **Intelligent Connection Management with `pauseInactive`:** This feature taps into the [Page Visibility API](https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API) to close connections when the document is hidden (like when a user minimizes the window), and auto-retries with the last event ID when it becomes visible again. This optimizes your server load.
-- 
 - **Custom CSRF Token Support**: Craft your CSRF tokens as you see fit.
-- 
 - **Full Customizability for Request Options**: You now have the power to tailor any [Request option](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) to your needs.
-- 
 
 Check out all [Available Options → ⚙️](https://github.com/qruto/laravel-wave#client-options)
 
