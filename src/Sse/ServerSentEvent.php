@@ -61,7 +61,7 @@ class ServerSentEvent implements Stringable
     {
         echo $this;
 
-        if (ob_get_level()) {
+        if (ob_get_level() !== 0) {
             ob_flush();
         }
 
