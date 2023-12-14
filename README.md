@@ -50,7 +50,7 @@
 # Introduction
 
 Unlock the power of Laravel's [broadcasting system](https://laravel.com/docs/master/broadcasting)
-with **Wave**. Imagine that real-time server broadcasting is possible over native HTTP without any WebSockets setup.
+with **Wave**. Imagine that real-time server broadcasting is possible over native HTTP without any ~WebSockets~ setup.
 
 Meet the [**Server-sent Events**](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) 🗼 Works seamlessly with Laravel's default `redis` broadcasting driver and supports [Laravel Echo](https://github.com/laravel/echo).
 
@@ -58,7 +58,9 @@ Meet the [**Server-sent Events**](https://developer.mozilla.org/en-US/docs/Web/A
 
 Experience it live with our [demo streaming tweets](https://wave.qruto.dev) 🐤.
 
-Works well at home. Should be battle tested for **1.0**, feedbacks appreciated!
+_Driver for_ <img width="150" src="https://raw.githubusercontent.com/laravel/echo/master/art/logo.svg" />
+&nbsp; _Supports_&nbsp; <img width="150" src="https://raw.githubusercontent.com/laravel/octane/2.x/art/logo.svg" />
+&nbsp;&nbsp;_Compatible with_ <img src="https://herd.laravel.com/images/appicon.png" width="40" />
 
 ## 🌟 Key Features
 
@@ -66,32 +68,12 @@ Works well at home. Should be battle tested for **1.0**, feedbacks appreciated!
 
 - **🔄 Resume From Last**: Connection drops? No problem! Wave intelligently resumes the event stream from the last event, ensuring no crucial data is lost in transit.
 
-- 🍃 **Resource-Friendly Broadcasting with `pauseInactive`**: This feature maximizes resource efficiency by closing the data stream when inactive (such as when the user minimizes the browser) and automatically reopens it upon resumption of visibility. Turned off by default.
+- **🟢 Live Models**: With a simple interface that respects Laravel's native conventions for [Model Events Broadcasting](https://laravel.com/docs/master/broadcasting#model-broadcasting)
+  and [Broadcast Notifications](https://laravel.com/docs/master/notifications#broadcast-notifications), Wave turbocharges your application with real-time updates.e
+
+- 🍃 **Resource-Friendly Broadcasting with `pauseInactive`**: This feature maximizes resource efficiency by closing the data stream when user inactive (such as when the user minimizes the browser) and automatically reopens it upon resumption of visibility. Turned off by default.
 
 - **🎛️️ Full Requests Control**: Wave hands you the reins over connection and authentication requests, granting you the freedom to shape your broadcasting setup to your exact requirements.
-
-- **🟢 Live Models**: With a simple interface that respects Laravel's native conventions for [Model Events Broadcasting](https://laravel.com/docs/master/broadcasting#model-broadcasting)
-  and [Broadcast Notifications](https://laravel.com/docs/master/notifications#broadcast-notifications), Wave turbocharges your application with real-time updates.
-
-## Support
-
-In light of recent events in Ukraine, my life has taken an unexpected turn.
-Since February 24th, I've lost my commercial work, my permanent residence,
-and my ability to plan for the future.
-
-During these challenging times, I derive strength and purpose from creating 
-open source projects, such as Wave.
-
-[![support me](https://raw.githubusercontent.com/slavarazum/slavarazum/main/support-banner.png)](https://github.com/sponsors/qruto)
-
-I welcome you to visit my [GitHub Sponsorships profile](https://github.com/sponsors/qruto). 
-There, you can discover more about my current work, future ambitions, and aspirations. 
-Every ⭐ you give brings joy to my day, and your sponsorship can make 
-a profound difference in my ability to continue creating.
-
-I'm truly grateful for your support, whether it's a shout-out or a heartfelt "thank you".
-
-💳 [Help directly](https://revolut.me/slavarazum).
 
 ## Installation
 
@@ -107,8 +89,6 @@ Then, set your `.env` file to use the `redis` broadcasting driver:
 ```ini
 BROADCAST_DRIVER=redis
 ```
-
-> Ensure that you have `output_buffering = On` in your php.ini
 
 ## Usage
 
@@ -334,34 +314,50 @@ return [
 ];
 ```
 
-## Advanced Setup
+## Persistent Connection with Nginx + PHP FPM
 
-### Persistent Connection
-
-Depending on your web server configuration, you might observe that the connection drops at certain intervals.
 Wave is designed to automatically reconnect after a request timeout.
-During reconnection, you won't lose any events as Laravel Wave
-stores event history for one minute by default.
-The `resume_lifetime` value in the config file
-allows you to adjust this duration.
+During reconnection, you won't lose any events because Wave stores event history for one minute by default
+and resumes it. You can adjust the duration of event history storage by modifying the `resume_lifetime` value
+in the config file.
 
-> ⚠️ Ensure that the interval between events is shorter than your web server's request timeout 
-> and that no other low-level timeout options are set to keep the connection persistent
+However, if you want to maintain a persistent connection, let's configure your web server.
 
-Wave tries to send a ping event on each Server-Sent Events (SSE) connection request
-if the last event occurred earlier than the `ping.frequency` config value.
+### `fastcgi_read_timeout`
 
-If your application doesn't expect many SSE connections,
+By default, the `fastcgi_read_timeout` value is `60s` for Nginx + PHP FastCGI server setup.
+
+#### Option 1. Without changing the `fastcgi_read_timeout` value
+
+> Ensure that the interval between events pushed into Wave connection is shorter than the read timeout value
+
+To enhance the certainty of events occurring more frequently than the standard timeout,
+Wave attempts to send a ping event with each Server-Sent Events (SSE) connection request,
+provided that the previous event occurred prior to the `ping.frequency` configuration value.
+
+If your application doesn't expect many real-time connections,
 specify the list of environments in which a ping event will be sent
-with each Wave request. By default, this is set to `local`.
+with each Wave connection. By default, this is set to `local`.
 
-### Manual Ping Control
+#### Option 2. Manual ping control
 
-For more control over the ping event, disable automatic sending by adjusting the `ping.enable` config value.
+To ensure accurate frequency sending a ping event:
 
-**Wave** offers the `sse:ping` command for manually sending a single ping or operating at an interval.
+1. Disable automatic sending by changing the `ping.enable` config value to `false`
+2. Use the `sse:ping` command to manually send a single ping or operate at an interval
 
-Use the Laravel [Tasks scheduler](https://laravel.com/docs/master/scheduling#introduction) to send a ping event every minute:
+Run the command with the `--interval` option to send a ping event at a specified interval in seconds,
+for example let's send a ping event every `30s`:
+
+```bash
+php artisan sse:ping --interval=30
+```
+
+So, every `30s`, the command will send a ping event to all active connections and
+ensure that the connection remains persistent, because the frequency of sending events is less than `60s`.
+
+Alternatively, use the Laravel [Tasks scheduler](https://laravel.com/docs/master/scheduling#introduction) to send a ping event every minute or more often
+if `fastcgi_read_timeout` value is greater than `60s`:
 
 ```php
 protected function schedule(Schedule $schedule)
@@ -370,38 +366,9 @@ protected function schedule(Schedule $schedule)
 }
 ```
 
-If you require shorter intervals between ping events, use the --interval option to set the number of seconds:
+### `request_terminate_timeout`
 
-```bash
-php artisan sse:ping --interval=30
-```
-
-For example, basic `fastcgi_read_timeout` value is `60s` for Nginx + PHP FastCGI server setup.
-This means that to keep the connection persistent, events must occur more often than every **60 seconds**.
-
-### Web Server Configuration
-
-Web servers usually don't expect persistent HTTP connections and may have limitations at various stages 😟.
-
-For a Nginx + PHP FPM setup, the connection is typically limited to `1m` by [FastCGI](https://www.php.net/manual/install.fpm.php).
-Modify the location directive after the end of `location ~ \.php$` as follows:
-
-```nginx
-location = /wave {
-    rewrite ^/wave$ /index.php?$query_string break;
-    fastcgi_split_path_info ^(.+\.php)(/.+)$;
-    fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
-    fastcgi_index index.php;
-    include fastcgi_params;
-    fastcgi_read_timeout 2m;
-}
-```
-
-**Note:** Copy the `fastcgi_pass` Unix socket path from `location ~ \.php$`.
-
-### Disabling PHP FPM Timeout
-
-Some platforms, such as [Laravel Forge](https://forge.laravel.com), configure the PHP FPM pool with `request_terminate_timeout = 60`, terminating all requests after 60 seconds.
+Some platforms, such as [Laravel Forge](https://forge.laravel.com), configure the PHP FPM pool with `request_terminate_timeout = 60`, terminating all requests after `60s`.
 
 You can disable this in the `/etc/php/8.1/fpm/pool.d/www.conf` config file:
 
@@ -409,15 +376,14 @@ You can disable this in the `/etc/php/8.1/fpm/pool.d/www.conf` config file:
 request_terminate_timeout = 0
 ```
 
-Alternatively, you can configure a separate pool for the SSE connection:
-
-_Writing instruction..._
+or you can configure a separate pool for the SSE connection.
 
 ## Future Plans
 
 📍 Local broadcasting driver
-◻️ Laravel Octane support
+
 📥 📤 two ways live models syncing
+
 📡 Something awesome with opened live abilities...
 
 ## Testing
@@ -425,6 +391,26 @@ _Writing instruction..._
 ```bash
 composer test
 ```
+
+## Support
+
+In light of recent events in Ukraine, my life has taken an unexpected turn.
+Since February 24th, I've lost my commercial work, my permanent residence,
+and my ability to plan for the future.
+
+During these challenging times, I derive strength and purpose from creating
+open source projects, such as Wave.
+
+[![support me](https://raw.githubusercontent.com/slavarazum/slavarazum/main/support-banner.png)](https://github.com/sponsors/qruto)
+
+I welcome you to visit my [GitHub Sponsorships profile](https://github.com/sponsors/qruto).
+There, you can discover more about my current work, future ambitions, and aspirations.
+Every ⭐ you give brings joy to my day, and your sponsorship can make
+a profound difference in my ability to continue creating.
+
+I'm truly grateful for your support, whether it's a shout-out or a heartfelt "thank you".
+
+💳 [Help directly](https://revolut.me/slavarazum).
 
 ## Changelog
 
