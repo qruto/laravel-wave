@@ -2,7 +2,11 @@
 
 All notable changes to `laravel-wave` will be documented in this file.
 
-## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.8.0...main)
+## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.8.1...main)
+
+## [0.8.1](https://github.com/qruto/laravel-wave/compare/0.8.0...0.8.1) - 2023-12-15
+
+Fixed route caching
 
 ## [0.8.0](https://github.com/qruto/laravel-wave/compare/0.7.1...0.8.0) - 2023-12-14
 
