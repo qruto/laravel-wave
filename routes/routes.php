@@ -16,7 +16,7 @@ Route::group([
         'middleware' => [config('wave.auth_middleware', 'auth').':'.config('wave.guard')],
     ], function () {
         Route::get('presence-channel-users', [PresenceChannelUsersController::class, 'index'])->name('presence-channel-users');
-        Route::post('presence-channel-users', [PresenceChannelUsersController::class, 'store'])->name('presence-channel-users');
+        Route::post('presence-channel-users', [PresenceChannelUsersController::class, 'store']);
         Route::delete('presence-channel-users', [PresenceChannelUsersController::class, 'destroy']);
 
         Route::post('whisper', SendWhisper::class)->name('whisper');
