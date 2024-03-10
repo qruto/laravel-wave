@@ -34,6 +34,7 @@ class WaveServiceProvider extends PackageServiceProvider
     public function registeringPackage()
     {
         $redisConnectionName = config('broadcasting.connections.redis.connection');
+        $driverDefault = config('wave.driver');
 
         config()->set("database.redis.$redisConnectionName-subscription", config("database.redis.$redisConnectionName"));
 
@@ -42,7 +43,9 @@ class WaveServiceProvider extends PackageServiceProvider
 
         $this->app->extend(BroadcastManager::class, fn ($service, $app) => new BroadcastManagerExtended($app));
 
-        $this->app->bind(ServerSentEventSubscriber::class, RedisSubscriber::class);
+        if($driverDefault == 'redis') $this->app->bind(ServerSentEventSubscriber::class, RedisSubscriber::class);
+        if($driverDefault == 'database') $this->app->bind(ServerSentEventSubscriber::class, DatabaseSubscriber::class);
+
         $this->app->bind(PresenceChannelUsersRepository::class, PresenceChannelUsersRedisRepository::class);
     }
 
