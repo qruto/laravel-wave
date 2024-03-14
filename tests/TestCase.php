@@ -34,6 +34,13 @@ class TestCase extends Orchestra
 
         $app['config']->set('cache.default', 'array');
 
+        $app['config']->set('broadcasting.connections', [
+            'redis' => [
+                'driver' => 'redis',
+                'connection' => 'default',
+            ],
+        ]);
+
         $app['config']->set('broadcasting.default', 'redis');
 
         $app['config']->set('auth.providers.users.model', Support\User::class);
