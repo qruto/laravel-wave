@@ -4,8 +4,8 @@ namespace Qruto\Wave;
 
 use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Support\Facades\Event;
-use Qruto\Wave\Commands\PresenceChannelEventHandler;
-use Qruto\Wave\Commands\SsePingCommand;
+use Qruto\Wave\Console\Commands\ServeCommand;
+use Qruto\Wave\Console\Commands\SsePingCommand;
 use Qruto\Wave\Events\SseConnectionClosedEvent;
 use Qruto\Wave\Listeners\RemoveStoredConnectionListener;
 use Qruto\Wave\Storage\BroadcastEventHistory;
@@ -28,7 +28,8 @@ class WaveServiceProvider extends PackageServiceProvider
             ->name('laravel-wave')
             ->hasConfigFile()
             ->hasRoute('routes')
-            ->hasCommand(SsePingCommand::class);
+            ->hasCommand(SsePingCommand::class)
+            ->hasCommand(ServeCommand::class);
     }
 
     public function registeringPackage()
