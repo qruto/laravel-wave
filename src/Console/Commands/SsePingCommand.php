@@ -1,6 +1,6 @@
 <?php
 
-namespace Qruto\Wave\Commands;
+namespace Qruto\Wave\Console\Commands;
 
 use Illuminate\Console\Command;
 use Qruto\Wave\Events\SsePingEvent;

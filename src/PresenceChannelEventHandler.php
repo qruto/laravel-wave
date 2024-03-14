@@ -1,9 +1,8 @@
 <?php
 
-namespace Qruto\Wave\Commands;
+namespace Qruto\Wave;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Qruto\Wave\PresenceChannelEvent;
 use Qruto\Wave\Storage\BroadcastingEvent;
 
 class PresenceChannelEventHandler implements PresenceChannelEvent
