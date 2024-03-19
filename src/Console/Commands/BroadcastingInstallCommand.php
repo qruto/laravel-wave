@@ -26,9 +26,9 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
             $relativeBroadcastingRoutesStub = 'laravel/framework/src/Illuminate/Foundation/Console/stubs/broadcasting-routes.stub';
 
             if (file_exists(__DIR__.'/../../../../'.$relativeBroadcastingRoutesStub)) {
-                copy(__DIR__.'/../../../stubs/broadcasting-routes.stub', $broadcastingRoutesPath);
+                File::copy(__DIR__.'/../../../stubs/broadcasting-routes.stub', $broadcastingRoutesPath);
             } else {
-                copy(__DIR__.'/../../../vendor/'.$relativeBroadcastingRoutesStub, $broadcastingRoutesPath);
+                File::copy(__DIR__.'/../../../vendor/'.$relativeBroadcastingRoutesStub, $broadcastingRoutesPath);
             }
         }
 
@@ -37,7 +37,7 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
 
         // Install bootstrapping...
         if (! file_exists($echoScriptPath = $this->laravel->resourcePath('js/echo.js'))) {
-            copy(__DIR__.'/../../../stubs/echo-js.stub', $echoScriptPath);
+            File::copy(__DIR__.'/../../../stubs/echo-js.stub', $echoScriptPath);
         }
 
         if (file_exists($bootstrapScriptPath = $this->laravel->resourcePath('js/bootstrap.js'))) {
@@ -46,9 +46,9 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
             );
 
             if (! str_contains($bootstrapScript, './echo')) {
-                file_put_contents(
+                File::append(
                     $bootstrapScriptPath,
-                    trim($bootstrapScript.PHP_EOL.file_get_contents(__DIR__.'/../../../stubs/echo-bootstrap-js.stub')).PHP_EOL,
+                    PHP_EOL.file_get_contents(__DIR__.'/../../../stubs/echo-bootstrap-js.stub')
                 );
             }
         }
@@ -118,7 +118,7 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
             $env,
             Str::of(File::get($env))->replaceMatches('/(BROADCAST_(?:DRIVER|CONNECTION))=\w*/', function (array $matches) {
                 return $matches[1].'=redis';
-            })
+            })->value()
         );
     }
 
