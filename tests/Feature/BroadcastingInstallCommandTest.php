@@ -6,11 +6,11 @@ use Illuminate\Support\Facades\Process;
 it('completely installs all required assets for broadcasting in default scenario', function () {
     File::shouldReceive('copy')
         ->once()
-        ->withArgs(fn($path, $target) => str_ends_with($path, 'broadcasting-routes.stub') && str_ends_with($target, 'routes/channels.php'));
+        ->withArgs(fn ($path, $target) => str_ends_with($path, 'broadcasting-routes.stub') && str_ends_with($target, 'routes/channels.php'));
 
     File::shouldReceive('copy')
         ->once()
-        ->withArgs(fn($path, $target) => str_ends_with($path, 'echo-js.stub') && str_ends_with($target, 'js/echo.js'));
+        ->withArgs(fn ($path, $target) => str_ends_with($path, 'echo-js.stub') && str_ends_with($target, 'js/echo.js'));
 
     File::shouldReceive('missing')
         ->once()
@@ -27,7 +27,7 @@ it('completely installs all required assets for broadcasting in default scenario
         ->withArgs([app()->environmentFile(), 'BROADCAST_CONNECTION=redis']);
 
     Process::fake([
-        'npm install --save-dev laravel-echo laravel-wave && npm run build' => Process::result()
+        'npm install --save-dev laravel-echo laravel-wave && npm run build' => Process::result(),
     ]);
 
     $this->artisan('install:broadcasting')
