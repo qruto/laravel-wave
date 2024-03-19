@@ -4,6 +4,8 @@ namespace Qruto\Wave;
 
 use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Support\Facades\Event;
+use Qruto\Wave\Console\Commands\BroadcastingInstallCommand;
+use Qruto\Wave\Console\Commands\ConfigPublishCommand;
 use Qruto\Wave\Console\Commands\ServeCommand;
 use Qruto\Wave\Console\Commands\SsePingCommand;
 use Qruto\Wave\Events\SseConnectionClosedEvent;
@@ -29,6 +31,8 @@ class WaveServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasRoute('routes')
             ->hasCommand(SsePingCommand::class)
+            ->hasCommand(ConfigPublishCommand::class)
+            ->hasCommand(BroadcastingInstallCommand::class)
             ->hasCommand(ServeCommand::class);
     }
 

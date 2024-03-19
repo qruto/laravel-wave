@@ -1,0 +1,21 @@
+import Echo from 'laravel-echo';
+
+import { WaveConnector } from 'laravel-wave';
+
+window.Echo = new Echo({
+    broadcaster: WaveConnector,
+});
+
+// Usage with Wave class which implements default Laravel model broadcasting conventions.
+// import { Wave } from 'laravel-wave';
+// window.Wave = new Wave();
+
+// window.Wave.model('User', '1')
+//     .notification('team.invite', (notification) => {
+//         console.log(notification);
+//     })
+//     .updated((user) => console.log('user updated', user))
+//     .deleted((user) => console.log('user deleted', user))
+//     .trashed((user) => console.log('user trashed', user))
+//     .restored((user) => console.log('user restored', user))
+//     .updated('Team', (team) => console.log('team updated', team));
