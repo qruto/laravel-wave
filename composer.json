@@ -67,7 +67,7 @@
         "refactor": "rector --debug",
         "test-coverage": "pest --coverage --colors=always",
         "test:refactor": "rector --dry-run",
-        "test:types": "phpstan analyse --ansi",
+        "test:types": "phpstan analyse --ansi --memory-limit=-1",
         "test:unit": "pest --colors=always",
         "test:lint": "pint --test -v",
         "test": [

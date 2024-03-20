@@ -3,7 +3,7 @@ parameters:
 		-
 			message: "#^While loop condition is always true\\.$#"
 			count: 1
-			path: src/Commands/SsePingCommand.php
+			path: src/Console/Commands/SsePingCommand.php
 
 		-
 			message: "#^Property Qruto\\\\Wave\\\\Storage\\\\BroadcastEventHistoryRedisStream\\:\\:\\$db \\(Illuminate\\\\Redis\\\\Connections\\\\PhpRedisConnection\\|Illuminate\\\\Redis\\\\Connections\\\\PredisConnection\\) does not accept Illuminate\\\\Redis\\\\Connections\\\\Connection\\.$#"

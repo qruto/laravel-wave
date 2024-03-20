@@ -2,6 +2,7 @@
 
 namespace Qruto\Wave\Console\Commands;
 
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
@@ -12,7 +13,7 @@ use function Laravel\Prompts\confirm;
 class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\BroadcastingInstallCommand
 {
     /** {@inheritdoc} */
-    public function handle(): void
+    public function handle(): int
     {
         $this->call('config:publish', ['name' => 'broadcasting']);
 
@@ -60,6 +61,8 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
         $this->publishConfiguration();
 
         //        $this->askToStarRepository();
+
+        return Command::SUCCESS;
     }
 
     /** {@inheritdoc} */
