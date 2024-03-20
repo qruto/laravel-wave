@@ -59,7 +59,7 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
 
         $this->publishConfiguration();
 
-//        $this->askToStarRepository();
+        //        $this->askToStarRepository();
     }
 
     /** {@inheritdoc} */
@@ -118,9 +118,7 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
 
         File::put(
             $env,
-            Str::of(File::get($env))->replaceMatches('/(BROADCAST_(?:DRIVER|CONNECTION))=\w*/', function (array $matches) {
-                return $matches[1].'=redis';
-            })->value()
+            Str::of(File::get($env))->replaceMatches('/(BROADCAST_(?:DRIVER|CONNECTION))=\w*/', fn (array $matches) => $matches[1].'=redis')->value()
         );
     }
 
@@ -131,7 +129,7 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
         }
 
         $this->callSilently('vendor:publish', [
-            '--provider' => 'Qruto\Wave\WaveServiceProvider',
+            '--provider' => \Qruto\Wave\WaveServiceProvider::class,
             '--tag' => 'wave-config',
         ]);
     }
@@ -139,7 +137,7 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
     protected function askToStarRepository()
     {
         if (confirm('Would you like to star our repo on GitHub?')) {
-            $repoUrl = "https://github.com/qruto/laravel-wave";
+            $repoUrl = 'https://github.com/qruto/laravel-wave';
 
             if (PHP_OS_FAMILY == 'Darwin') {
                 exec("open {$repoUrl}");
