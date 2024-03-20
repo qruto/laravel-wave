@@ -58,6 +58,8 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
         $this->installNodeDependencies();
 
         $this->publishConfiguration();
+
+//        $this->askToStarRepository();
     }
 
     /** {@inheritdoc} */
@@ -132,5 +134,22 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
             '--provider' => 'Qruto\Wave\WaveServiceProvider',
             '--tag' => 'wave-config',
         ]);
+    }
+
+    protected function askToStarRepository()
+    {
+        if (confirm('Would you like to star our repo on GitHub?')) {
+            $repoUrl = "https://github.com/qruto/laravel-wave";
+
+            if (PHP_OS_FAMILY == 'Darwin') {
+                exec("open {$repoUrl}");
+            }
+            if (PHP_OS_FAMILY == 'Windows') {
+                exec("start {$repoUrl}");
+            }
+            if (PHP_OS_FAMILY == 'Linux') {
+                exec("xdg-open {$repoUrl}");
+            }
+        }
     }
 }
