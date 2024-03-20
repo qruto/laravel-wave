@@ -14,6 +14,10 @@
     ],
     "homepage": "https://github.com/qruto/laravel-wave",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/qruto/laravel-wave/issues",
+        "source": "https://github.com/qruto/laravel-wave"
+    },
     "authors": [
         {
             "name": "Slava Razum",
@@ -22,25 +26,25 @@
         }
     ],
     "require": {
-        "php": "^8.0",
-        "illuminate/broadcasting": "^9.21|^10.0|^11.0",
-        "illuminate/console": "^9.21|^10.0|^11.0",
-        "illuminate/contracts": "^9.21|^10.0|^11.0",
-        "illuminate/http": "^9.21|^10.0|^11.0",
-        "illuminate/queue": "^9.21|^10.0|^11.0",
-        "illuminate/routing": "^9.21|^10.0|^11.0",
+        "php": "^8.1",
+        "illuminate/broadcasting": "^10.0|^11.0",
+        "illuminate/console": "^10.0|^11.0",
+        "illuminate/contracts": "^10.0|^11.0",
+        "illuminate/http": "^10.0|^11.0",
+        "illuminate/queue": "^10.0|^11.0",
+        "illuminate/routing": "^10.0|^11.0",
         "laravel/prompts": "^0.1.16",
         "spatie/laravel-package-tools": "^1.14.1"
     },
     "require-dev": {
-        "laravel/pint": "^1.5|^1.14",
+        "laravel/pint": "^1.14",
         "m6web/redis-mock": "v5.6",
-        "nunomaduro/collision": "^6.1|^7.10|^8.1",
+        "nunomaduro/collision": "^7.10|^8.1",
         "nunomaduro/larastan": "^2.9",
-        "orchestra/testbench": "^7.35|^8.14|^9.0",
-        "pestphp/pest": "^v1.23|^v2.34",
-        "pestphp/pest-plugin-laravel": "^1.4.0|^2.3.0",
-        "pestphp/pest-plugin-watch": "^1.x-dev|^2.1.0",
+        "orchestra/testbench": "^8.14|^9.0",
+        "pestphp/pest": "^v2.34",
+        "pestphp/pest-plugin-laravel": "^2.3.0",
+        "pestphp/pest-plugin-watch": "^2.1.0",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan-deprecation-rules": "^1.1",
         "phpstan/phpstan-phpunit": "^1.3.10",
