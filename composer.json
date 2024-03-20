@@ -27,12 +27,12 @@
     ],
     "require": {
         "php": "^8.1",
-        "illuminate/broadcasting": "^10.0|^11.0",
-        "illuminate/console": "^10.0|^11.0",
-        "illuminate/contracts": "^10.0|^11.0",
-        "illuminate/http": "^10.0|^11.0",
-        "illuminate/queue": "^10.0|^11.0",
-        "illuminate/routing": "^10.0|^11.0",
+        "illuminate/broadcasting": "^10.0|^11.0.6",
+        "illuminate/console": "^10.0|^11.0.6",
+        "illuminate/contracts": "^10.0|^11.0.6",
+        "illuminate/http": "^10.0|^11.0.6",
+        "illuminate/queue": "^10.0|^11.0.6",
+        "illuminate/routing": "^10.0|^11.0.6",
         "laravel/prompts": "^0.1.16",
         "spatie/laravel-package-tools": "^1.14.1"
     },
@@ -54,7 +54,10 @@
     "autoload": {
         "psr-4": {
             "Qruto\\Wave\\": "src"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -91,7 +94,7 @@
     "extra": {
         "laravel": {
             "providers": [
-              "Qruto\\Wave\\WaveServiceProvider"
+                "Qruto\\Wave\\WaveServiceProvider"
             ]
         }
     },
