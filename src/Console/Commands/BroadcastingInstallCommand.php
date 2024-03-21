@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
+use Qruto\Wave\WaveServiceProvider;
+use Symfony\Component\Process\Process as SymfonyProcess;
 
 use function file_get_contents;
 use function Laravel\Prompts\confirm;
@@ -27,9 +29,11 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
             $relativeBroadcastingRoutesStub = 'laravel/framework/src/Illuminate/Foundation/Console/stubs/broadcasting-routes.stub';
 
             if (file_exists(__DIR__.'/../../../../'.$relativeBroadcastingRoutesStub)) {
-                File::copy(__DIR__.'/../../../stubs/broadcasting-routes.stub', $broadcastingRoutesPath);
+                File::copy(__DIR__.'/../../../stubs/broadcasting-routes.stub',
+                    $broadcastingRoutesPath);
             } else {
-                File::copy(__DIR__.'/../../../vendor/'.$relativeBroadcastingRoutesStub, $broadcastingRoutesPath);
+                File::copy(__DIR__.'/../../../vendor/'.$relativeBroadcastingRoutesStub,
+                    $broadcastingRoutesPath);
             }
         }
 
@@ -68,7 +72,8 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
     /** {@inheritdoc} */
     protected function installNodeDependencies()
     {
-        if (! confirm('Would you like to install and build the Node dependencies required for broadcasting?', default: true)) {
+        if (! confirm('Would you like to install and build the Node dependencies required for broadcasting?',
+            default: true)) {
             return;
         }
 
@@ -94,12 +99,13 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
         $command = Process::command(implode(' && ', $commands))
             ->path(base_path());
 
-        if (! windows_os()) {
+        if (! windows_os() || SymfonyProcess::isTtySupported()) {
             $command->tty(true);
         }
 
         if ($command->run()->failed()) {
-            $this->components->warn("Node dependency installation failed. Please run the following commands manually: \n\n".implode(' && ', $commands));
+            $this->components->warn("Node dependency installation failed. Please run the following commands manually: \n\n".implode(' && ',
+                $commands));
         } else {
             $this->components->info('Node dependencies installed successfully.');
         }
@@ -121,18 +127,21 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
 
         File::put(
             $env,
-            Str::of(File::get($env))->replaceMatches('/(BROADCAST_(?:DRIVER|CONNECTION))=\w*/', fn (array $matches) => $matches[1].'=redis')->value()
+            Str::of(File::get($env))->replaceMatches('/(BROADCAST_(?:DRIVER|CONNECTION))=\w*/',
+                fn (array $matches) => $matches[1].'=redis')->value()
         );
     }
 
     protected function publishConfiguration(): void
     {
-        if (! confirm('Would you like to publish the Wave configuration file?', default: false, hint: 'This will allow you to configure the SSE connection.')) {
+        if (! confirm('Would you like to publish the Wave configuration file?',
+            default: false,
+            hint: 'This will allow you to configure the SSE connection.')) {
             return;
         }
 
         $this->callSilently('vendor:publish', [
-            '--provider' => \Qruto\Wave\WaveServiceProvider::class,
+            '--provider' => WaveServiceProvider::class,
             '--tag' => 'wave-config',
         ]);
     }
