@@ -8,6 +8,9 @@ use Illuminate\Redis\Connections\PredisConnection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redis;
 
+use function array_keys;
+use function get_object_vars;
+
 class BroadcastEventHistoryRedisStream implements BroadcastEventHistory
 {
     protected int $lifetime;
@@ -26,17 +29,29 @@ class BroadcastEventHistoryRedisStream implements BroadcastEventHistory
         [$timestamp, $sequence] = explode('-', $id);
         $sequence = (int) $sequence + 1;
 
-        return collect($this->db->xRange('broadcasted_events', $timestamp.'-'.$sequence, '+'))
-            ->map(function ($event, $id) {
-                $event['data'] = json_decode($event['data'], true, 512, JSON_THROW_ON_ERROR);
+        return collect($this->db->xRange(
+            'broadcasted_events',
+            $timestamp.'-'.$sequence, '+'
+        ))->map(function ($event, $id) {
+            $event['data'] = json_decode(
+                $event['data'],
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
 
-                return new BroadcastingEvent(...['id' => $id] + $event);
-            })->values();
+            return new BroadcastingEvent(...['id' => $id] + $event);
+        })->values();
     }
 
     public function lastEventTimestamp(): int
     {
-        $keys = array_keys($this->db->xRevRange('broadcasted_events', '-', '+', 1));
+        $keys = array_keys($this->db->xRevRange(
+            'broadcasted_events',
+            '-',
+            '+',
+            1
+        ));
 
         return $keys === [] ? 0 : explode('-', reset($keys))[0];
     }
@@ -45,9 +60,17 @@ class BroadcastEventHistoryRedisStream implements BroadcastEventHistory
     {
         $this->removeOldEvents();
 
-        $eventData = \get_object_vars($event);
-        $eventData['data'] = json_encode($eventData['data'], JSON_THROW_ON_ERROR);
-        $id = $this->db->xAdd('broadcasted_events', '*', $eventData);
+        $eventData = get_object_vars($event);
+        $eventData['data'] = json_encode(
+            $eventData['data'],
+            JSON_THROW_ON_ERROR
+        );
+
+        if ($this->db instanceof PredisConnection) {
+            $id = $this->db->xAdd('broadcasted_events', $eventData, '*');
+        } else {
+            $id = $this->db->xAdd('broadcasted_events', '*', $eventData);
+        }
 
         $event->id = $id;
 
@@ -60,8 +83,16 @@ class BroadcastEventHistoryRedisStream implements BroadcastEventHistory
         $thresholdTimestamp = now()->subSeconds($this->lifetime)->getPreciseTimestamp(3);
 
         // Fetch all events up to the threshold
-        $oldEvents = $this->db->xRange('broadcasted_events', '-', $thresholdTimestamp.'-0');
+        $oldEvents = $this->db->xRange(
+            'broadcasted_events',
+            '-',
+            $thresholdTimestamp.'-0'
+        );
 
-        $this->db->xDel('broadcasted_events', \array_keys($oldEvents));
+        if ($oldEvents === []) {
+            return;
+        }
+
+        $this->db->xDel('broadcasted_events', array_keys($oldEvents));
     }
 }
