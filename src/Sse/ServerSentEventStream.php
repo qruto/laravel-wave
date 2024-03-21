@@ -22,9 +22,7 @@ class ServerSentEventStream implements Responsable
 {
     use BroadcastingUserIdentifier;
 
-    /**
-     * @var array<string, string>
-     */
+    /** @var array<string, string> */
     protected const HEADERS = [
         'Content-Type' => 'text/event-stream',
         'Connection' => 'keep-alive',
@@ -52,20 +50,32 @@ class ServerSentEventStream implements Responsable
 
         $request->headers->set('X-Socket-Id', $newSocket);
 
-        return $this->responseFactory->stream(function () use ($request, $lastSocket, $newSocket) {
+        return $this->responseFactory->stream(function () use (
+            $request,
+            $lastSocket,
+            $newSocket
+        ) {
             if ($request->hasHeader('Last-Event-Id')) {
                 $missedEvents = $this->eventsHistory->getEventsFrom($request->header('Last-Event-Id'));
 
                 $missedEvents
                     // TODO: except system channel
-                    ->filter(fn (BroadcastingEvent $event) => $event->channel !== 'general')
+                    ->filter(
+                        fn (
+                            BroadcastingEvent $event
+                        ) => $event->channel !== 'general'
+                    )
                     ->each($this->eventHandler($request, $lastSocket));
-
             }
 
             // TODO: change general channel name
             tap(
-                EventFactory::create('general', 'connected', $newSocket, $newSocket),
+                EventFactory::create(
+                    'general',
+                    'connected',
+                    $newSocket,
+                    $newSocket
+                ),
                 function (BroadcastingEvent $event) {
                     $this->eventsHistory->pushEvent($event);
 
@@ -73,8 +83,14 @@ class ServerSentEventStream implements Responsable
                 }
             );
 
-            $this->eventSubscriber->start(function (string $message, string $channel) use ($request, $newSocket) {
-                $this->eventHandler($request, $newSocket)(EventFactory::fromRedisMessage($message, $channel));
+            $this->eventSubscriber->start(function (
+                string $message,
+                string $channel
+            ) use ($request, $newSocket) {
+                $this->eventHandler(
+                    $request,
+                    $newSocket
+                )(EventFactory::fromRedisMessage($message, $channel));
             }, $request, $newSocket);
         }, Response::HTTP_OK, self::HEADERS + ['X-Socket-Id' => $newSocket]);
     }
@@ -94,7 +110,10 @@ class ServerSentEventStream implements Responsable
                 return;
             }
 
-            if ($request->user() && $this->presenceChannelEvent->isLeaveEvent($event, $request->user())) {
+            if (
+                $request->user()
+                && $this->presenceChannelEvent->isLeaveEvent($event, $request->user())
+            ) {
                 $this->presenceChannelEvent->formatLeaveEventForSending($event);
             }
 
@@ -111,16 +130,23 @@ class ServerSentEventStream implements Responsable
 
     protected function needsAuth(string $channel): bool
     {
-        return str_starts_with($channel, 'private-') || str_starts_with($channel, 'presence-');
+        return str_starts_with(
+            $channel,
+            'private-'
+        ) || str_starts_with($channel, 'presence-');
     }
 
-    protected function shouldNotSend(BroadcastingEvent $event, ?string $socket, ?Authenticatable $user): bool
-    {
+    protected function shouldNotSend(
+        BroadcastingEvent $event,
+        ?string $socket,
+        ?Authenticatable $user
+    ): bool {
         if (! $socket) {
             return false;
         }
 
-        if ($user instanceof \Illuminate\Contracts\Auth\Authenticatable && $this->presenceChannelEvent->isSelfLeaveEvent($event, $user)) {
+        if ($user instanceof Authenticatable && $this->presenceChannelEvent->isSelfLeaveEvent($event,
+            $user)) {
             return true;
         }
 
@@ -135,6 +161,10 @@ class ServerSentEventStream implements Responsable
 
     private function generateConnectionId(): string
     {
-        return sprintf('%d.%d', random_int(1, 1_000_000_000), random_int(1, 1_000_000_000));
+        return sprintf(
+            '%d.%d',
+            random_int(1, 1_000_000_000),
+            random_int(1, 1_000_000_000)
+        );
     }
 }

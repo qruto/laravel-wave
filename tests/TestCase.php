@@ -28,7 +28,10 @@ class TestCase extends Orchestra
 
     public function getEnvironmentSetUp($app)
     {
-        $app['config']->set('app.key', 'base64:LjpSHzPr1BBeuRWrlUcN2n2OWZ36o8+VpTLZdHcdG7Q=');
+        $app['config']->set(
+            'app.key',
+            'base64:LjpSHzPr1BBeuRWrlUcN2n2OWZ36o8+VpTLZdHcdG7Q='
+        );
 
         $app['config']->set('database.default', 'testing');
 
@@ -44,6 +47,8 @@ class TestCase extends Orchestra
         $app['config']->set('broadcasting.default', 'redis');
 
         $app['config']->set('auth.providers.users.model', Support\User::class);
+
+        $app['config']->set('database.redis.client', 'predis');
 
         Schema::create('users', function (Blueprint $table) {
             $table->id();
