@@ -17,6 +17,25 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
     /** {@inheritdoc} */
     public function handle(): int
     {
+        $this->output->write($this->title());
+
+        $enableRedisBroadcastingDriver = confirm(
+            'Would you like to enable the Redis broadcasting driver in .env?',
+            default: true,
+        );
+
+        $installNodeDependencies = confirm(
+            'Install and build the Node dependencies required for broadcasting?',
+            default: true
+        );
+
+        $publishConfiguration = confirm(
+            'Publish the Wave configuration file?',
+            default: false,
+        );
+
+        $this->askToStarRepository();
+
         $this->call('config:publish', ['name' => 'broadcasting']);
 
         // Install channel routes file...
@@ -58,13 +77,17 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
             }
         }
 
-        $this->updateBroadcastingDriver();
+        if ($enableRedisBroadcastingDriver) {
+            $this->updateBroadcastingDriver();
+        }
 
-        $this->installNodeDependencies();
+        if ($installNodeDependencies) {
+            $this->installNodeDependencies();
+        }
 
-        $this->publishConfiguration();
-
-        //        $this->askToStarRepository();
+        if ($publishConfiguration) {
+            $this->publishConfiguration();
+        }
 
         return Command::SUCCESS;
     }
@@ -72,11 +95,6 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
     /** {@inheritdoc} */
     protected function installNodeDependencies()
     {
-        if (! confirm('Would you like to install and build the Node dependencies required for broadcasting?',
-            default: true)) {
-            return;
-        }
-
         $this->components->info('Installing and building Node dependencies.');
 
         if (file_exists(base_path('pnpm-lock.yaml'))) {
@@ -99,13 +117,15 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
         $command = Process::command(implode(' && ', $commands))
             ->path(base_path());
 
-        if (! windows_os() || SymfonyProcess::isTtySupported()) {
-            $command->tty(true);
+        if (! windows_os() && SymfonyProcess::isTtySupported()) {
+            $command->tty();
         }
 
         if ($command->run()->failed()) {
-            $this->components->warn("Node dependency installation failed. Please run the following commands manually: \n\n".implode(' && ',
-                $commands));
+            $this->components->warn(
+                "Node dependency installation failed. Please run the following commands manually: \n\n"
+                .implode(' && ', $commands)
+            );
         } else {
             $this->components->info('Node dependencies installed successfully.');
         }
@@ -116,30 +136,21 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
      */
     protected function updateBroadcastingDriver(): void
     {
-        $enable = confirm(
-            'Would you like to enable the Redis broadcasting driver for Wave?',
-            default: true,
-        );
-
-        if (! $enable || File::missing($env = app()->environmentFile())) {
+        if (File::missing($env = app()->environmentFile())) {
             return;
         }
 
         File::put(
             $env,
-            Str::of(File::get($env))->replaceMatches('/(BROADCAST_(?:DRIVER|CONNECTION))=\w*/',
-                fn (array $matches) => $matches[1].'=redis')->value()
+            Str::of(File::get($env))->replaceMatches(
+                '/(BROADCAST_(?:DRIVER|CONNECTION))=\w*/',
+                fn (array $matches) => $matches[1].'=redis'
+            )->value()
         );
     }
 
     protected function publishConfiguration(): void
     {
-        if (! confirm('Would you like to publish the Wave configuration file?',
-            default: false,
-            hint: 'This will allow you to configure the SSE connection.')) {
-            return;
-        }
-
         $this->callSilently('vendor:publish', [
             '--provider' => WaveServiceProvider::class,
             '--tag' => 'wave-config',
@@ -148,18 +159,41 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
 
     protected function askToStarRepository()
     {
-        if (confirm('Would you like to star our repo on GitHub?')) {
-            $repoUrl = 'https://github.com/qruto/laravel-wave';
-
-            if (PHP_OS_FAMILY == 'Darwin') {
-                exec("open {$repoUrl}");
-            }
-            if (PHP_OS_FAMILY == 'Windows') {
-                exec("start {$repoUrl}");
-            }
-            if (PHP_OS_FAMILY == 'Linux') {
-                exec("xdg-open {$repoUrl}");
-            }
+        if (! confirm(
+            'Star our repo on GitHub during installation?',
+            default: true,
+            hint: 'Every star contributes to the package development ⭐'
+        )) {
+            return;
         }
+
+        $repoUrl = 'https://github.com/qruto/laravel-wave';
+
+        if (PHP_OS_FAMILY == 'Darwin') {
+            exec("open {$repoUrl}");
+        }
+        if (PHP_OS_FAMILY == 'Windows') {
+            exec("start {$repoUrl}");
+        }
+        if (PHP_OS_FAMILY == 'Linux') {
+            exec("xdg-open {$repoUrl}");
+        }
+    }
+
+    private function title()
+    {
+        return PHP_EOL.<<<'TITLE'
+        <fg=blue>
+             ____                      _               _   _
+            | __ ) _ __ ___   __ _  __| | ___ __ _ ___| |_(_)_ __   __ _
+            |  _ \| '__/ _ \ / _` |/ _` |/ __/ _` / __| __| | '_ \ / _` |
+            | |_) | | | (_) | (_| | (_| | (_| (_| \__ \ |_| | | | | (_| |
+            |____/|_| _\___/_\__,_|\__,_|\___\__,_|___/\__|_|_| |_|\__, |
+            __      _(_) |_| |__   \ \      / /_ ___   _____       |___/
+            \ \ /\ / / | __| '_ \   \ \ /\ / / _` \ \ / / _ \
+             \ V  V /| | |_| | | |   \ V  V / (_| |\ V /  __/
+              \_/\_/ |_|\__|_| |_|    \_/\_/ \__,_| \_/ \___|
+        </>
+        TITLE.PHP_EOL.PHP_EOL;
     }
 }
