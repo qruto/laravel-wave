@@ -5,13 +5,19 @@ use Illuminate\Support\Facades\Process;
 
 use function Qruto\Wave\laravel11OrHigher;
 
-it('completely installs all required assets for broadcasting in default scenario',
+it(
+    'completely installs all required assets for broadcasting in default scenario',
     function () {
         File::shouldReceive('copy')
             ->once()
-            ->withArgs(fn ($path, $target) => str_ends_with($path,
-                'broadcasting-routes.stub') && str_ends_with($target,
-                    'routes/channels.php'));
+            ->withArgs(
+                fn ($path, $target) => str_ends_with(
+                    $path,
+                    'broadcasting-routes.stub'
+                ) && str_ends_with(
+                    $target,
+                    'routes/channels.php'
+                ));
 
         File::shouldReceive('copy')
             ->once()
@@ -61,5 +67,8 @@ it('completely installs all required assets for broadcasting in default scenario
 
         $this->assertFileExists($this->app->configPath('broadcasting.php'));
         unlink($this->app->configPath('broadcasting.php'));
-    })->skip(! laravel11OrHigher(),
-        '`install:broadcasting` command is only available for Laravel 11 or higher.');
+    }
+)->skip(
+    ! laravel11OrHigher(),
+    '`install:broadcasting` command is only available for Laravel 11 or higher.'
+);
