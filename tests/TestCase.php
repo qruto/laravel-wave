@@ -15,7 +15,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn(string $modelName
+            fn (string $modelName
             ) => 'Qruto\\Wave\\Tests\\Support\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
