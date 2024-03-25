@@ -2,7 +2,11 @@
 
 All notable changes to `laravel-wave` will be documented in this file.
 
-## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.8.1...main)
+## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.8.2...predis-fix)
+
+## [0.8.2](https://github.com/qruto/laravel-wave/compare/0.8.1...0.8.2) - 2024-03-12
+
+- Fixed working with `predis/predis`
 
 ## [0.8.1](https://github.com/qruto/laravel-wave/compare/0.8.0...0.8.1) - 2023-12-15
 
