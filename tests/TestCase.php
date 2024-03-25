@@ -15,7 +15,8 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Qruto\\Wave\\Tests\\Support\\Factories\\'.class_basename($modelName).'Factory'
+            fn(string $modelName
+            ) => 'Qruto\\Wave\\Tests\\Support\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
@@ -47,8 +48,6 @@ class TestCase extends Orchestra
         $app['config']->set('broadcasting.default', 'redis');
 
         $app['config']->set('auth.providers.users.model', Support\User::class);
-
-        $app['config']->set('database.redis.client', 'predis');
 
         Schema::create('users', function (Blueprint $table) {
             $table->id();
