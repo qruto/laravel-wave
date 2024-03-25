@@ -160,9 +160,9 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
     protected function askToStarRepository()
     {
         if (! confirm(
-            'Star our repo on GitHub during installation?',
+            'Star Wave repo on GitHub during installation?',
             default: true,
-            hint: 'Every star contributes to the package development ⭐'
+            hint: 'Your yellow star contributes to the package development ⭐'
         )) {
             return;
         }

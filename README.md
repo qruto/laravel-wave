@@ -49,33 +49,61 @@
 
 # Introduction
 
-Unlock the power of Laravel's [broadcasting system](https://laravel.com/docs/master/broadcasting)
-with **Wave**. Imagine that real-time server broadcasting is possible over native HTTP without any ~WebSockets~ setup.
-
-Meet the [**Server-sent Events**](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) 🗼 Works seamlessly with Laravel's default `redis` broadcasting driver and supports [Laravel Echo](https://github.com/laravel/echo).
-
-> Server-Sent Events (**SSE**) is specially tuned for real-time server-to-client communication.
+Unlock the power of
+Laravel's [broadcasting system](https://laravel.com/docs/master/broadcasting)
+with **Wave**. Imagine that real-time server broadcasting is possible over
+native HTTP without any ~WebSockets~ setup.
+Meet the
+**[Server-sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)** 🛜
+Works seamlessly with Laravel's default `redis` broadcasting driver and
+supports [Laravel Echo](https://github.com/laravel/echo).
 
 Experience it live with our [demo streaming tweets](https://wave.qruto.dev) 🐤.
 
-_Driver for_ <img width="150" src="https://raw.githubusercontent.com/laravel/echo/master/art/logo.svg" />
-&nbsp; _Supports_&nbsp; <img width="150" src="https://raw.githubusercontent.com/laravel/octane/2.x/art/logo.svg" />
-&nbsp;&nbsp;_Compatible with_ <img src="https://herd.laravel.com/images/appicon.png" width="40" />
+> Server-Sent Events (**SSE**) is specially tuned for real-time server-to-client
+> communication.
+
+_Compatible
+with_ [<img width="150" src="https://raw.githubusercontent.com/laravel/echo/master/art/logo.svg" />](https://laravel.com/docs/11.x/broadcasting)
+[<img width="150" src="https://raw.githubusercontent.com/laravel/octane/2.x/art/logo.svg" />](https://laravel.com/docs/11.x/octane)
+[<img src="https://herd.laravel.com/images/appicon.png" width="40" />](https://herd.laravel.com)
 
 ## 🌟 Key Features
 
-- **⚡ Works with native Redis Driver**: Wave seamlessly integrates with Laravel's default `redis` broadcasting driver, ensuring efficient real-time data transfer.
+**⚡ Works with native Redis Driver**: Wave seamlessly integrates with Laravel's
+default `redis` broadcasting driver, ensuring efficient real-time data transfer.
 
-- **🔄 Resume From Last**: Connection drops? No problem! Wave intelligently resumes the event stream from the last event, ensuring no crucial data is lost in transit.
+**🔄 Resume From Last**: Connection drops? No problem! Wave intelligently resumes
+the event stream from the last event, ensuring no crucial data is lost in
+transit.
 
-- **🟢 Live Models**: With a simple interface that respects Laravel's native conventions for [Model Events Broadcasting](https://laravel.com/docs/master/broadcasting#model-broadcasting)
-  and [Broadcast Notifications](https://laravel.com/docs/master/notifications#broadcast-notifications), Wave turbocharges your application with real-time updates.e
+**🟢 Live Models**: With a simple interface that respects Laravel's native
+conventions
+for [Model Events Broadcasting](https://laravel.com/docs/master/broadcasting#model-broadcasting)
+and [Broadcast Notifications](https://laravel.com/docs/master/notifications#broadcast-notifications),
+Wave turbocharges your application with real-time updates.e
 
-- 🍃 **Resource-Friendly Broadcasting with `pauseInactive`**: This feature maximizes resource efficiency by closing the data stream when user inactive (such as when the user minimizes the browser) and automatically reopens it upon resumption of visibility. Turned off by default.
+**🍃 Resource-Friendly Broadcasting with `pauseInactive`**: This feature
+maximizes resource efficiency by closing the data stream when user inactive (
+such as when the user minimizes the browser) and automatically reopens it upon
+resumption of visibility. Turned off by default.
 
-- **🎛️️ Full Requests Control**: Wave hands you the reins over connection and authentication requests, granting you the freedom to shape your broadcasting setup to your exact requirements.
+**🎛️️ Full Requests Control**: Wave hands you the reins over connection and
+authentication requests, granting you the freedom to shape your broadcasting
+setup to your exact requirements.
 
 ## Installation
+
+### Laravel 11 or higher
+
+Install the package via Composer at first, then install broadcasting setup:
+
+```bash
+composer require qruto/laravel-wave
+php artisan install:broadcasting
+```
+
+### Laravel 10 or lower
 
 Install **Wave** on both server and client sides using Composer and npm:
 
@@ -87,15 +115,23 @@ npm install laravel-wave
 Then, set your `.env` file to use the `redis` broadcasting driver:
 
 ```ini
-BROADCAST_DRIVER=redis
+BROADCAST_DRIVER = redis
 ```
 
 ## Usage
 
 After installing **Wave**, your server is ready to broadcast events.
-You can use it with **Echo** as usual or try `Wave` model to work with predefined Eloquent events.
+You can use it with **Echo** as usual or try `Wave` model API to work with
+predefined Eloquent events.
 
-### 1. With Laravel Echo
+In Laravel 11 or higher, after `install:broadcasting`, you will find:
+
+- broadcasting channel authorization file in `routes/channels.php`
+- broadcasting configuration file in `config/broadcasting.php`
+- echo instance in `resources/echo.js`
+- _(optional)_ **Wave** configuration file in `config/wave.php`
+
+### Manual usage
 
 Import Laravel Echo with `WaveConnector` and pass it to the broadcaster option:
 
@@ -104,14 +140,14 @@ import Echo from 'laravel-echo';
 
 import { WaveConnector } from 'laravel-wave';
 
-window.Echo = new Echo({ broadcaster: WaveConnector });
+window.Echo = new Echo({broadcaster: WaveConnector});
 ```
 
-For fresh installations, locate Echo connection configuration in **resources/js/bootstrap.js** file.
-
-Replace it by the snippet above:
 <details>
-    <summary>Show diff</summary>
+    <summary>
+        For Laravel 10 or lower, locate Echo connection configuration in
+        <em>resources/js/bootstrap.js</em> file.
+    </summary>
 
 ```diff
 - import Echo from 'laravel-echo';
@@ -139,12 +175,15 @@ Replace it by the snippet above:
 
 Use Echo as you typically would.
 
-📞 [Receiving Broadcasts](https://laravel.com/docs/master/broadcasting#receiving-broadcasts) documentation
+📞 [Receiving Broadcasts](https://laravel.com/docs/master/broadcasting#receiving-broadcasts)
+documentation.
 
-### 2. With Live Eloquent Models
+### Use Live Eloquent Models
 
-With native conventions of [Model Events Broadcasting](https://laravel.com/docs/master/broadcasting#model-broadcasting)
-and [Broadcast Notifications](https://laravel.com/docs/master/notifications#broadcast-notifications) you can use
+With native conventions
+of [Model Events Broadcasting](https://laravel.com/docs/master/broadcasting#model-broadcasting)
+and [Broadcast Notifications](https://laravel.com/docs/master/notifications#broadcast-notifications)
+you can use
 **Wave** models to receive model events and notifications.
 
 ```javascript
@@ -163,15 +202,17 @@ wave.model('User', '1')
     .updated('Team', (team) => console.log('team updated', team));
 ```
 
-Start by calling the `model` method on the `Wave` instance with the model name and key.
+Start by calling the `model` method on the `Wave` instance with the model name
+and key.
 
-By default, Wave prefixes model names with `App.Models` namespace. You can customize this with the `namespace` option:
+By default, Wave prefixes model names with `App.Models` namespace. You can
+customize this with the `namespace` option:
 
 ```javascript
-window.Wave = new Wave({ namespace: 'App.Path.Models' });
+window.Wave = new Wave({namespace: 'App.Path.Models'});
 ```
 
-📄 [Check out full Laravel Broadcasting documentation](https://laravel.com/docs/master/broadcasting)
+📄 [Check out full Laravel Broadcasting documentation](https://laravel.com/docs/11.x/broadcasting)
 
 ## Configuration
 
@@ -207,10 +248,9 @@ new Wave({
 })
 ```
 
-
 ### Server Options
 
-You can publish the Laravel configuration file with:
+You can publish the Wave configuration file with:
 
 ```bash
 php artisan vendor:publish --tag="wave-config"
@@ -317,23 +357,31 @@ return [
 ## Persistent Connection with Nginx + PHP FPM
 
 Wave is designed to automatically reconnect after a request timeout.
-During reconnection, you won't lose any events because Wave stores event history for one minute by default
-and resumes it. You can adjust the duration of event history storage by modifying the `resume_lifetime` value
+During reconnection, you won't lose any events because Wave stores event history
+for one minute by default
+and resumes it. You can adjust the duration of event history storage by
+modifying the `resume_lifetime` value
 in the config file.
 
-However, if you want to maintain a persistent connection, let's configure your web server.
+However, if you want to maintain a persistent connection, let's configure your
+web server.
 
 ### `fastcgi_read_timeout`
 
-By default, the `fastcgi_read_timeout` value is `60s` for Nginx + PHP FastCGI server setup.
+By default, the `fastcgi_read_timeout` value is `60s` for Nginx + PHP FastCGI
+server setup.
 
 #### Option 1. Without changing the `fastcgi_read_timeout` value
 
-> Ensure that the interval between events pushed into Wave connection is shorter than the read timeout value
+> Ensure that the interval between events pushed into Wave connection is shorter
+> than the read timeout value
 
-To enhance the certainty of events occurring more frequently than the standard timeout,
-Wave attempts to send a ping event with each Server-Sent Events (SSE) connection request,
-provided that the previous event occurred prior to the `ping.frequency` configuration value.
+To enhance the certainty of events occurring more frequently than the standard
+timeout,
+Wave attempts to send a ping event with each Server-Sent Events (SSE) connection
+request,
+provided that the previous event occurred prior to the `ping.frequency`
+configuration value.
 
 If your application doesn't expect many real-time connections,
 specify the list of environments in which a ping event will be sent
@@ -343,20 +391,27 @@ with each Wave connection. By default, this is set to `local`.
 
 To ensure accurate frequency sending a ping event:
 
-1. Disable automatic sending by changing the `ping.enable` config value to `false`
-2. Use the `sse:ping` command to manually send a single ping or operate at an interval
+1. Disable automatic sending by changing the `ping.enable` config value
+   to `false`
+2. Use the `sse:ping` command to manually send a single ping or operate at an
+   interval
 
-Run the command with the `--interval` option to send a ping event at a specified interval in seconds,
+Run the command with the `--interval` option to send a ping event at a specified
+interval in seconds,
 for example let's send a ping event every `30s`:
 
 ```bash
 php artisan sse:ping --interval=30
 ```
 
-So, every `30s`, the command will send a ping event to all active connections and
-ensure that the connection remains persistent, because the frequency of sending events is less than `60s`.
+So, every `30s`, the command will send a ping event to all active connections
+and
+ensure that the connection remains persistent, because the frequency of sending
+events is less than `60s`.
 
-Alternatively, use the Laravel [Tasks scheduler](https://laravel.com/docs/master/scheduling#introduction) to send a ping event every minute or more often
+Alternatively, use the
+Laravel [Tasks scheduler](https://laravel.com/docs/master/scheduling#introduction)
+to send a ping event every minute or more often
 if `fastcgi_read_timeout` value is greater than `60s`:
 
 ```php
@@ -368,7 +423,9 @@ protected function schedule(Schedule $schedule)
 
 ### `request_terminate_timeout`
 
-Some platforms, such as [Laravel Forge](https://forge.laravel.com), configure the PHP FPM pool with `request_terminate_timeout = 60`, terminating all requests after `60s`.
+Some platforms, such as [Laravel Forge](https://forge.laravel.com), configure
+the PHP FPM pool with `request_terminate_timeout = 60`, terminating all requests
+after `60s`.
 
 You can disable this in the `/etc/php/8.1/fpm/pool.d/www.conf` config file:
 
@@ -403,34 +460,43 @@ open source projects, such as Wave.
 
 [![support me](https://raw.githubusercontent.com/slavarazum/slavarazum/main/support-banner.png)](https://github.com/sponsors/qruto)
 
-I welcome you to visit my [GitHub Sponsorships profile](https://github.com/sponsors/qruto).
-There, you can discover more about my current work, future ambitions, and aspirations.
+I welcome you to visit
+my [GitHub Sponsorships profile](https://github.com/sponsors/qruto).
+There, you can discover more about my current work, future ambitions, and
+aspirations.
 Every ⭐ you give brings joy to my day, and your sponsorship can make
 a profound difference in my ability to continue creating.
 
-I'm truly grateful for your support, whether it's a shout-out or a heartfelt "thank you".
+I'm truly grateful for your support, whether it's a shout-out or a heartfelt "
+thank you".
 
 💳 [Help directly](https://revolut.me/slavarazum).
 
 ## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed
+recently.
 
 ## Contributing
 
-Please see [CONTRIBUTING](https://github.com/spatie/.github/blob/main/CONTRIBUTING.md) for details.
+Please
+see [CONTRIBUTING](https://github.com/spatie/.github/blob/main/CONTRIBUTING.md)
+for details.
 
 ## Security Vulnerabilities
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+Please review [our security policy](../../security/policy) on how to report
+security vulnerabilities.
 
 ## Credits
 
 - [Slava Razum](https://github.com/slavarazum)
 - [All Contributors](../../contributors)
 
-Package template based on [Spatie Laravel Skeleton](https://github.com/spatie/package-skeleton-laravel).
+Package template based
+on [Spatie Laravel Skeleton](https://github.com/spatie/package-skeleton-laravel).
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT). Please see [License File](LICENSE.md) for more
+information.
