@@ -58,7 +58,7 @@ it(
                 'no'
             )
             ->expectsConfirmation(
-                'Star our repo on GitHub during installation?',
+                'Star Wave repo on GitHub during installation?',
                 'no'
             )
             ->expectsOutputToContain('Installing and building Node dependencies.')
