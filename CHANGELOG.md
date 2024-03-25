@@ -2,7 +2,12 @@
 
 All notable changes to `laravel-wave` will be documented in this file.
 
-## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.8.2...predis-fix)
+## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.9.0...main)
+
+## [0.9.0](https://github.com/qruto/laravel-wave/compare/0.8.2...0.9.0) - 2024-03-25
+
+- Laravel 11 and `php artisan install:broadcasting` command support
+- increase max. available connections prompt for `php artisan serve` command
 
 ## [0.8.2](https://github.com/qruto/laravel-wave/compare/0.8.1...0.8.2) - 2024-03-12
 
