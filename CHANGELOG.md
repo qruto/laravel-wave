@@ -2,7 +2,11 @@
 
 All notable changes to `laravel-wave` will be documented in this file.
 
-## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.9.0...main)
+## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.9.1...main)
+
+## [0.9.1](https://github.com/qruto/laravel-wave/compare/0.9.0...0.9.1) - 2024-04-13
+
+- Fixed channels route file copy #63
 
 ## [0.9.0](https://github.com/qruto/laravel-wave/compare/0.8.2...0.9.0) - 2024-03-25
 
