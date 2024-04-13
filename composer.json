@@ -40,7 +40,7 @@
         "laravel/pint": "^1.14",
         "m6web/redis-mock": "v5.6",
         "nunomaduro/collision": "^7.10|^8.1",
-        "nunomaduro/larastan": "^2.9",
+        "larastan/larastan": "^2.9",
         "orchestra/testbench": "^8.14|^9.0",
         "pestphp/pest": "^v2.34",
         "pestphp/pest-plugin-laravel": "^2.3.0",

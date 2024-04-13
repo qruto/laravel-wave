@@ -47,9 +47,11 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
 
             $relativeBroadcastingRoutesStub = 'laravel/framework/src/Illuminate/Foundation/Console/stubs/broadcasting-routes.stub';
 
-            if (file_exists(__DIR__.'/../../../../'.$relativeBroadcastingRoutesStub)) {
-                File::copy(__DIR__.'/../../../stubs/broadcasting-routes.stub',
-                    $broadcastingRoutesPath);
+            if (file_exists(__DIR__.'/../../../../../'.$relativeBroadcastingRoutesStub)) {
+                File::copy(
+                    __DIR__.'/../../../../../'.$relativeBroadcastingRoutesStub,
+                    $broadcastingRoutesPath
+                );
             } else {
                 File::copy(__DIR__.'/../../../vendor/'.$relativeBroadcastingRoutesStub,
                     $broadcastingRoutesPath);
@@ -161,7 +163,7 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
     {
         if (! confirm(
             'Star Wave repo on GitHub during installation?',
-            default: true,
+            default: ! $this->option('no-interaction'),
             hint: 'Your yellow star contributes to the package development ⭐'
         )) {
             return;
