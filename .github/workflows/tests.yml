@@ -20,11 +20,11 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         php: [ 8.3, 8.2, 8.1 ]
-        laravel: [ 10, 11 ]
+        laravel: [ 10, 11, 12 ]
         stability: [ prefer-lowest, prefer-stable ]
         exclude:
           - php: 8.1
-            laravel: 11
+            laravel: [ 11, 12 ]
 
     services:
       redis:
