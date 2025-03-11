@@ -44,7 +44,7 @@ it('successfully received presence event', function () {
 
 test('event not received when broadcasting to others', function () {
     $connection = waveConnection();
-    $event = new PublicEvent();
+    $event = new PublicEvent;
 
     $event->socket = $connection->response->headers->get('X-Socket-Id');
 
@@ -55,7 +55,7 @@ test('event not received when broadcasting to others', function () {
 
 test('others received an event when broadcasting to others', function () {
     $connection = waveConnection();
-    $event = new PublicEvent();
+    $event = new PublicEvent;
 
     $rick = User::factory()->create();
     $connectionRick = waveConnection($rick);

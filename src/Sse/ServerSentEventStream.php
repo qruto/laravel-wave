@@ -37,8 +37,7 @@ class ServerSentEventStream implements Responsable
         protected BroadcastEventHistory $eventsHistory,
         protected PresenceChannelEvent $presenceChannelEvent,
         protected ConfigRepository $config
-    ) {
-    }
+    ) {}
 
     public function toResponse($request)
     {

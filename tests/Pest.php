@@ -17,7 +17,7 @@ use function PHPUnit\Framework\assertTrue;
 uses(TestCase::class)->in(__DIR__);
 
 uses()->beforeEach(function () {
-    $redisMock = new RedisConnectionMock();
+    $redisMock = new RedisConnectionMock;
     $this->instance('redis', $redisMock);
     $redisMock->flushdb();
     $redisMock->flushEventsQueue();
@@ -103,7 +103,7 @@ function waveConnection(?Authenticatable $user = null, ?string $lastEventId = nu
             }
 
             if (class_exists($event)) {
-                $event = (new $event())->broadcastOn()->name.'.'.$event;
+                $event = (new $event)->broadcastOn()->name.'.'.$event;
             }
 
             if (is_int($callback)) {

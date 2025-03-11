@@ -106,7 +106,7 @@ test('leave channel event received', function () {
 it('doesn\'t receive events without access', function () {
     Broadcast::channel('presence-channel', fn () => false);
     $connection = waveConnection();
-    event(new SomePresenceEvent());
+    event(new SomePresenceEvent);
 
     $connection->assertEventNotReceived(SomePrivateEvent::class);
 });

@@ -4,7 +4,7 @@ namespace Qruto\Wave\Storage;
 
 use Qruto\Wave\Sse\ServerSentEvent;
 
-//TODO: make readonly after update minimum required PHP version
+// TODO: make readonly after update minimum required PHP version
 class BroadcastingEvent
 {
     public function __construct(
@@ -13,8 +13,7 @@ class BroadcastingEvent
         public string|array $data,
         public ?string $id,
         public ?string $socket,
-    ) {
-    }
+    ) {}
 
     public function send(): void
     {

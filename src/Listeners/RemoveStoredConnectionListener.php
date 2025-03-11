@@ -9,9 +9,7 @@ use Qruto\Wave\Storage\PresenceChannelUsersRepository;
 
 class RemoveStoredConnectionListener
 {
-    public function __construct(private PresenceChannelUsersRepository $store)
-    {
-    }
+    public function __construct(private PresenceChannelUsersRepository $store) {}
 
     public function handle(SseConnectionClosedEvent $event)
     {

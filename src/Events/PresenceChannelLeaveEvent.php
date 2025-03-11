@@ -19,9 +19,7 @@ class PresenceChannelLeaveEvent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(public string $userId, public array $userInfo, protected string $channel)
-    {
-    }
+    public function __construct(public string $userId, public array $userInfo, protected string $channel) {}
 
     /**
      * Get the channels the event should broadcast on.

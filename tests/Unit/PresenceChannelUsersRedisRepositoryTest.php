@@ -10,7 +10,7 @@ uses(InteractsWithRedis::class);
 beforeEach(function () {
     $this->setUpRedis();
     Redis::partialMock()->shouldReceive('connection')->once()->andReturn($this->connection());
-    $this->repository = new PresenceChannelUsersRedisRepository();
+    $this->repository = new PresenceChannelUsersRedisRepository;
 });
 
 afterEach(function () {

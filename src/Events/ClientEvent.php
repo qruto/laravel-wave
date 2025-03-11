@@ -20,9 +20,7 @@ class ClientEvent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(protected string $name, protected string $channel, public $data)
-    {
-    }
+    public function __construct(protected string $name, protected string $channel, public $data) {}
 
     /**
      * Get the channels the event should broadcast on.

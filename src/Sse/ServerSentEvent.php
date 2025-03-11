@@ -11,8 +11,7 @@ class ServerSentEvent implements Stringable
         private string $data,
         private ?string $id = null,
         private ?int $retry = null
-    ) {
-    }
+    ) {}
 
     public function setData(string $data): self
     {

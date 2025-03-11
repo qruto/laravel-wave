@@ -15,7 +15,7 @@ class BroadcastManagerExtended extends BroadcastManager
         return new class($this->app->make(BroadcastEventHistory::class), $this->app->make('redis'), $config['connection'] ?? null, $this->app['config']->get('database.redis.options.prefix', '')) extends RedisBroadcaster
         {
             public function __construct(
-                //TODO: make readonly after update minimum required PHP version
+                // TODO: make readonly after update minimum required PHP version
                 private BroadcastEventHistory $history,
                 Redis $redis,
                 $connection = null,
