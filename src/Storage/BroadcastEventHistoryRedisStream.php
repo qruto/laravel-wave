@@ -31,7 +31,8 @@ class BroadcastEventHistoryRedisStream implements BroadcastEventHistory
 
         return collect($this->db->xRange(
             'broadcasted_events',
-            $timestamp.'-'.$sequence, '+'
+            $timestamp.'-'.$sequence,
+            '+'
         ))->map(function ($event, $id) {
             $event['data'] = json_decode(
                 $event['data'],
@@ -67,7 +68,8 @@ class BroadcastEventHistoryRedisStream implements BroadcastEventHistory
         );
 
         if ($this->db instanceof PredisConnection) {
-            $id = $this->db->xAdd('broadcasted_events', $eventData, '*');
+            // @phpstan-ignore argument.type
+            $id = $this->db->xAdd('broadcasted_events', $eventData, '*'); // @phpstan-ignore argument.type
         } else {
             $id = $this->db->xAdd('broadcasted_events', '*', $eventData);
         }

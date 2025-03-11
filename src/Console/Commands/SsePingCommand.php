@@ -23,9 +23,9 @@ class SsePingCommand extends Command
 
     public function handle()
     {
-        $interval = $this->option('interval');
+        $interval = (int) $this->option('interval');
 
-        if ($interval) {
+        if ($interval !== 0) {
             while (true) {
                 event(new SsePingEvent);
 

@@ -37,10 +37,11 @@
         "spatie/laravel-package-tools": "^1.19.0"
     },
     "require-dev": {
+        "driftingly/rector-laravel": "^2.0",
+        "larastan/larastan": "^3.1",
         "laravel/pint": "^1.21",
         "m6web/redis-mock": "v5.6",
         "nunomaduro/collision": "^7.10|^8.1",
-        "larastan/larastan": "^3.1",
         "orchestra/testbench": "^8.14|^9.0|^10.0",
         "pestphp/pest": "^v3.7",
         "pestphp/pest-plugin-laravel": "^3.0",
@@ -48,7 +49,6 @@
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
-        "rector/rector": "^2.0",
         "spatie/laravel-ray": "^1.39"
     },
     "autoload": {

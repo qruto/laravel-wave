@@ -171,13 +171,13 @@ class BroadcastingInstallCommand extends \Illuminate\Foundation\Console\Broadcas
 
         $repoUrl = 'https://github.com/qruto/laravel-wave';
 
-        if (PHP_OS_FAMILY == 'Darwin') {
+        if (PHP_OS_FAMILY === 'Darwin') {
             exec("open {$repoUrl}");
         }
-        if (PHP_OS_FAMILY == 'Windows') {
+        if (PHP_OS_FAMILY === 'Windows') {
             exec("start {$repoUrl}");
         }
-        if (PHP_OS_FAMILY == 'Linux') {
+        if (PHP_OS_FAMILY === 'Linux') {
             exec("xdg-open {$repoUrl}");
         }
     }

@@ -23,7 +23,7 @@ class ServeCommand extends \Illuminate\Foundation\Console\ServeCommand
         if ($workersAmount === 1 && $this->getLaravel()->getProviders(WaveServiceProvider::class) !== []) {
             $workersAmount = (int) select(
                 label: 'Looks like you are using Server-sent Events (SSE) for broadcasting. Set the preferable amount of workers.',
-                options: ['leave 1 (default)', 10, 20],
+                options: ['leave 1 (default)', '10', '20'],
                 default: 10,
                 hint: 'The number of workers determines the maximum number of concurrent connections.',
             );
@@ -35,9 +35,12 @@ class ServeCommand extends \Illuminate\Foundation\Console\ServeCommand
                 $file = base_path('.env');
 
                 if (file_exists($file)) {
-                    file_put_contents($file,
+                    file_put_contents(
+                        $file,
                         (str_ends_with(file_get_contents($file), PHP_EOL) ? '' : PHP_EOL).
-                        PHP_EOL."PHP_CLI_SERVER_WORKERS=$workersAmount".PHP_EOL, FILE_APPEND);
+                        PHP_EOL."PHP_CLI_SERVER_WORKERS=$workersAmount".PHP_EOL,
+                        FILE_APPEND
+                    );
                 }
             }
         }
