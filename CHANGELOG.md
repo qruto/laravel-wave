@@ -2,7 +2,12 @@
 
 All notable changes to `laravel-wave` will be documented in this file.
 
-## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.9.1...main)
+## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.10.0...main)
+
+## [0.10.0](https://github.com/qruto/laravel-wave/compare/0.9.1...0.10.0) - 2025-03-15
+
+- Laravel 12 support
+- drop PHP 8.1 support
 
 ## [0.9.1](https://github.com/qruto/laravel-wave/compare/0.9.0...0.9.1) - 2024-04-13
 
