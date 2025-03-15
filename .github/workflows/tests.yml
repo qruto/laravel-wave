@@ -52,7 +52,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress --with="illuminate/contracts:^${{ matrix.laravel }}"
+          composer require "illuminate/contracts=^${{ matrix.laravel }}" --no-update
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: List Installed Dependencies
         run: composer show -D
