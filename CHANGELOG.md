@@ -2,7 +2,11 @@
 
 All notable changes to `laravel-wave` will be documented in this file.
 
-## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.10.0...main)
+## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.10.1...main)
+
+## [0.10.1](https://github.com/qruto/laravel-wave/compare/0.10.0...0.10.1) - 2025-03-21
+
+fixed version constraints
 
 ## [0.10.0](https://github.com/qruto/laravel-wave/compare/0.9.1...0.10.0) - 2025-03-15
 
