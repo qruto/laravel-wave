@@ -8,6 +8,7 @@ use Qruto\Wave\Http\Controllers\WaveConnection;
 Route::group([
     'prefix' => config('wave.path', 'wave'),
     'as' => 'wave.',
+    'domain' => config('wave.domain'),
     'middleware' => config('wave.middleware', ['web']),
 ], function () {
     Route::get('/', WaveConnection::class)->name('connection');
