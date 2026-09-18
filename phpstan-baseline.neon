@@ -16,4 +16,6 @@ parameters:
             path: src/Storage/PresenceChannelUsersRedisRepository.php
 
         -   "#^Called 'env' outside of the config directory.*#"
-        -   "#^Call to function method_exists\\(\\) with Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable.*#"
+        -
+            message: "#^Call to function method_exists\\(\\) with Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable.*#"
+            reportUnmatched: false
