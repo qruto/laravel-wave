@@ -105,6 +105,12 @@ resumption of visibility. Turned off by default.
 authentication requests, granting you the freedom to shape your broadcasting
 setup to your exact requirements.
 
+## Requirements
+
+- PHP 8.2 or higher (8.3 or higher with Laravel 13)
+- Laravel 10, 11, 12 or 13
+- Redis (the package works on top of Laravel's native `redis` broadcasting driver)
+
 ## Installation
 
 ### Laravel 11 or higher

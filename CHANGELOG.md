@@ -4,6 +4,11 @@ All notable changes to `laravel-wave` will be documented in this file.
 
 ## [Unreleased](https://github.com/qruto/laravel-wave/compare/0.10.1...main)
 
+- Laravel 13 support
+- published `broadcasting` configuration now contains Laravel 13 `mercure` connection
+- drop abandoned `pestphp/pest-plugin-watch` dev dependency, allowing Pest 4 (required by Laravel 13 testbench)
+- drop coverage report section from `phpunit.xml.dist`, PHPUnit 12 refuses to run it without a coverage driver
+
 ## [0.10.1](https://github.com/qruto/laravel-wave/compare/0.10.0...0.10.1) - 2025-03-21
 
 fixed version constraints
